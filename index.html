@@ -528,7 +528,7 @@ const battle={list:[],i:0,ci:0,charTries:0,hp:3,combo:0,best:0,sealed:0,fled:[],
 const study={list:[],t0:0,dur:0,raf:0,idx:-1,PER:5000};
 function paintRuby(){document.getElementById('st-ruby').innerHTML=`日文方塊的讀音：<b>${META.ruby===false?'不顯示':'顯示'}</b>`}
 function toggleRuby(){META.ruby=META.ruby===false;save();paintRuby()}
-function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed});
+function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet)});
   document.querySelector('#s-study .tag').textContent=opts&&opts.tag?opts.tag:timed?'時間到就開戰。點喇叭可以再聽一次。':(opts&&opts.ruby?'不限時，會一直輪流唸。背好了再按開始。':'不限時，會一直輪流唸。背好了再按開始，接著先描字練習。');
   document.getElementById('st-title').textContent=title;
   document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard" id="st-${i}"><span class="k"${w.k.length>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
@@ -540,7 +540,7 @@ function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];s
 function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:w.k,pun:w.orig?PUN[w.k]:null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),true),false)}
 function startLava(prev){const list=pendGet('p',()=>prev&&prev.length?prev:shuffle([...pick(PHRASES.filter(x=>!x.w),pKey,3),...pick(PHRASES.filter(x=>x.w),pKey,7)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:p.j,sub:`${p.r}　${p.m}`,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
 function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=study.timed?Math.min(n-1,Math.floor(el/study.PER)):Math.floor(el/study.PER)%n;
-  if(i!==study.idx){if(study.idx>=0)document.getElementById('st-'+study.idx)?.classList.remove('now');study.idx=i;const c=document.getElementById('st-'+i);c.classList.add('now');try{c.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}say(study.list[i].say)}
+  if(i!==study.idx){if(study.idx>=0)document.getElementById('st-'+study.idx)?.classList.remove('now');study.idx=i;const c=document.getElementById('st-'+i);c.classList.add('now');try{c.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}if(!study.quiet)say(study.list[i].say)}
   if(study.timed){document.getElementById('st-left').textContent=Math.max(0,Math.ceil((study.dur-el)/1000))+' 秒';document.getElementById('stbar').style.transform=`scaleX(${Math.max(0,1-el/study.dur)})`;if(el>=study.dur){endStudy();return}}
   else{document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)'}study.raf=requestAnimationFrame(stTick)}
 function endStudy(){cancelAnimationFrame(study.raf);try{speechSynthesis.cancel()}catch(e){}study.onStart()}
@@ -760,13 +760,13 @@ function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","な
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map(v=>({v,f:Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
-  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],tag:'每題會唸原形和變化後的形。不限時，看好了再開始考。'})}
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 function verbShow(){const {v,f}=vb.q[vb.i];vb.done=false;document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
   document.getElementById('v-verb').textContent=v.d;document.getElementById('v-k').textContent=`${v.k}（${v.m}）`;document.getElementById('v-form').textContent=FORMS[f];
   const right=conj(v.d,v.g,f);document.getElementById('v-opts').innerHTML=shuffle([right,...distract(v,f)]).map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('');
   document.querySelectorAll('#v-opts .opt').forEach(b=>b.onclick=()=>verbPick(b,b.dataset.o));
-  document.getElementById('v-exp').textContent='狸葉子放頭上，抽到什麼形就變什麼形。';document.getElementById('v-next').disabled=true;
+  document.getElementById('v-exp').textContent='狸葉子放頭上，抽到什麼形就變什麼形。';document.getElementById('v-next').disabled=true;say(v.d);
   vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick()}
 function vtick(){const el=(performance.now()-vb.t0)/6000;document.getElementById('vbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){verbPick(null,null);return}vb.raf=requestAnimationFrame(vtick)}
 function explainFor(v,f){const right=conj(v.d,v.g,f);const gname=["","第一類（五段動詞）","第二類（る動詞）","第三類（不規則）"][v.g];let rule;
@@ -784,7 +784,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08y';
+const APP_VER='2026.11.08z';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
