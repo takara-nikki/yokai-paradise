@@ -173,6 +173,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .study .say{grid-row:span 2}
 .study .pun{grid-column:1/-1;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:14px;color:var(--dim);line-height:1.45}
 .study .pun b{color:var(--gold);font-size:16px}
+.vsel{width:100%;font:inherit;color:inherit;cursor:pointer;min-height:76px}.vsel .due{color:var(--gold);font-family:var(--fs)}
 .study .exl{font-size:13.5px;color:var(--dim)}
 .study .rules{border-color:#4a3a22;background:#211a12}.study .rules b{color:var(--gold)}
 .mic{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:14px;white-space:nowrap;overflow:hidden;color:var(--navy);flex:0 0 auto}
@@ -210,7 +211,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
   <div class="tiles">
     <button class="tile stage1" onclick="startBattle()"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>妖怪往鳥居衝過來。聽發音、手寫平假名，寫對的字直接打上去。</p></button>
     <button class="tile stage2" onclick="startLava()"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>片語和單字一直掉，唸出來就消掉、中文意思浮上來。掉進岩漿就溶了。</p></button>
-    <button class="tile" onclick="startVerb()"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞變身，6 秒內變出指定的形。</p></button>
+    <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞分三類練變身，6 秒內變出指定的形。</p></button>
     <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
   </div>
   <p class="note">手寫判定：筆數要對、濁點要在右上角，字形要像。寫對會停一下再飛出去。</p>
@@ -289,6 +290,18 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
   <h1 style="margin-top:8px">妖怪帳</h1>
   <p class="tag">封印失敗的字和片語。到期那天會優先出場。</p>
   <div class="list" id="g-list"></div>
+</section>
+
+<!-- 化け術：選類別 -->
+<section class="screen" id="s-vsel">
+  <button class="back" onclick="go('s-home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>帰る（回去）</button>
+  <h1 style="margin-top:8px">狸の化け術</h1>
+  <p class="tag">動詞分三類，一次練一類。</p>
+  <div class="list" style="margin-top:16px">
+    <button class="gcard vsel" onclick="startVerb(1)"><span class="k">第一類　五段動詞</span><span class="due">書く・飲む・帰る</span><span class="m">字尾的假名換段，て形最多變化</span></button>
+    <button class="gcard vsel" onclick="startVerb(2)"><span class="k">第二類　る動詞</span><span class="due">食べる・見る</span><span class="m">去掉る再接，最簡單</span></button>
+    <button class="gcard vsel" onclick="startVerb(3)"><span class="k">第三類　する・来る</span><span class="due">勉強する</span><span class="m">不規則，只能整個背</span></button>
+  </div>
 </section>
 
 <!-- 化け術 -->
@@ -723,7 +736,7 @@ function showGrave(){const T=today();const rows=[...VOCAB.map(w=>({key:wKey(w),k
 /* ===== 番外 狸の化け術 ===== */
 const VERBS=[["たべる",2,"食べる","吃"],["みる",2,"見る","看"],["おきる",2,"起きる","起床"],["ねる",2,"寝る","睡覺"],["おしえる",2,"教える","教"],["わすれる",2,"忘れる","忘記"],["おぼえる",2,"覚える","記住"],["でる",2,"出る","出去"],["あける",2,"開ける","打開"],["かりる",2,"借りる","借入"],
 ["いく",1,"行く","去"],["かく",1,"書く","寫"],["きく",1,"聞く","聽"],["およぐ",1,"泳ぐ","游泳"],["はなす",1,"話す","說"],["まつ",1,"待つ","等"],["しぬ",1,"死ぬ","死"],["あそぶ",1,"遊ぶ","玩"],["よむ",1,"読む","讀"],["のむ",1,"飲む","喝"],["かえる",1,"帰る","回家"],["はしる",1,"走る","跑"],["しる",1,"知る","知道"],["はいる",1,"入る","進去"],["かう",1,"買う","買"],["あう",1,"会う","見面"],["つかう",1,"使う","使用"],
-["する",3,"する","做"],["くる",3,"来る","來"],["べんきょうする",3,"勉強する","學習"]].map(a=>({d:a[0],g:a[1],k:a[2],m:a[3]}));
+["する",3,"する","做"],["くる",3,"来る","來"],["べんきょうする",3,"勉強する","學習"],["うんどうする",3,"運動する","運動"],["りょうりする",3,"料理する","做菜"],["りょこうする",3,"旅行する","旅行"],["さんぽする",3,"散歩する","散步"],["そうじする",3,"掃除する","打掃"],["せんたくする",3,"洗濯する","洗衣服"],["でんわする",3,"電話する","打電話"],["けっこんする",3,"結婚する","結婚"],["れんしゅうする",3,"練習する","練習"],["もってくる",3,"持って来る","帶來"]].map(a=>({d:a[0],g:a[1],k:a[2],m:a[3]}));
 const ROW={う:["い","わ","え","お","って","った"],く:["き","か","け","こ","いて","いた"],ぐ:["ぎ","が","げ","ご","いで","いだ"],す:["し","さ","せ","そ","して","した"],つ:["ち","た","て","と","って","った"],ぬ:["に","な","ね","の","んで","んだ"],ぶ:["び","ば","べ","ぼ","んで","んだ"],む:["み","ま","め","も","んで","んだ"],る:["り","ら","れ","ろ","って","った"]};
 const FORMS=["ます形","ない形","て形","た形","可能形","意向形"];
 function conj(d,g,f){
@@ -738,20 +751,17 @@ function distract(v,f){const set=new Set(),right=conj(v.d,v.g,f);
   for(let i=0;i<6;i++)if(i!==f)set.add(conj(v.d,v.g,i));set.delete(right);return shuffle([...set]).slice(0,3)}
 const vb={q:[],i:0,combo:0,best:0,score:0,t0:0,raf:0,done:false};
 const GNAME=["","第一類（五段）","第二類（る動詞）","第三類（不規則）"];
-const VERB_RULES=`<div class="gcard rules"><span class="k" style="font-size:18px">變身規則總表</span><span class="m" style="grid-column:1/-1;line-height:1.7">
-<b>第一類（五段）</b>：字尾的假名換段<br>
-・ます形：い段＋ます（書く→書きます）<br>・ない形：あ段＋ない（書く→書かない；う→わ：買う→買わない）<br>
-・て／た形：う・つ・る→って／った；む・ぶ・ぬ→んで／んだ；く→いて；ぐ→いで；す→して（例外：行く→行って）<br>
-・可能形：え段＋る（書く→書ける）<br>・意向形：お段＋う（書く→書こう）<br>
-<b>第二類（る動詞）</b>：去掉る，再接 ます／ない／て／た／られる／よう（食べる→食べて）<br>
-<b>第三類</b>：整個背<br>する→します・しない・して・した・できる・しよう<br>来る→きます・こない・きて・きた・こられる・こよう<br>
-<b>陷阱</b>：帰る・走る・知る・入る 長得像第二類，其實是第一類</span></div>`;
+const RULE_CARD=(t,b)=>`<div class="gcard rules"><span class="k" style="font-size:18px">${t}</span><span class="m" style="grid-column:1/-1;line-height:1.7">${b}</span></div>`;
+const VERB_RULES={
+1:RULE_CARD('第一類（五段）：字尾的假名換段',`・ます形：い段＋ます（書く→書きます）<br>・ない形：あ段＋ない（書く→書かない；う→わ：買う→買わない）<br>・て／た形：う・つ・る→って／った；む・ぶ・ぬ→んで／んだ；く→いて；ぐ→いで；す→して<br>　例外：行く→行って・行った<br>・可能形：え段＋る（書く→書ける）<br>・意向形：お段＋う（書く→書こう）<br><b>陷阱</b>：帰る・走る・知る・入る 長得像第二類，其實是第一類`),
+2:RULE_CARD('第二類（る動詞）：去掉る，再接',`ます形：食べ＋ます<br>ない形：食べ＋ない<br>て形：食べ＋て　た形：食べ＋た<br>可能形：食べ＋られる<br>意向形：食べ＋よう<br><b>怎麼認</b>：る 前面是 い段 或 え段（見る、食べる），但帰る・走る・知る・入る 是例外`),
+3:RULE_CARD('第三類（不規則）：整個背',`<b>する</b>→します・しない・して・した・できる・しよう<br><b>来る（くる）</b>→きます・こない・きて・きた・こられる・こよう<br>〇〇する（勉強する、運動する…）就是前面加名詞，後面照 する 變<br>持って来る 也是照 来る 變`)};
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
-function startVerb(){const q=pendGet('v',()=>shuffle(VERBS).slice(0,10).map(v=>({v,f:Math.floor(Math.random()*6)})),l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
-  openStudy('番外・化け術 教學',q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES,tag:'每題會唸原形和變化後的形。不限時，看好了再開始考。'})}
-function beginVerb(q){ac();pendClear('v');vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
+function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map(v=>({v,f:Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],tag:'每題會唸原形和變化後的形。不限時，看好了再開始考。'})}
+function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 function verbShow(){const {v,f}=vb.q[vb.i];vb.done=false;document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
   document.getElementById('v-verb').textContent=v.d;document.getElementById('v-k').textContent=`${v.k}（${v.m}）`;document.getElementById('v-form').textContent=FORMS[f];
   const right=conj(v.d,v.g,f);document.getElementById('v-opts').innerHTML=shuffle([right,...distract(v,f)]).map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('');
@@ -770,11 +780,11 @@ function verbPick(btn,ans){if(vb.done)return;vb.done=true;cancelAnimationFrame(v
   if(ans===right){vb.combo++;vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/6000)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();say(right);exp.innerHTML=(vb.combo>=3?`化け術連擊 ×${vb.combo}！`:'ドロン！變身成功。')+' '+explainFor(v,f)}
   else{vb.combo=0;SFX.wrong();say(right);exp.innerHTML=(ans===null?'時間到，葉子掉了。':`變成四不像了，${v.k}都認不出自己。`)+' '+explainFor(v,f)}
   document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;document.getElementById('v-next').disabled=false}
-function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:startVerb});return}verbShow()}
+function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08w';
+const APP_VER='2026.11.08x';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
