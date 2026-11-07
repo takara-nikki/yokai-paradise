@@ -188,6 +188,34 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 #s-lava .feedback{font-size:14px;min-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #s-lava .actions .btn{min-height:44px}
 @media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
+/* 河童相撲 */
+.sumo-card{border-color:#5a3a22;background:linear-gradient(90deg,#2a1d12,#1F1B18)}
+.sm-sign{margin:8px auto 0;padding:10px 18px 12px;text-align:center;background:linear-gradient(180deg,#3a2a1a,#2a1d12);border:1px solid #6a4a2a;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.4);flex:0 0 auto;min-width:220px}
+.sm-verb{font-size:34px;font-weight:700;line-height:1.1}
+.sm-verb small{display:block;font-size:14px;font-weight:500;color:var(--dim);margin-top:2px}
+.sm-form{display:inline-block;margin-top:8px;padding:4px 16px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}
+.ring{position:relative;flex:1 1 auto;min-height:190px;margin-top:6px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(22,19,17,.35),rgba(22,19,17,.85)),url(img/bg_matsuri.webp) center 35%/cover}
+.dohyo{position:absolute;left:4%;right:4%;bottom:10%;height:34%;background:linear-gradient(180deg,#a8774a,#7a5232);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);box-shadow:inset 0 6px 0 rgba(255,235,200,.18)}
+.dohyo .lines{position:absolute;left:46%;width:8%;top:6%;height:22%;border-left:3px solid rgba(255,255,255,.75);border-right:3px solid rgba(255,255,255,.75)}
+.tawara{position:absolute;top:-6px;width:14px;height:22px;border-radius:7px;background:linear-gradient(180deg,#e8d9a8,#b9a46a);box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.tawara.l{left:7%}.tawara.r{right:7%}
+.fighter{position:absolute;bottom:calc(10% + 30%);width:28%;max-width:130px;aspect-ratio:1/1;transition:left .35s cubic-bezier(.22,1,.36,1)}
+.fighter.me{display:grid;place-items:end center}
+.ofuda{width:44%;height:86%;background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:4px;box-shadow:0 8px 16px rgba(0,0,0,.5),inset 0 0 0 1.5px rgba(30,26,23,.5),inset 0 0 0 4px var(--paper);display:grid;place-items:center}
+.ofuda span{width:72%;aspect-ratio:1/1;border:2px solid var(--shu);border-radius:4px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:22px;transform:rotate(-5deg)}
+.fighter.foe img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
+.fighter.shake{animation:smshake .3s}
+@keyframes smshake{25%{transform:translateX(-6px) rotate(-4deg)}75%{transform:translateX(6px) rotate(4deg)}}
+.fighter.out{transition:left .5s ease-in,transform .5s ease-in,opacity .5s;opacity:0;transform:rotate(25deg) translateY(30px)}
+.call{position:absolute;left:0;right:0;top:10%;text-align:center;font-family:var(--fb);font-size:34px;color:var(--paper);text-shadow:0 2px 12px rgba(0,0,0,.8);opacity:0;transition:opacity .2s;pointer-events:none}
+.call.on{opacity:1}
+.sm-msg{text-align:center;min-height:2.6em;font-size:15px;color:var(--dim);margin:8px 0 6px;flex:0 0 auto;line-height:1.35}
+.sm-msg.ok{color:var(--ok)}.sm-msg.no{color:var(--sakura)}
+.sm-msg b{color:var(--ink)}
+.moves{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:0 0 auto;margin-bottom:10px}
+.move{min-height:84px;border-radius:50%;aspect-ratio:1/1;max-height:104px;justify-self:center;width:100%;max-width:104px;font-size:26px;font-weight:700;color:#fff;background:radial-gradient(circle at 35% 30%,#E8784F,#C8402F 70%);box-shadow:0 6px 0 #7a2418,0 10px 18px rgba(0,0,0,.4);border:0}
+.move:active{transform:translateY(4px);box-shadow:0 2px 0 #7a2418}
+.move:disabled{opacity:.45}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -304,7 +332,24 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
     <button class="gcard vsel" onclick="startVerb(1)"><span class="k">第一類　五段動詞</span><span class="due">書く・飲む・帰る</span><span class="m">字尾的假名換段，て形最多變化</span></button>
     <button class="gcard vsel" onclick="startVerb(2)"><span class="k">第二類　る動詞</span><span class="due">食べる・見る</span><span class="m">去掉る再接，最簡單</span></button>
     <button class="gcard vsel" onclick="startVerb(3)"><span class="k">第三類　する・来る</span><span class="due">勉強する</span><span class="m">不規則，只能整個背</span></button>
+    <button class="gcard vsel sumo-card" onclick="startSumo()"><span class="k">河童相撲　て形特訓</span><span class="due">飲んで・書いて</span><span class="m">出招把妖怪推出土俵</span></button>
   </div>
+</section>
+
+<!-- 河童相撲 -->
+<section class="screen focus" id="s-sumo">
+  <div class="hud"><span id="sm-bout">第 1 場</span><span class="combo" id="sm-win">勝 0</span><button class="ico" data-mute onclick="toggleMute()" aria-label="聲音開關"></button></div>
+  <div class="sm-sign"><div class="sm-verb"><span id="sm-verb">のむ</span><small id="sm-kanji">飲む（喝）</small></div><div class="sm-form" id="sm-form">て形</div></div>
+  <div class="timer"><i id="smbar"></i></div>
+  <div class="ring" id="ring">
+    <div class="dohyo"><div class="tawara l"></div><div class="tawara r"></div><div class="lines"></div></div>
+    <div class="fighter me" id="sm-me"><div class="ofuda"><span>宝</span></div></div>
+    <div class="fighter foe" id="sm-foe"><img id="sm-foe-img" src="img/mon_vocab.webp" alt=""></div>
+    <div class="call" id="sm-call">はっけよい！</div>
+  </div>
+  <div class="sm-msg" id="sm-msg">　</div>
+  <div class="moves" id="sm-moves"></div>
+  <div class="actions"><button class="btn sm" onclick="leaveSumo()">にげる（逃跑）</button></div>
 </section>
 
 <!-- 化け術 -->
@@ -820,9 +865,44 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09b';
+const APP_VER='2026.11.09c';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
+/* ===== 河童相撲（て形／た形特訓） ===== */
+const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
+const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:4000,raf:0,lock:false,used:[]};
+const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
+function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
+function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[]});go('s-sumo');smBout()}
+function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*.09,c=ring*.5;
+  const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
+  me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
+function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
+function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe';document.getElementById('sm-me').className='fighter me';
+  document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
+  requestAnimationFrame(smPlace);cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
+function smNext(){const pool=VERBS.filter(v=>v.g===1&&!SM.used.includes(v.d));const v=pool.length?pool[Math.floor(Math.random()*pool.length)]:VERBS.filter(v=>v.g===1)[0];SM.used.push(v.d);if(SM.used.length>12)SM.used.shift();
+  const f=Math.random()<.65?2:3;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
+  document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
+  const opts=shuffle([SM.ans,...shuffle(TE_SET[f].filter(x=>x!==SM.ans)).slice(0,2)]);
+  document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${o}</button>`).join('');
+  document.querySelectorAll('#sm-moves .move').forEach(b=>b.onclick=()=>smPick(b.dataset.o));
+  const m=document.getElementById('sm-msg');m.className='sm-msg';m.innerHTML=`${v.d.slice(0,-1)}＿ 要接哪一招？`;
+  say(v.d);SM.t0=performance.now();cancelAnimationFrame(SM.raf);smTick()}
+function smTick(){const el=(performance.now()-SM.t0)/SM.dur;document.getElementById('smbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){smPick(null);return}SM.raf=requestAnimationFrame(smTick)}
+function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);document.querySelectorAll('#sm-moves .move').forEach(b=>b.disabled=true);
+  const v=SM.verb,full=conj(v.d,v.g,SM.f),e=v.d.slice(-1),m=document.getElementById('sm-msg'),ok=o===SM.ans;
+  const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
+  if(ok){SM.pos++;SFX.hit();smCall('のこった！');m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
+  else{SM.pos--;SFX.back();smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
+    if(SM.pos>=3){document.getElementById('sm-foe').classList.add('out');SFX.seal();SM.wins++;smCall('押し出し！',1200);setTimeout(smBoutEnd,1300)}
+    else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
+    else smNext()},ok?900:1500)}
+function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
+function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;go('s-vsel')}
+window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').classList.contains('on'))smPlace()});
+
 /* ===== 啟動 ===== */
 load();paintMute();refreshHome();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(document.getElementById('s-lava').classList.contains('on')&&!lv.paused&&!lv.over)pauseLava()}});
