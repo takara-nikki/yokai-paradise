@@ -865,12 +865,12 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09d';
+const APP_VER='2026.11.09e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
 const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
-const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:8000,raf:0,lock:false,used:[]};
+const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[]};
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
 function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[]});go('s-sumo');smBout()}
