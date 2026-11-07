@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="妖怪天国"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="Yokai Paradise — 妖怪天国：N4 日文練習遊戲"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#FFFFFF}img{max-width:100%}[hidden]{display:none!important}html,body{overscroll-behavior:none}</style></head><body><title>妖怪天国</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="タカラ妖怪天国"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="Yokai Paradise — タカラ妖怪天国：N4 日文練習遊戲"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#FFFFFF}img{max-width:100%}[hidden]{display:none!important}html,body{overscroll-behavior:none}</style></head><body><title>タカラ妖怪天国</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;700&family=Yuji+Syuku&display=swap">
 <style>
@@ -189,7 +189,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 <section class="screen on" id="s-home">
   <div class="card-top">
     <div class="seal"><span>封</span></div>
-    <h1>妖怪天国<span class="en">Yokai Paradise</span></h1>
+    <h1>タカラ妖怪天国<span class="en">Yokai Paradise</span></h1>
     <div style="grid-row:span 2;display:flex;gap:8px"><button class="ico" id="reloadBtn" onclick="hardReload()" aria-label="重新整理，抓最新版" hidden><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button><button class="ico" id="muteHome" onclick="toggleMute()" aria-label="聲音開關"></button></div>
     <p class="tag">妖怪は待ってくれない。<span id="verTag" style="font-family:var(--fm);font-size:12px;opacity:.6"></span></p>
   </div>
@@ -762,7 +762,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08q';
+const APP_VER='2026.11.08r';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */

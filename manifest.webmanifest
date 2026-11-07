@@ -1,6 +1,6 @@
 {
-  "name": "妖怪天国",
-  "short_name": "妖怪天国",
+  "name": "タカラ妖怪天国",
+  "short_name": "タカラ妖怪天国",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
@@ -26,5 +26,5 @@
       "purpose": "maskable"
     }
   ],
-  "description": "Yokai Paradise — 妖怪天国：N4 日文練習遊戲"
+  "description": "Yokai Paradise — タカラ妖怪天国：N4 日文練習遊戲"
 }
