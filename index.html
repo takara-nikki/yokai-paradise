@@ -308,7 +308,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 <section class="screen focus" id="s-verb">
   <div class="hud"><span id="v-count">1 / 10</span><span class="combo" id="v-combo">連擊 0</span><span id="v-score">0 分</span></div>
   <div class="timer"><i id="vbar"></i></div>
-  <div class="vq"><div class="verb" id="v-verb">食べる</div><div class="k" id="v-k"></div><div class="form" id="v-form">て形</div></div>
+  <div class="vq"><div class="verb"><span id="v-verb">食べる</span> <button class="say" style="display:inline-grid;vertical-align:middle" aria-label="唸動詞" onclick="say(document.getElementById('v-verb').textContent)"><svg><use href="#i-snd"/></svg></button></div><div class="k" id="v-k"></div><div class="form" id="v-form">て形</div></div>
   <div class="opts" id="v-opts"></div>
   <div class="explain" id="v-exp">狸葉子放頭上，抽到什麼形就變什麼形。</div>
   <div class="actions" style="margin-top:14px"><button class="btn sm" onclick="leaveVerb()">にげる（逃跑）</button><button class="btn main" id="v-next" onclick="verbNext()" disabled>次へ（下一題）</button></div>
@@ -766,7 +766,7 @@ function verbShow(){const {v,f}=vb.q[vb.i];vb.done=false;document.getElementById
   document.getElementById('v-verb').textContent=v.d;document.getElementById('v-k').textContent=`${v.k}（${v.m}）`;document.getElementById('v-form').textContent=FORMS[f];
   const right=conj(v.d,v.g,f);document.getElementById('v-opts').innerHTML=shuffle([right,...distract(v,f)]).map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('');
   document.querySelectorAll('#v-opts .opt').forEach(b=>b.onclick=()=>verbPick(b,b.dataset.o));
-  document.getElementById('v-exp').textContent='狸葉子放頭上，抽到什麼形就變什麼形。';document.getElementById('v-next').disabled=true;say(v.d);
+  document.getElementById('v-exp').textContent='狸葉子放頭上，抽到什麼形就變什麼形。';document.getElementById('v-next').disabled=true;
   vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick()}
 function vtick(){const el=(performance.now()-vb.t0)/6000;document.getElementById('vbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){verbPick(null,null);return}vb.raf=requestAnimationFrame(vtick)}
 function explainFor(v,f){const right=conj(v.d,v.g,f);const gname=["","第一類（五段動詞）","第二類（る動詞）","第三類（不規則）"][v.g];let rule;
@@ -784,7 +784,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08x';
+const APP_VER='2026.11.08y';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
