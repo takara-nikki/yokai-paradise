@@ -213,7 +213,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .sm-msg.ok{color:var(--ok)}.sm-msg.no{color:var(--sakura)}
 .sm-msg b{color:var(--ink)}
 .moves{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:0 0 auto;margin-bottom:10px}
-.move{min-height:84px;border-radius:50%;aspect-ratio:1/1;max-height:104px;justify-self:center;width:100%;max-width:104px;font-size:26px;font-weight:700;color:#fff;background:radial-gradient(circle at 35% 30%,#E8784F,#C8402F 70%);box-shadow:0 6px 0 #7a2418,0 10px 18px rgba(0,0,0,.4);border:0}
+.move{min-height:76px;border-radius:20px;width:100%;padding:6px 4px;font-size:22px;line-height:1.2;word-break:keep-all;font-weight:700;color:#fff;background:radial-gradient(circle at 35% 30%,#E8784F,#C8402F 70%);box-shadow:0 6px 0 #7a2418,0 10px 18px rgba(0,0,0,.4);border:0}
 .move:active{transform:translateY(4px);box-shadow:0 2px 0 #7a2418}
 .move:disabled{opacity:.45}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -865,12 +865,12 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09c';
+const APP_VER='2026.11.09d';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
 const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
-const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:4000,raf:0,lock:false,used:[]};
+const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:8000,raf:0,lock:false,used:[]};
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
 function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[]});go('s-sumo');smBout()}
@@ -885,7 +885,7 @@ function smNext(){const pool=VERBS.filter(v=>v.g===1&&!SM.used.includes(v.d));co
   const f=Math.random()<.65?2:3;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
   document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
   const opts=shuffle([SM.ans,...shuffle(TE_SET[f].filter(x=>x!==SM.ans)).slice(0,2)]);
-  document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${o}</button>`).join('');
+  const stem=v.d.slice(0,-1);document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${stem}${o}</button>`).join('');
   document.querySelectorAll('#sm-moves .move').forEach(b=>b.onclick=()=>smPick(b.dataset.o));
   const m=document.getElementById('sm-msg');m.className='sm-msg';m.innerHTML=`${v.d.slice(0,-1)}＿ 要接哪一招？`;
   say(v.d);SM.t0=performance.now();cancelAnimationFrame(SM.raf);smTick()}
