@@ -46,6 +46,10 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 /* 關卡方塊 */
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tile{position:relative;overflow:hidden;border-radius:20px;background:var(--panel);border:1px solid var(--line);text-align:left;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;aspect-ratio:1/1}
+.tile .scene{position:absolute;right:-6%;top:-4%;width:78%;opacity:.42;pointer-events:none;mix-blend-mode:screen}
+.tile.stage1 .scene,.tile.stage2 .scene{width:52%;right:-2%;top:-14%}
+.tile .scene~.wm{display:none}
+.tile h2,.tile p,.tile .no{position:relative;text-shadow:0 1px 6px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
 .tile .wm{position:absolute;right:-8px;top:-16px;font-family:var(--fb);font-size:118px;color:var(--ink);opacity:.09;line-height:1;pointer-events:none}
 .tile .no{font-family:var(--fm);font-size:12px;letter-spacing:.12em;color:var(--gold)}
 .tile h2{margin:0;font-size:20px}
@@ -64,19 +68,22 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .combo{color:var(--gold);font-weight:700;font-size:16px}
 .hud .ico{width:36px;height:36px;min-height:36px;color:var(--dim)}
 /* 第一關舞台 */
-.stage{position:relative;flex:0 0 auto;height:146px;margin:8px 0 4px;border-bottom:1px solid var(--line)}
-.yokai{position:absolute;bottom:0;left:0;width:96px;height:120px}
+.stage{position:relative;flex:0 0 auto;height:146px;margin:8px 0 4px;border-bottom:1px solid var(--line);background:url(img/bg_matsuri.webp) right 40%/auto 210% no-repeat;border-radius:12px 12px 0 0}
+.stage::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(22,19,17,.55) 45%,rgba(22,19,17,.15) 100%);border-radius:inherit;pointer-events:none}
+.stage>*{z-index:1}
+.yokai{position:absolute;bottom:0;left:0;width:112px;height:112px}
+.yokai .fig{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));user-select:none;-webkit-user-drag:none}
 .yokai svg{width:100%;height:100%;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
 .yokai .acc{fill:rgba(143,168,224,.35)}
 .yokai .acc2{fill:var(--accent);stroke:var(--accent)}
 .yokai .dot{fill:var(--ink);stroke:none}
-.yokai.hop svg{animation:hop .8s ease-in-out infinite}
+.yokai.hop .fig{animation:hop .8s ease-in-out infinite}
 @keyframes hop{50%{transform:translateY(-6px)}}
-.yokai.hit svg{animation:hit .45s var(--ease)}
+.yokai.hit .fig{animation:hit .45s var(--ease)}
 @keyframes hit{25%{transform:translateX(-14px) rotate(-12deg);filter:brightness(2.2)}100%{transform:none}}
 .yokai.sealed{opacity:.2;transition:opacity .7s}
 .yname{position:absolute;left:0;top:-22px;font-size:13px;color:var(--dim);white-space:nowrap}
-.torii{position:absolute;right:0;bottom:0;width:44px;height:96px}
+.torii{position:absolute;right:0;bottom:0;width:48px;height:100%}
 .torii svg{width:100%;height:100%;stroke:var(--accent);fill:none;stroke-width:3;stroke-linecap:round}
 .timer{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:6px 0 8px;flex:0 0 auto}
 .timer i{display:block;height:100%;width:100%;background:var(--grad);transform-origin:left;transition:transform .25s linear}
@@ -115,7 +122,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .btn.main{flex:1;background:var(--grad);color:#fff;font-weight:700;font-size:18px;border:0;box-shadow:0 6px 18px rgba(221,90,69,.3)}
 .btn.main:disabled{opacity:.5}
 /* 第二關 溶岩 */
-.arena{position:relative;flex:1 1 auto;margin:6px 0 0;border-radius:18px 18px 0 0;overflow:hidden;background:linear-gradient(180deg,transparent 55%,rgba(255,106,43,.10));border:1px solid var(--line);border-bottom:0}
+.arena{position:relative;flex:1 1 auto;margin:6px 0 0;border-radius:18px 18px 0 0;overflow:hidden;background:linear-gradient(180deg,rgba(22,19,17,.55),rgba(22,19,17,.25) 40%,rgba(255,106,43,.12)),url(img/bg_cave.webp) center 30%/cover no-repeat;border:1px solid var(--line);border-bottom:0}
 .lava{position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(180deg,var(--lava) 0%,var(--lava2) 70%);box-shadow:0 -10px 40px rgba(255,106,43,.55)}
 .lava::before{content:"";position:absolute;left:-10%;right:-10%;top:-10px;height:20px;background:radial-gradient(12px 10px at 10px 10px,var(--lava) 98%,transparent) 0 0/40px 20px repeat-x;animation:wave 2.4s linear infinite}
 @keyframes wave{to{transform:translateX(40px)}}
@@ -175,7 +182,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .heard{display:none}
 #s-lava .feedback{font-size:14px;min-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #s-lava .actions .btn{min-height:44px}
-@media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:72px;height:90px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
+@media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -200,10 +207,10 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>最高連擊 <b id="st-combo">0</b></span>
   </div>
   <div class="tiles">
-    <button class="tile stage1" onclick="startBattle()"><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>妖怪往鳥居衝過來。聽發音、手寫平假名，寫對的字直接打上去。</p></button>
-    <button class="tile stage2" onclick="startLava()"><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>日文方塊一直掉，唸出來就消掉、中文意思浮上來。掉進岩漿就溶了。</p></button>
-    <button class="tile" onclick="startVerb()"><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞變身，6 秒內變出指定的形。</p></button>
-    <button class="tile" onclick="showGrave()"><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
+    <button class="tile stage1" onclick="startBattle()"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>妖怪往鳥居衝過來。聽發音、手寫平假名，寫對的字直接打上去。</p></button>
+    <button class="tile stage2" onclick="startLava()"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>日文方塊一直掉，唸出來就消掉、中文意思浮上來。掉進岩漿就溶了。</p></button>
+    <button class="tile" onclick="startVerb()"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞變身，6 秒內變出指定的形。</p></button>
+    <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
   </div>
   <p class="note">手寫判定：筆數要對、濁點要在右上角，字形要像。寫對會停一下再飛出去。</p>
 </section>
@@ -218,7 +225,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
   </div>
   <div class="stage">
     <div class="yokai hop" id="yokai"></div>
-    <div class="torii"><svg viewBox="0 0 44 96"><path d="M2 10q20 -6 40 0M6 22h32M12 10v86M32 10v86M10 22v0"/></svg></div>
+    <div class="torii"></div>
   </div>
   <div class="timer"><i id="tbar"></i></div>
   <div class="prompt"><span class="mean" id="p-mean">—</span><button class="say" onclick="sayWord()" aria-label="再聽一次"><svg><use href="#i-snd"/></svg></button></div>
@@ -335,14 +342,17 @@ function cry(y){const a=ac();if(!a)return;const t=a.currentTime;const o=a.create
   o.type=y.wave;o.frequency.setValueAtTime(y.f[0],t);o.frequency.linearRampToValueAtTime(y.f[1],t+y.len*.5);o.frequency.linearRampToValueAtTime(y.f[2],t+y.len);
   l.frequency.value=y.vib;lg.gain.value=y.f[0]*.08;l.connect(lg);lg.connect(o.frequency);f.type='lowpass';f.frequency.value=y.cut;f.Q.value=7;env(a,g,t,.2,.08,y.len);
   o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);l.start(t);o.stop(t+y.len+.1);l.stop(t+y.len+.1)}
+const SAMPLE={tap:null,ok:null,ng:null,chime:null,rin:null};let sampleLoading=false;
+function loadSamples(a){if(sampleLoading||!a)return;sampleLoading=true;Object.keys(SAMPLE).forEach(n=>{fetch('sfx/'+n+'.mp3').then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(b=>new Promise((res,rej)=>a.decodeAudioData(b,res,rej))).then(buf=>SAMPLE[n]=buf).catch(()=>{})})}
+function playS(n,vol){const a=ac();if(!a)return true;loadSamples(a);const b=SAMPLE[n];if(!b)return false;const s=a.createBufferSource(),g=a.createGain();g.gain.value=vol??.8;s.buffer=b;s.connect(g);g.connect(a.destination);s.start();return true}
 const SFX={
-  hit(){noise(.12,1600,'bandpass',.35);tone('square',520,140,.16,.12,1800)},
-  seal(){tone('sine',1320,1310,1.2,.16);setTimeout(()=>tone('sine',1980,1975,.9,.08),60);tone('sawtooth',260,50,.9,.12,900)},
-  back(){noise(.45,320,'lowpass',.5);tone('sine',90,40,.4,.3)},
-  wrong(){tone('square',200,150,.18,.1,900)},
-  gem(){[988,1319,1568].forEach((f,i)=>setTimeout(()=>tone('triangle',f,f,.25,.14),i*70))},
+  hit(){if(playS('ok',.7))return;noise(.12,1600,'bandpass',.35);tone('square',520,140,.16,.12,1800)},
+  seal(){if(playS('rin',.85))return;tone('sine',1320,1310,1.2,.16);setTimeout(()=>tone('sine',1980,1975,.9,.08),60);tone('sawtooth',260,50,.9,.12,900)},
+  back(){playS('ng',.8);noise(.45,320,'lowpass',.5);tone('sine',90,40,.4,.3)},
+  wrong(){if(playS('ng',.7))return;tone('square',200,150,.18,.1,900)},
+  gem(){if(playS('chime',.7))return;[988,1319,1568].forEach((f,i)=>setTimeout(()=>tone('triangle',f,f,.25,.14),i*70))},
   sizzle(){noise(.7,3000,'highpass',.12);tone('sine',140,60,.5,.07)},
-  pick(){tone('triangle',660,700,.07,.08)}
+  pick(){if(playS('tap',.6))return;tone('triangle',660,700,.07,.08)}
 };
 let JA_VOICE=null;
 function findVoice(){try{const vs=speechSynthesis.getVoices();JA_VOICE=vs.find(v=>/ja[-_]JP/i.test(v.lang))||vs.find(v=>/^ja/i.test(v.lang))||null}catch(e){}}
@@ -356,7 +366,7 @@ function say(text,rate){if(META.mute)return;try{const ss=window.speechSynthesis;
   if(!JA_VOICE&&ss.getVoices().length&&!noJaWarned){noJaWarned=true;toast('找不到日文語音，請到手機設定加入日文')}}catch(e){}}
 /* iPhone：第一次「點完放開」時解鎖音效和語音 */
 let unlocked=false;
-function unlock(){if(unlocked)return;unlocked=true;const a=ac();try{if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}}catch(e){}
+function unlock(){if(unlocked)return;unlocked=true;const a=ac();loadSamples(a);try{if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}}catch(e){}
   try{if(!META.mute){const u=new SpeechSynthesisUtterance(' ');u.volume=0;u.lang='ja-JP';speechSynthesis.speak(u)}}catch(e){}}
 ['touchend','click','keydown'].forEach(ev=>document.addEventListener(ev,unlock,{capture:true,passive:true}));
 /* 岩漿滾滾聲：低頻轟隆底噪＋隨機咕嚕冒泡 */
@@ -382,16 +392,11 @@ const hearts=(n,max=5)=>Array.from({length:max},(_,i)=>HEART(i<n)).join('');
 
 /* ===== 日本妖怪（線條） ===== */
 const YOKAI=[
- {n:'河童',wave:'sawtooth',f:[220,180,260],vib:9,cut:1100,len:.7,taunt:'河童看了都想回河裡',
-  svg:`<ellipse cx="48" cy="40" rx="23" ry="21"/><ellipse class="acc" cx="48" cy="21" rx="14" ry="4.5"/><path d="M27 30l-7-5M69 30l7-5M30 24l-4-7M66 24l4-7"/><circle class="dot" cx="39" cy="37" r="3"/><circle class="dot" cx="57" cy="37" r="3"/><path class="acc2" d="M40 47q8 8 16 0q-8 3-16 0z"/><path d="M30 62q18-7 36 0v34q-18 6-36 0z"/><path d="M36 72h24M35 83h26M48 62v34"/><path d="M30 70l-14 12 4 4M66 70l14 12-4 4"/><path d="M38 97v14M58 97v14M33 112h9M54 112h9"/>`},
- {n:'からかさ小僧',wave:'triangle',f:[420,640,380],vib:12,cut:2200,len:.6,taunt:'傘妖笑到傘骨都歪了',
-  svg:`<path d="M8 62Q48 -2 88 62"/><path d="M8 62q10-7 20 0q10-7 20 0q10-7 20 0q10-7 20 0"/><path d="M48 10L28 62M48 10L68 62"/><circle cx="48" cy="38" r="8"/><circle class="dot" cx="48" cy="38" r="3"/><path class="acc2" d="M44 50q4 16 8 0z"/><path d="M48 62v38M48 100l-8 14h9"/>`},
- {n:'提灯お化け',wave:'sine',f:[300,520,240],vib:5,cut:1600,len:.9,taunt:'提燈看了直接熄火',
-  svg:`<rect x="35" y="6" width="26" height="7" rx="2"/><path d="M30 13h36q12 36 0 72H30q-12-36 0-72z"/><path d="M25 30h46M23 49h50M25 68h46"/><path d="M36 40q12-9 24 0q-12 9-24 0z"/><circle class="dot" cx="48" cy="40" r="3"/><path d="M35 58q13 9 26 0"/><path class="acc2" d="M46 62q1 17 8 15q2-7-3-15z"/><rect x="35" y="85" width="26" height="7" rx="2"/><path d="M48 92v10"/>`},
- {n:'一つ目小僧',wave:'square',f:[520,700,600],vib:14,cut:1800,len:.5,taunt:'一つ目小僧瞪大那一隻眼也認不出來',
-  svg:`<circle cx="48" cy="32" r="21"/><circle cx="48" cy="30" r="9"/><circle class="dot" cx="48" cy="30" r="3.6"/><path class="acc2" d="M44 43q4 13 8 0z"/><path d="M30 58h36l7 44H23z"/><path d="M40 58l8 14 8-14"/><path d="M30 62l-13 21h10M66 62l13 21H69"/><path d="M40 102v10M56 102v10"/>`},
- {n:'鬼',wave:'sawtooth',f:[110,80,95],vib:6,cut:700,len:1.1,boss:true,taunt:'鬼都笑了，你寫的比牠的狼牙棒還歪',
-  svg:`<path d="M32 22l-7-17 13 10M64 22l7-17-13 10"/><path d="M28 22h40q5 20-2 32q-18 8-36 0q-7-12-2-32z"/><path d="M33 33l9 4M63 33l-9 4"/><circle class="dot" cx="39" cy="41" r="2.6"/><circle class="dot" cx="57" cy="41" r="2.6"/><path d="M37 49h22M41 49l2 5 2-5M51 49l2 5 2-5"/><path d="M28 58h40v30H28z"/><path class="acc" d="M28 80h40v8H28z"/><path d="M36 80l-2 8M48 80v8M60 80l2 8"/><path d="M68 62l16-34" stroke-width="7"/><path d="M38 88v24M58 88v24"/>`}
+ {n:'灯籠鬼火',img:'img/mon_vocab.webp',wave:'sawtooth',f:[220,180,260],vib:9,cut:1100,len:.7,taunt:'石燈籠的火都笑到快熄了'},
+ {n:'からかさ小僧',img:'img/mon_grammar.webp',wave:'triangle',f:[420,640,380],vib:12,cut:2200,len:.6,taunt:'傘妖笑到傘骨都歪了'},
+ {n:'提灯お化け',img:'img/mon_listen.webp',wave:'sine',f:[300,520,240],vib:5,cut:1600,len:.9,taunt:'提燈看了直接熄火'},
+ {n:'本の付喪神',img:'img/mon_reading.webp',wave:'square',f:[520,700,600],vib:14,cut:1800,len:.5,taunt:'書妖翻白眼，書頁都捲起來了'},
+ {n:'鬼',img:'img/oni.webp',wave:'sawtooth',f:[110,80,95],vib:6,cut:700,len:1.1,boss:true,taunt:'鬼都笑了，你寫的比牠的角還歪'}
 ];
 
 /* ===== 手寫框 ===== */
@@ -533,7 +538,7 @@ function newBox(ch){const holder=document.getElementById('boxes'),scr=document.g
 function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
   const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?YOKAI[4]:YOKAI[Math.floor(Math.random()*4)];
-  const el=document.getElementById('yokai');el.className='yokai hop';el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><svg viewBox="0 0 96 120">${y.svg}</svg>`;el.style.transform='translateX(0)';
+  const el=document.getElementById('yokai');el.className='yokai hop';el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
   document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.i+1} / ${battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
   document.getElementById('p-mean').textContent=w.m;document.getElementById('p-hint').innerHTML='';
   const fb=document.getElementById('fb');fb.className='feedback';fb.textContent=battle.trace?`描字練習：照著淡淡的字描，描錯不扣命`:`${y.n}が来た！聽發音，寫 ${w.k.length} 個平假名`;
@@ -762,7 +767,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08s';
+const APP_VER='2026.11.08u';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
