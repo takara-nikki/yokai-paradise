@@ -188,6 +188,27 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 #s-lava .feedback{font-size:14px;min-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #s-lava .actions .btn{min-height:44px}
 @media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
+/* 河童相撲：開場卷軸 */
+.scroll-wrap{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(10,8,7,.72);backdrop-filter:blur(2px);padding:calc(16px + env(safe-area-inset-top,0px)) 10px calc(16px + env(safe-area-inset-bottom,0px))}
+.scroll{position:relative;display:flex;align-items:stretch;max-height:100%;width:min(100%,440px);animation:unroll .95s cubic-bezier(.22,1,.36,1) both}
+@keyframes unroll{from{max-width:40px}to{max-width:440px}}
+.rod{flex:0 0 18px;border-radius:9px;background:linear-gradient(90deg,#2b1a0f,#6b4524 45%,#3a2312);box-shadow:0 6px 14px rgba(0,0,0,.6);position:relative;z-index:2}
+.rod::before,.rod::after{content:"";position:absolute;left:-3px;right:-3px;height:14px;border-radius:5px;background:linear-gradient(180deg,#e6c46a,#9a7428)}
+.rod::before{top:-8px}.rod::after{bottom:-8px}
+.paper{flex:1 1 auto;min-width:0;overflow:hidden;background:linear-gradient(180deg,#F6F1E4,#E9DFC8);color:#1E1A17;box-shadow:inset 0 0 30px rgba(120,90,40,.25);display:flex;justify-content:center}
+.paper .inner{flex:0 0 auto;width:calc(min(100vw - 20px,440px) - 36px);box-sizing:border-box;padding:18px 16px 16px;overflow:auto;max-height:calc(100dvh - 60px);animation:inkin .6s .6s both}
+@keyframes inkin{from{opacity:0}to{opacity:1}}
+.paper h3{margin:0 0 4px;font-family:var(--fb);font-weight:400;font-size:28px;text-align:center;letter-spacing:.1em}
+.paper .lead{margin:0 0 12px;font-size:14px;color:#5a4f44;text-align:center}
+.te-rows{display:flex;flex-direction:column;gap:6px}
+.te-row{display:grid;grid-template-columns:86px 64px 1fr;align-items:center;gap:8px;min-height:46px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;text-align:left}
+.te-row .from{font-weight:700;font-size:17px}
+.te-row .to{font-weight:700;font-size:20px;color:#B8291E}
+.te-row .ex{font-size:14px;color:#5a4f44}
+.te-row.ex-row{background:rgba(200,64,47,.08);border-color:rgba(200,64,47,.35)}
+.paper .tip{margin:12px 0 4px;font-size:14px;color:#3a332c}
+.paper .chant{margin:0 0 14px;font-size:14px;font-weight:700;color:#8a5a12}
+.paper .go{width:100%;min-height:52px}
 /* 河童相撲 */
 .sumo-card{border-color:#5a3a22;background:linear-gradient(90deg,#2a1d12,#1F1B18)}
 .sm-sign{margin:8px auto 0;padding:10px 18px 12px;text-align:center;background:linear-gradient(180deg,#3a2a1a,#2a1d12);border:1px solid #6a4a2a;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.4);flex:0 0 auto;min-width:220px}
@@ -346,6 +367,27 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
     <div class="fighter me" id="sm-me"><div class="ofuda"><span>宝</span></div></div>
     <div class="fighter foe" id="sm-foe"><img id="sm-foe-img" src="img/mon_vocab.webp" alt=""></div>
     <div class="call" id="sm-call">はっけよい！</div>
+  </div>
+  <div class="scroll-wrap" id="sm-scroll" hidden>
+    <div class="scroll">
+      <div class="rod l"></div>
+      <div class="paper"><div class="inner">
+        <h3>て形の巻</h3>
+        <p class="lead">第一類動詞變て形時，字尾會「變音」。點一列可以聽例子。</p>
+        <div class="te-rows">
+          <button class="te-row" data-say="かって、まって、かえって"><span class="from">う・つ・る</span><span class="to">って</span><span class="ex">買って・待って・帰って</span></button>
+          <button class="te-row" data-say="のんで、あそんで、しんで"><span class="from">む・ぶ・ぬ</span><span class="to">んで</span><span class="ex">飲んで・遊んで・死んで</span></button>
+          <button class="te-row" data-say="かいて"><span class="from">く</span><span class="to">いて</span><span class="ex">書いて</span></button>
+          <button class="te-row" data-say="およいで"><span class="from">ぐ</span><span class="to">いで</span><span class="ex">泳いで</span></button>
+          <button class="te-row" data-say="はなして"><span class="from">す</span><span class="to">して</span><span class="ex">話して</span></button>
+          <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to">行って</span><span class="ex">行く 不是 行いて</span></button>
+        </div>
+        <p class="tip">た形：把 て→た、で→だ（飲んだ・書いた）</p>
+        <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
+        <button class="btn main go" onclick="smBegin()">はっけよい（開始）</button>
+      </div></div>
+      <div class="rod r"></div>
+    </div>
   </div>
   <div class="sm-msg" id="sm-msg">　</div>
   <div class="moves" id="sm-moves"></div>
@@ -865,7 +907,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09e';
+const APP_VER='2026.11.09f';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -873,7 +915,10 @@ const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
 const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[]};
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
-function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[]});go('s-sumo');smBout()}
+function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[],lock:true});go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
+  const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
+  w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
+function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
 function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*.09,c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
@@ -900,7 +945,7 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
     else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?900:1500)}
 function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
-function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;go('s-vsel')}
+function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;document.getElementById('sm-scroll').hidden=true;go('s-vsel')}
 window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').classList.contains('on'))smPlace()});
 
 /* ===== 啟動 ===== */
