@@ -207,6 +207,13 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .te-row .ex{font-size:14px;color:#5a4f44}
 .te-row.ex-row{background:rgba(200,64,47,.08);border-color:rgba(200,64,47,.35)}
 .paper .tip{margin:12px 0 4px;font-size:14px;color:#3a332c}
+.ans-h{margin:4px 0 8px;font-size:15px;font-weight:700;color:#1E1A17;border-top:1px dashed #c9b994;padding-top:12px}
+.ans-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.ans-it{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:6px;align-items:baseline;text-align:left;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;font-family:inherit}
+.ans-it .a1{font-size:14px;color:#5a4f44}
+.ans-it .a2{font-size:17px;font-weight:700;color:#B8291E;justify-self:end}
+.ans-it .a3{grid-column:1/-1;font-size:12px;color:#7a6e60}
+.ans-it.miss{border-color:rgba(200,64,47,.6);background:rgba(200,64,47,.1)}
 .paper .chant{margin:0 0 14px;font-size:14px;font-weight:700;color:#8a5a12}
 .paper .go{width:100%;min-height:52px}
 /* 河童相撲 */
@@ -383,6 +390,8 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
           <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to">行って</span><span class="ex">行く 不是 行いて</span></button>
         </div>
         <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
+        <h4 class="ans-h">この場の題目（點一下聽）</h4>
+        <div class="ans-list" id="sm-ans"></div>
         <button class="btn main go" onclick="smBegin()">はっけよい（開始）</button>
       </div></div>
       <div class="rod r"></div>
@@ -826,6 +835,7 @@ function showGrave(){const T=today();const rows=[...VOCAB.map(w=>({key:wKey(w),k
 /* ===== 番外 狸の化け術 ===== */
 const VERBS=[["たべる",2,"食べる","吃"],["みる",2,"見る","看"],["おきる",2,"起きる","起床"],["ねる",2,"寝る","睡覺"],["おしえる",2,"教える","教"],["わすれる",2,"忘れる","忘記"],["おぼえる",2,"覚える","記住"],["でる",2,"出る","出去"],["あける",2,"開ける","打開"],["かりる",2,"借りる","借入"],
 ["いく",1,"行く","去"],["かく",1,"書く","寫"],["きく",1,"聞く","聽"],["およぐ",1,"泳ぐ","游泳"],["はなす",1,"話す","說"],["まつ",1,"待つ","等"],["しぬ",1,"死ぬ","死"],["あそぶ",1,"遊ぶ","玩"],["よむ",1,"読む","讀"],["のむ",1,"飲む","喝"],["かえる",1,"帰る","回家"],["はしる",1,"走る","跑"],["しる",1,"知る","知道"],["はいる",1,"入る","進去"],["かう",1,"買う","買"],["あう",1,"会う","見面"],["つかう",1,"使う","使用"],
+["あらう",1,"洗う","洗"],["うたう",1,"歌う","唱歌"],["ならう",1,"習う","學習"],["てつだう",1,"手伝う","幫忙"],["おもう",1,"思う","想"],["いう",1,"言う","說"],["もつ",1,"持つ","拿"],["たつ",1,"立つ","站"],["つくる",1,"作る","做"],["のる",1,"乗る","搭乘"],["おくる",1,"送る","送"],["とる",1,"取る","拿取"],["おわる",1,"終わる","結束"],["すわる",1,"座る","坐"],["こまる",1,"困る","困擾"],["とまる",1,"止まる","停止"],["きる",1,"切る","切"],["やすむ",1,"休む","休息"],["すむ",1,"住む","居住"],["たのむ",1,"頼む","拜託"],["つつむ",1,"包む","包"],["よぶ",1,"呼ぶ","叫"],["えらぶ",1,"選ぶ","選"],["はこぶ",1,"運ぶ","搬運"],["あるく",1,"歩く","走路"],["はたらく",1,"働く","工作"],["おく",1,"置く","放"],["つく",1,"着く","抵達"],["いそぐ",1,"急ぐ","趕快"],["ぬぐ",1,"脱ぐ","脫"],["だす",1,"出す","拿出"],["かえす",1,"返す","歸還"],["かす",1,"貸す","借出"],["おす",1,"押す","按"],
 ["する",3,"する","做"],["くる",3,"来る","來"],["べんきょうする",3,"勉強する","學習"],["うんどうする",3,"運動する","運動"],["りょうりする",3,"料理する","做菜"],["りょこうする",3,"旅行する","旅行"],["さんぽする",3,"散歩する","散步"],["そうじする",3,"掃除する","打掃"],["せんたくする",3,"洗濯する","洗衣服"],["でんわする",3,"電話する","打電話"],["けっこんする",3,"結婚する","結婚"],["れんしゅうする",3,"練習する","練習"],["もってくる",3,"持って来る","帶來"]].map(a=>({d:a[0],g:a[1],k:a[2],m:a[3]}));
 const ROW={う:["い","わ","え","お","って","った"],く:["き","か","け","こ","いて","いた"],ぐ:["ぎ","が","げ","ご","いで","いだ"],す:["し","さ","せ","そ","して","した"],つ:["ち","た","て","と","って","った"],ぬ:["に","な","ね","の","んで","んだ"],ぶ:["び","ば","べ","ぼ","んで","んだ"],む:["み","ま","め","も","んで","んだ"],る:["り","ら","れ","ろ","って","った"]};
 const FORMS=["ます形","ない形","て形","た形","可能形","意向形"];
@@ -906,15 +916,18 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09g';
+const APP_VER='2026.11.09h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
 const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
-const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[]};
+const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=10;
+function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];
+  document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${v.k}</span><span class="a2">${v.k.slice(0,-1)}${e}</span><span class="a3">${v.m}</span></button>`}).join('');
+  document.querySelectorAll('#sm-ans .ans-it').forEach(b=>b.onclick=()=>say(b.dataset.say))}
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
-function startSumo(){ac();Object.assign(SM,{bout:0,wins:0,used:[],lock:true});go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
+function startSumo(){ac();SM.miss=[...new Set(SM.missNext)];Object.assign(SM,{bout:0,wins:0,lock:true});smDeal();go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
   w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
@@ -925,7 +938,7 @@ function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent
 function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe';document.getElementById('sm-me').className='fighter me';
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
-function smNext(){const pool=VERBS.filter(v=>v.g===1&&!SM.used.includes(v.d));const v=pool.length?pool[Math.floor(Math.random()*pool.length)]:VERBS.filter(v=>v.g===1)[0];SM.used.push(v.d);if(SM.used.length>12)SM.used.shift();
+function smNext(){if(!SM.q.length)SM.q=shuffle(SM.deck.slice());let v=SM.q.shift();if(SM.verb&&v===SM.verb&&SM.q.length){SM.q.push(v);v=SM.q.shift()}
   const f=2;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
   document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
   const opts=shuffle([SM.ans,...shuffle(TE_SET[f].filter(x=>x!==SM.ans)).slice(0,2)]);
@@ -938,7 +951,7 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
   const v=SM.verb,full=conj(v.d,v.g,SM.f),e=v.d.slice(-1),m=document.getElementById('sm-msg'),ok=o===SM.ans;
   const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
   if(ok){SM.pos++;SFX.hit();smCall('のこった！');m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
-  else{SM.pos--;SFX.back();smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  else{SM.pos--;SM.missNext.push(v.d);SFX.back();smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
     if(SM.pos>=3){document.getElementById('sm-foe').classList.add('out');SFX.seal();SM.wins++;smCall('押し出し！',1200);setTimeout(smBoutEnd,1300)}
     else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
