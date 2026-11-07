@@ -536,7 +536,8 @@ function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementB
   document.getElementById('st-title').textContent=title;
   document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard" id="st-${i}"><span class="k"${w.k.length>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
   document.querySelectorAll('#st-list .say').forEach(b=>b.onclick=()=>say(b.dataset.say));
-  go('s-study');document.getElementById('st-list').scrollTop=0;study.t0=performance.now();cancelAnimationFrame(study.raf);stTick()}
+  go('s-study');document.getElementById('st-list').scrollTop=0;study.t0=performance.now();cancelAnimationFrame(study.raf);
+  if(study.quiet){document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)';return}stTick()}
 function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.pend[kind];if(sv){list=de(sv);if(!list.length||list.some(x=>!x))list=null}}catch(e){list=null}
   if(!list)list=build();META.pend=Object.assign({},META.pend,{[kind]:ser(list)});save();return list}
 function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];save()}}
@@ -819,7 +820,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09a';
+const APP_VER='2026.11.09b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
