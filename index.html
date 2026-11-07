@@ -373,7 +373,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
       <div class="rod l"></div>
       <div class="paper"><div class="inner">
         <h3>て形の巻</h3>
-        <p class="lead">第一類動詞變て形時，字尾會「變音」。點一列可以聽例子。</p>
+        <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（書き＋て→書いて）。點一列可以聽例子。</p>
         <div class="te-rows">
           <button class="te-row" data-say="かって、まって、かえって"><span class="from">う・つ・る</span><span class="to">って</span><span class="ex">買って・待って・帰って</span></button>
           <button class="te-row" data-say="のんで、あそんで、しんで"><span class="from">む・ぶ・ぬ</span><span class="to">んで</span><span class="ex">飲んで・遊んで・死んで</span></button>
@@ -382,7 +382,6 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
           <button class="te-row" data-say="はなして"><span class="from">す</span><span class="to">して</span><span class="ex">話して</span></button>
           <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to">行って</span><span class="ex">行く 不是 行いて</span></button>
         </div>
-        <p class="tip">た形：把 て→た、で→だ（飲んだ・書いた）</p>
         <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
         <button class="btn main go" onclick="smBegin()">はっけよい（開始）</button>
       </div></div>
@@ -907,7 +906,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09f';
+const APP_VER='2026.11.09g';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -927,7 +926,7 @@ function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=documen
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
 function smNext(){const pool=VERBS.filter(v=>v.g===1&&!SM.used.includes(v.d));const v=pool.length?pool[Math.floor(Math.random()*pool.length)]:VERBS.filter(v=>v.g===1)[0];SM.used.push(v.d);if(SM.used.length>12)SM.used.shift();
-  const f=Math.random()<.65?2:3;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
+  const f=2;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
   document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
   const opts=shuffle([SM.ans,...shuffle(TE_SET[f].filter(x=>x!==SM.ans)).slice(0,2)]);
   const stem=v.d.slice(0,-1);document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${stem}${o}</button>`).join('');
