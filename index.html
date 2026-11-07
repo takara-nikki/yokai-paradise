@@ -156,6 +156,9 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .vq .verb{font-size:36px;font-weight:700;line-height:1.1}
 .vq .form{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700;font-size:18px}
 .vq .k{color:var(--dim);font-size:15px;margin-top:4px}
+.vmode{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px;font-size:14px;font-weight:600;color:var(--gold);letter-spacing:.05em}
+.vmode .ms{width:28px;height:28px;border:1.5px solid var(--seal);border-radius:5px;display:grid;place-items:center;font-family:var(--fb);color:var(--seal);font-size:17px;transform:rotate(-5deg);font-weight:400}
+.opt.small{font-size:17px;text-align:left;padding:8px 12px;line-height:1.35}.opt.small small{display:block;font-size:12px;color:var(--dim);font-weight:500}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .opt{min-height:68px;border:1px solid var(--line);background:var(--panel);font-size:22px;font-weight:600;border-radius:16px;padding:6px}
 .opt.right{background:rgba(79,163,122,.25);border-color:var(--ok)}
@@ -308,7 +311,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 <section class="screen focus" id="s-verb">
   <div class="hud"><span id="v-count">1 / 10</span><span class="combo" id="v-combo">連擊 0</span><span id="v-score">0 分</span></div>
   <div class="timer"><i id="vbar"></i></div>
-  <div class="vq"><div class="verb"><span id="v-verb">食べる</span> <button class="say" style="display:inline-grid;vertical-align:middle" aria-label="唸動詞" onclick="say(document.getElementById('v-verb').textContent)"><svg><use href="#i-snd"/></svg></button></div><div class="k" id="v-k"></div><div class="form" id="v-form">て形</div></div>
+  <div class="vq"><div class="vmode" id="v-mode"><span class="ms">狸</span><span id="v-mname">狸の變身</span></div><div class="verb"><span id="v-verb">食べる</span> <button class="say" style="display:inline-grid;vertical-align:middle" aria-label="唸動詞" onclick="say(document.getElementById('v-verb').textContent)"><svg><use href="#i-snd"/></svg></button></div><div class="k" id="v-k"></div><div class="form" id="v-form">て形</div></div>
   <div class="opts" id="v-opts"></div>
   <div class="explain" id="v-exp">狸葉子放頭上，抽到什麼形就變什麼形。</div>
   <div class="actions" style="margin-top:14px"><button class="btn sm" onclick="leaveVerb()">にげる（逃跑）</button><button class="btn main" id="v-next" onclick="verbNext()" disabled>次へ（下一題）</button></div>
@@ -759,32 +762,64 @@ const VERB_RULES={
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
-function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map(v=>({v,f:Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
+function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
   openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
-function verbShow(){const {v,f}=vb.q[vb.i];vb.done=false;document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
-  document.getElementById('v-verb').textContent=v.d;document.getElementById('v-k').textContent=`${v.k}（${v.m}）`;document.getElementById('v-form').textContent=FORMS[f];
-  const right=conj(v.d,v.g,f);document.getElementById('v-opts').innerHTML=shuffle([right,...distract(v,f)]).map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('');
-  document.querySelectorAll('#v-opts .opt').forEach(b=>b.onclick=()=>verbPick(b,b.dataset.o));
-  document.getElementById('v-exp').textContent='狸葉子放頭上，抽到什麼形就變什麼形。';document.getElementById('v-next').disabled=true;say(v.d);
-  vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick()}
-function vtick(){const el=(performance.now()-vb.t0)/6000;document.getElementById('vbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){verbPick(null,null);return}vb.raf=requestAnimationFrame(vtick)}
+/* 四種玩法輪流：狸の變身 → 河童相撲 → 誰是冒牌妖怪 → 雪女の逆呪文 */
+const VMODES=[
+ {id:'tanuki',seal:'狸',name:'狸の變身',sec:6,intro:'狸葉子放頭上，抽到什麼形就變什麼形。'},
+ {id:'kappa',seal:'河',name:'河童相撲・て形／た形',sec:4,intro:'河童推過來了！4 秒內選出正確的音變。'},
+ {id:'fake',seal:'偽',name:'誰是冒牌妖怪',sec:8,intro:'四隻妖怪各說一個變化，抓出說錯的那隻。'},
+ {id:'yuki',seal:'雪',name:'雪女の逆呪文',sec:6,intro:'雪女唸出變化形，說出它的原形，太慢會被冰凍。'}];
+const U_OF={};Object.entries(ROW).forEach(([u,r])=>{for(let k=0;k<4;k++)U_OF[r[k]]=u});
+function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice(-2),s2=c.slice(0,-2);
+  if(f===2||f===3){if(/っ[てた]$/.test(c))["う","つ","る"].forEach(x=>out.add(c.slice(0,-2)+x));if(/ん[でだ]$/.test(c))["む","ぶ","ぬ"].forEach(x=>out.add(c.slice(0,-2)+x));
+    if(/い[てた]$/.test(c))out.add(c.slice(0,-2)+"く");if(/い[でだ]$/.test(c))out.add(c.slice(0,-2)+"ぐ");if(/し[てた]$/.test(c)){out.add(c.slice(0,-2)+"す");out.add(c.slice(0,-2)+"する")}out.add(c.slice(0,-1)+"る")}
+  if(f===0){const s=c.slice(0,-2);out.add(s+"る");const l=s.slice(-1);if(U_OF[l])out.add(s.slice(0,-1)+U_OF[l])}
+  if(f===1){const s=c.slice(0,-2);out.add(s+"る");const l=s.slice(-1);if(U_OF[l])out.add(s.slice(0,-1)+U_OF[l])}
+  if(f===4){if(c.endsWith("られる"))out.add(c.slice(0,-3)+"る");const s=c.slice(0,-1);out.add(s);const l=s.slice(-1);if(U_OF[l])out.add(s.slice(0,-1)+U_OF[l])}
+  if(f===5){if(c.endsWith("よう"))out.add(c.slice(0,-2)+"る");const s=c.slice(0,-1);const l=s.slice(-1);if(U_OF[l])out.add(s.slice(0,-1)+U_OF[l]);out.add(s+"る")}
+  out.delete(v.d);let arr=shuffle([...out].filter(x=>x&&x.length>1));
+  if(arr.length<3)arr=arr.concat(shuffle(VERBS.filter(x=>x.d!==v.d&&x.g===v.g).map(x=>x.d)));return [...new Set(arr)].slice(0,3)}
+function verbShow(){const it=vb.q[vb.i],{v,f}=it,M=VMODES[vb.i%4];vb.done=false;vb.mode=M;
+  document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
+  document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;
+  const vEl=document.getElementById('v-verb'),kEl=document.getElementById('v-k'),fEl=document.getElementById('v-form'),box=document.getElementById('v-opts');let opts,cur;
+  if(M.id==='yuki'){const c=conj(v.d,v.g,f);vEl.textContent=c;kEl.textContent='這是哪個動詞的變化？';fEl.textContent=FORMS[f];
+    cur={ans:v.d};opts=shuffle([v.d,...revCands(v,f)]).map(o=>({o,label:o}))}
+  else if(M.id==='fake'){vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent='哪一個變錯了？';
+    const forms=shuffle([0,1,2,3,4,5]).slice(0,4),bad=Math.floor(Math.random()*4),wrong=distract(v,forms[bad]).filter(x=>x!==conj(v.d,v.g,forms[bad]))[0];
+    cur={ans:String(bad),badForm:forms[bad],wrong};opts=forms.map((ff,k)=>({o:String(k),label:`<small>${FORMS[ff]}</small>${k===bad?wrong:conj(v.d,v.g,ff)}`,small:true}))}
+  else{vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent=FORMS[f];const right=conj(v.d,v.g,f);cur={ans:right};opts=shuffle([right,...distract(v,f)]).map(o=>({o,label:o}))}
+  vb.cur=cur;box.innerHTML=opts.map(x=>`<button class="opt${x.small?' small':''}" data-o="${x.o}">${x.label}</button>`).join('');
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>verbPick(b,b.dataset.o));
+  document.getElementById('v-exp').textContent=M.intro;document.getElementById('v-next').disabled=true;
+  say(M.id==='yuki'?conj(v.d,v.g,f):v.d);vb.dur=M.sec*1000;vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick()}
+function vtick(){const el=(performance.now()-vb.t0)/(vb.dur||6000);document.getElementById('vbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){verbPick(null,null);return}vb.raf=requestAnimationFrame(vtick)}
 function explainFor(v,f){const right=conj(v.d,v.g,f);const gname=["","第一類（五段動詞）","第二類（る動詞）","第三類（不規則）"][v.g];let rule;
   if(v.g===2)rule=`去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;
   else if(v.g===3)rule="する／くる 要整個背，沒有公式";
   else{const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"，但 いく 是例外":"";rule=[`「${e}」改成い段再接 ます`,`「${e}」改成あ段再接 ない`+(e==="う"?"（う要變わ）":""),`${e} 結尾的て形是「${ROW[e][4]}」${ex}`,`${e} 結尾的た形是「${ROW[e][5]}」${ex}`,`「${e}」改成え段再接 る`,`「${e}」改成お段再接 う`][f]}
   if(v.g===1&&v.d.endsWith("る"))rule+="。長得像る動詞，其實是第一類，陷阱字";
   return `<b>${v.k}</b> 是${gname}：${rule} → <b>${right}</b>`}
-function verbPick(btn,ans){if(vb.done)return;vb.done=true;cancelAnimationFrame(vb.raf);const {v,f}=vb.q[vb.i],right=conj(v.d,v.g,f);
-  document.querySelectorAll('#v-opts .opt').forEach(b=>{if(b.dataset.o===right)b.classList.add('right');else if(b===btn)b.classList.add('wrong')});const exp=document.getElementById('v-exp');
-  if(ans===right){vb.combo++;vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/6000)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();say(right);exp.innerHTML=(vb.combo>=3?`化け術連擊 ×${vb.combo}！`:'ドロン！變身成功。')+' '+explainFor(v,f)}
-  else{vb.combo=0;SFX.wrong();say(right);exp.innerHTML=(ans===null?'時間到，葉子掉了。':`變成四不像了，${v.k}都認不出自己。`)+' '+explainFor(v,f)}
+function verbPick(btn,ans){if(vb.done)return;vb.done=true;cancelAnimationFrame(vb.raf);const {v,f}=vb.q[vb.i],M=vb.mode,cur=vb.cur;
+  document.querySelectorAll('#v-opts .opt').forEach(b=>{if(b.dataset.o===cur.ans)b.classList.add(M.id==='fake'?'wrong':'right');else if(b===btn)b.classList.add(M.id==='fake'?'right':'wrong')});
+  if(M.id==='fake'&&btn&&ans!==cur.ans)btn.classList.add('wrong');
+  const exp=document.getElementById('v-exp'),ok=ans===cur.ans;
+  let detail;if(M.id==='fake'){const ff=cur.badForm;detail=`冒牌的是「${cur.wrong}」，${FORMS[ff]}應該是 <b>${conj(v.d,v.g,ff)}</b>。 `+explainFor(v,ff)}
+  else if(M.id==='yuki')detail=`「${conj(v.d,v.g,f)}」是 ${v.k}（${v.m}）的${FORMS[f]}，原形是 <b>${v.d}</b>。 `+explainFor(v,f);
+  else detail=explainFor(v,f);
+  const praise={tanuki:'ドロン！變身成功。',kappa:'河童被推出土俵了！',fake:'抓到冒牌貨！',yuki:'雪女的咒語破解了！'}[M.id],
+        boo={tanuki:`變成四不像了，${v.k}都認不出自己。`,kappa:'被河童推出土俵了。',fake:'冒牌妖怪逃走了。',yuki:'被雪女冰凍了。'}[M.id];
+  if(ok){vb.combo++;vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/vb.dur)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();exp.innerHTML=(vb.combo>=3?`連擊 ×${vb.combo}！`:praise)+' '+detail}
+  else{vb.combo=0;SFX.wrong();exp.innerHTML=(ans===null?'時間到！':boo)+' '+detail}
+  say(M.id==='yuki'?v.d:M.id==='fake'?conj(v.d,v.g,cur.badForm):conj(v.d,v.g,f));
   document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;document.getElementById('v-next').disabled=false}
 function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.08z';
+const APP_VER='2026.11.09a';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 啟動 ===== */
