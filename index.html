@@ -207,6 +207,8 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .te-row .ex{font-size:14px;color:#5a4f44}
 .te-row.ex-row{background:rgba(200,64,47,.08);border-color:rgba(200,64,47,.35)}
 .paper .tip{margin:12px 0 4px;font-size:14px;color:#3a332c}
+#sm-scroll rt{font-size:.5em;font-weight:500;color:#7a6e60;letter-spacing:0}
+#sm-scroll .te-row,#sm-scroll .ans-it{line-height:1.9}
 .ans-h{margin:4px 0 8px;font-size:15px;font-weight:700;color:#1E1A17;border-top:1px dashed #c9b994;padding-top:12px}
 .ans-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
 .ans-it{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:6px;align-items:baseline;text-align:left;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;font-family:inherit}
@@ -380,14 +382,14 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
       <div class="rod l"></div>
       <div class="paper"><div class="inner">
         <h3>て形の巻</h3>
-        <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（書き＋て→書いて）。點一列可以聽例子。</p>
+        <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（<ruby>書<rt>か</rt></ruby>き＋て→<ruby>書<rt>か</rt></ruby>いて）。點一列可以聽例子。</p>
         <div class="te-rows">
-          <button class="te-row" data-say="かって、まって、かえって"><span class="from">う・つ・る</span><span class="to">って</span><span class="ex">買って・待って・帰って</span></button>
-          <button class="te-row" data-say="のんで、あそんで、しんで"><span class="from">む・ぶ・ぬ</span><span class="to">んで</span><span class="ex">飲んで・遊んで・死んで</span></button>
-          <button class="te-row" data-say="かいて"><span class="from">く</span><span class="to">いて</span><span class="ex">書いて</span></button>
-          <button class="te-row" data-say="およいで"><span class="from">ぐ</span><span class="to">いで</span><span class="ex">泳いで</span></button>
-          <button class="te-row" data-say="はなして"><span class="from">す</span><span class="to">して</span><span class="ex">話して</span></button>
-          <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to">行って</span><span class="ex">行く 不是 行いて</span></button>
+          <button class="te-row" data-say="かって、まって、かえって"><span class="from">う・つ・る</span><span class="to">って</span><span class="ex"><ruby>買<rt>か</rt></ruby>って・<ruby>待<rt>ま</rt></ruby>って・<ruby>帰<rt>かえ</rt></ruby>って</span></button>
+          <button class="te-row" data-say="のんで、あそんで、しんで"><span class="from">む・ぶ・ぬ</span><span class="to">んで</span><span class="ex"><ruby>飲<rt>の</rt></ruby>んで・<ruby>遊<rt>あそ</rt></ruby>んで・<ruby>死<rt>し</rt></ruby>んで</span></button>
+          <button class="te-row" data-say="かいて"><span class="from">く</span><span class="to">いて</span><span class="ex"><ruby>書<rt>か</rt></ruby>いて</span></button>
+          <button class="te-row" data-say="およいで"><span class="from">ぐ</span><span class="to">いで</span><span class="ex"><ruby>泳<rt>およ</rt></ruby>いで</span></button>
+          <button class="te-row" data-say="はなして"><span class="from">す</span><span class="to">して</span><span class="ex"><ruby>話<rt>はな</rt></ruby>して</span></button>
+          <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to"><ruby>行<rt>い</rt></ruby>って</span><span class="ex"><ruby>行<rt>い</rt></ruby>く 不是 <ruby>行<rt>い</rt></ruby>いて</span></button>
         </div>
         <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
         <h4 class="ans-h">この場の題目（點一下聽）</h4>
@@ -916,14 +918,16 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09h';
+const APP_VER='2026.11.09i';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
 const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
 const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=10;
+const isK=c=>/[\u3400-\u9fff々]/.test(c);
+function rb(k,r){let a=0,b=0;while(a<k.length&&a<r.length&&!isK(k[a])&&k[a]===r[a])a++;while(b<k.length-a&&b<r.length-a&&!isK(k[k.length-1-b])&&k[k.length-1-b]===r[r.length-1-b])b++;const mid=k.slice(a,k.length-b),rm=r.slice(a,r.length-b);if(!mid||!rm||!/[\u3400-\u9fff]/.test(mid))return k;return k.slice(0,a)+`<ruby>${mid}<rt>${rm}</rt></ruby>`+k.slice(k.length-b)}
 function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];
-  document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${v.k}</span><span class="a2">${v.k.slice(0,-1)}${e}</span><span class="a3">${v.m}</span></button>`}).join('');
+  document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${rb(v.k,v.d)}</span><span class="a2">${rb(v.k.slice(0,-1)+e,conj(v.d,1,2))}</span><span class="a3">${v.m}</span></button>`}).join('');
   document.querySelectorAll('#sm-ans .ans-it').forEach(b=>b.onclick=()=>say(b.dataset.say))}
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
