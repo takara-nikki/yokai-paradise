@@ -446,12 +446,12 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
         <h3>て形の巻</h3>
         <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（<ruby>書<rt>か</rt></ruby>き＋て→<ruby>書<rt>か</rt></ruby>いて）。</p>
         <div class="te-rows">
-          <button class="te-row" data-say="かう、かって" style="--d:0"><span class="th"><span class="sx big">う・つ・る</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx"><ruby>買<rt>か</rt></ruby>う</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>買<rt>か</rt></ruby><b>って</b></span></span></button>
-          <button class="te-row" data-say="のむ、のんで" style="--d:1"><span class="th"><span class="sx big">む・ぶ・ぬ</span><span class="ar">→</span><span class="to">んで</span></span><span class="exs"><span class="tx"><ruby>飲<rt>の</rt></ruby>む</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>飲<rt>の</rt></ruby><b>んで</b></span></span></button>
-          <button class="te-row" data-say="かく、かいて" style="--d:2"><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">いて</span></span><span class="exs"><span class="tx"><ruby>書<rt>か</rt></ruby>く</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>書<rt>か</rt></ruby><b>いて</b></span></span></button>
-          <button class="te-row" data-say="およぐ、およいで" style="--d:3"><span class="th"><span class="sx big">ぐ</span><span class="ar">→</span><span class="to">いで</span></span><span class="exs"><span class="tx"><ruby>泳<rt>およ</rt></ruby>ぐ</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>泳<rt>およ</rt></ruby><b>いで</b></span></span></button>
-          <button class="te-row" data-say="はなす、はなして" style="--d:4"><span class="th"><span class="sx big">す</span><span class="ar">→</span><span class="to">して</span></span><span class="exs"><span class="tx"><ruby>話<rt>はな</rt></ruby>す</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>話<rt>はな</rt></ruby><b>して</b></span></span></button>
-          <button class="te-row ex-row" data-say="いく、いって" style="--d:5"><span class="exl">例外</span><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx"><ruby>行<rt>い</rt></ruby>く</span><i class="tri" aria-label="變成"></i><span class="tx"><ruby>行<rt>い</rt></ruby><b>って</b></span></span><span class="note">不是 行いて</span></button>
+          <button class="te-row" data-say="かう、かって" style="--d:0"><span class="th"><span class="sx big">う・つ・る</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx">買う</span><span class="ar">→</span><span class="tx">買<b>って</b></span></span></button>
+          <button class="te-row" data-say="のむ、のんで" style="--d:1"><span class="th"><span class="sx big">む・ぶ・ぬ</span><span class="ar">→</span><span class="to">んで</span></span><span class="exs"><span class="tx">飲む</span><span class="ar">→</span><span class="tx">飲<b>んで</b></span></span></button>
+          <button class="te-row" data-say="かく、かいて" style="--d:2"><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">いて</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>いて</b></span></span></button>
+          <button class="te-row" data-say="およぐ、およいで" style="--d:3"><span class="th"><span class="sx big">ぐ</span><span class="ar">→</span><span class="to">いで</span></span><span class="exs"><span class="tx">泳ぐ</span><span class="ar">→</span><span class="tx">泳<b>いで</b></span></span></button>
+          <button class="te-row" data-say="はなす、はなして" style="--d:4"><span class="th"><span class="sx big">す</span><span class="ar">→</span><span class="to">して</span></span><span class="exs"><span class="tx">話す</span><span class="ar">→</span><span class="tx">話<b>して</b></span></span></button>
+          <button class="te-row ex-row" data-say="いく、いって" style="--d:5"><span class="exl">例外</span><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx">行く</span><span class="ar">→</span><span class="tx">行<b>って</b></span></span><span class="note">不是 行いて</span></button>
         </div>
         <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
         <h4 class="ans-h">この場の題目（點一下聽）</h4>
@@ -1049,7 +1049,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10t';
+const APP_VER='2026.11.10u';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
