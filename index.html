@@ -798,7 +798,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
   function flash(col='rgba(224,106,85,.45)'){if(reduce)return;const d=document.createElement('div');d.className='fx-flash';d.style.boxShadow=`inset 0 0 0 5px ${col},inset 0 0 70px ${col}`;document.body.appendChild(d);d.animate([{opacity:1},{opacity:0}],{duration:450,easing:'ease-out'}).onfinish=()=>d.remove()}
   function stamp(txt,o={}){const d=document.createElement('div');d.className='fx-stamp'+(o.cls?' '+o.cls:'');d.textContent=txt;if(o.top)d.style.top=o.top;document.body.appendChild(d);if(o.sound!==false)SFX.seal();buzz(30);
     if(reduce){setTimeout(()=>d.remove(),900);return}
-    d.animate([{transform:'translate(-50%,-50%) scale(2.6) rotate(-14deg)',opacity:0},{transform:'translate(-50%,-50%) scale(.9) rotate(-6deg)',opacity:1,offset:.2},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.3},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.78},{transform:'translate(-50%,-65%) scale(1.04) rotate(-6deg)',opacity:0}],{duration:o.dur||1150,easing:'cubic-bezier(.2,.9,.3,1)'}).onfinish=()=>d.remove();
+    d.animate([{transform:'translate(-50%,-50%) scale(2.6) rotate(-14deg)',opacity:0,easing:'cubic-bezier(.2,.9,.3,1)'},{transform:'translate(-50%,-50%) scale(.9) rotate(-6deg)',opacity:1,offset:.2},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.3},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.78},{transform:'translate(-50%,-65%) scale(1.04) rotate(-6deg)',opacity:0}],{duration:o.dur||1150,easing:'linear'}).onfinish=()=>d.remove();
     setTimeout(()=>{const r=d.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:16,w:r.width,cols:o.cls==='combo'?['#D4A54A','#F4EFE3','#E7C47A']:['#E06A55','#C8402F','#F4EFE3'],speed:4,up:1,size:3})},220)}
   const COMBO={3:'三連',5:'五連',10:'十連！',15:'十五連！',20:'二十連！！',30:'三十連！！！'};
   function combo(n){if(COMBO[n])stamp(COMBO[n],{cls:'combo',top:'30%'})}
@@ -1031,7 +1031,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10m';
+const APP_VER='2026.11.10n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
