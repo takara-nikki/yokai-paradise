@@ -539,6 +539,9 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 #rotNote{display:none}
 @media (orientation:landscape) and (max-height:520px){#rotNote{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;align-content:center;gap:14px;background:#0E0C0A;color:var(--ink);text-align:center;font-size:17px}#rotNote svg{width:64px;height:64px;stroke:var(--accent);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;animation:rotHint 1.8s ease-in-out infinite}#rotNote small{color:var(--dim);font-size:13px}}
 @keyframes rotHint{0%,30%{transform:rotate(-90deg)}60%,100%{transform:rotate(0)}}
+#sh-text,.sh-card .sh-text{font-size:20px!important;text-wrap:wrap!important;word-break:normal;line-break:strict;min-height:calc(2 * 1.5em)}
+.sh-card .sh-text.rb,.sh-card .sh-text.rbon{min-height:calc(2 * 2.1em)}
+.sh-card{min-height:0}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -943,12 +946,7 @@ function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.len
 function shRuby(v){META.shRuby=!!v;save();shPaintRt();if(!SH.run){const w=SH.list[SH.i];if(w&&!document.getElementById('sh-text').classList.contains('rb'))shShow()}}
 function shPaintRt(){const on=!!META.shRuby;document.querySelectorAll('#sh-rt .lb').forEach(b=>b.classList.toggle('on',b.dataset.m===(on?'on':'off')));const sw=document.getElementById('sh-rsw');sw.classList.toggle('r',!on);sw.setAttribute('aria-checked',on)}
 /* 句子排版：一行放得下就一行；放不下就在中間附近的「、」換行成兩行；沒有逗號就平均兩行，不讓單字掉到下一行 */
-function shFit(tx){const html0=tx.innerHTML;requestAnimationFrame(()=>{tx.innerHTML=html0;tx.style.whiteSpace='nowrap';let fs=22;const set=v=>{fs=v;tx.style.fontSize=v+'px'};set(22);
-  while(tx.scrollWidth>tx.clientWidth&&fs>19)set(fs-1);if(tx.scrollWidth<=tx.clientWidth)return;
-  const tk=html0.match(/<rt>.*?<\/rt>|<[^>]+>|[^<]/g)||[];let plain=0;const cuts=[];tk.forEach((t,i)=>{if(t[0]==='<')return;plain++;if(/[、，,]/.test(t))cuts.push({i,plain})});
-  const total=plain;if(cuts.length){let best=cuts[0];for(const c of cuts)if(Math.abs(c.plain-total/2)<Math.abs(best.plain-total/2))best=c;
-    let j=best.i+1;while(j<tk.length&&/^<\/(i|span|ruby)>$/.test(tk[j]))j++;tk.splice(j,0,'<br>');tx.innerHTML=tk.join('');set(22);while(tx.scrollWidth>tx.clientWidth&&fs>14)set(fs-1);return}
-  tx.style.whiteSpace='normal';set(21);const lh=()=>parseFloat(getComputedStyle(tx).lineHeight)||fs*2;while(tx.offsetHeight>lh()*2.2&&fs>14)set(fs-1)})}
+function shFit(tx){tx.style.whiteSpace='normal';tx.style.fontSize='';}
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
 /* 唸到哪裡：聽到的字依序對進句子（容許跳 3 個字） */
 function shProg(target,heard){const t=normJa(target),h=normJa(heard);let i=0;for(const c of h){for(let j=i;j<Math.min(t.length,i+4);j++){if(t[j]===c){i=j+1;break}}}return t.length?i/t.length:0}
@@ -1563,7 +1561,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18l';
+const APP_VER='2026.11.18m';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
