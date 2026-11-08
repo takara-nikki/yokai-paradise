@@ -485,6 +485,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wsvg text{font-family:var(--fs)}
 .wteach .wsec.dim{opacity:.35}.wteach .wlb.dim{opacity:.28}
 .wdn{fill:var(--dim);opacity:.55;text-anchor:middle;font-weight:500;letter-spacing:.05em;pointer-events:none}
+#s-verb:has(.wwrap) .vq{display:flex;flex-direction:column;align-items:center}#s-verb:has(.wwrap) #v-k{order:3;margin-top:6px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1415,7 +1416,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17d';
+const APP_VER='2026.11.17e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
