@@ -267,11 +267,12 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 #sm-scroll rt{font-size:.5em;font-weight:500;color:#7a6e60;letter-spacing:0}
 #sm-scroll .te-row,#sm-scroll .ans-it{line-height:1.9}
 .ans-h{margin:4px 0 8px;font-size:15px;font-weight:700;color:#1E1A17;border-top:1px dashed #c9b994;padding-top:12px}
-.ans-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
-.ans-it{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:6px;align-items:baseline;text-align:left;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;font-family:inherit}
-.ans-it .a1{font-size:14px;color:#5a4f44}
-.ans-it .a2{font-size:17px;font-weight:700;color:#B8291E;justify-self:end}
-.ans-it .a3{grid-column:1/-1;font-size:12px;color:#7a6e60}
+.ans-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.ans-it{width:100%;display:grid;grid-template-columns:auto auto auto 1fr;align-items:baseline;column-gap:8px;text-align:left;padding:4px 12px;min-height:44px;border-radius:9px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;font-family:inherit}
+.ans-it .a1,.ans-it .a2{font-size:17px;color:#2b241f;white-space:nowrap}
+.ans-it .a2 b{font-weight:700;color:#B8291E}
+.ans-it .aar{font-size:13px;color:#a39580}
+.ans-it .a3{font-size:13px;color:#7a6e60;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ans-it.miss{border-color:rgba(200,64,47,.6);background:rgba(200,64,47,.1)}
 .paper .chant{margin:0 0 14px;font-size:14px;font-weight:700;color:#8a5a12}
 .paper .go{width:100%;min-height:52px}
@@ -1050,7 +1051,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10x';
+const APP_VER='2026.11.10z';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1060,7 +1061,7 @@ const isK=c=>/[\u3400-\u9fff々]/.test(c);
 function rb(k,r){let a=0,b=0;while(a<k.length&&a<r.length&&!isK(k[a])&&k[a]===r[a])a++;while(b<k.length-a&&b<r.length-a&&!isK(k[k.length-1-b])&&k[k.length-1-b]===r[r.length-1-b])b++;const mid=k.slice(a,k.length-b),rm=r.slice(a,r.length-b);if(!mid||!rm||!/[\u3400-\u9fff]/.test(mid))return k;return k.slice(0,a)+`<ruby>${mid}<rt>${rm}</rt></ruby>`+k.slice(k.length-b)}
 function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];smPaintAns()}
 function smPaintAns(){
-  document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${rb(v.k,v.d)}</span><span class="a2">${rb(v.k.slice(0,-1)+e,conj(v.d,1,2))}</span><span class="a3">${v.m}</span></button>`}).join('');
+  document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${rb(v.k,v.d)}</span><span class="aar">→</span><span class="a2">${rb(v.k.slice(0,-1),v.d.slice(0,-1))}<b>${e}</b></span><span class="a3">${v.m}</span></button>`}).join('');
   document.querySelectorAll('#sm-ans .ans-it').forEach(b=>b.onclick=()=>say(b.dataset.say))}
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
