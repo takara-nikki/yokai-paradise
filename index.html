@@ -434,6 +434,12 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .screen{position:relative;z-index:1}
 .g-intro{position:fixed;inset:0;z-index:900}
 .g-intro .sh-kanji{color:var(--k,#9aa4c8)}
+.vrule{position:relative;grid-column:1/-1;margin:0 0 12px;padding:14px 12px 6px;border-radius:14px;color:#1E1A17;background:var(--fiber),var(--grain),linear-gradient(180deg,#F4EFE3,#E6DDC8);border:1px solid #c9b994;box-shadow:inset 0 0 0 3px rgba(244,239,227,.6),inset 0 0 0 4px rgba(150,120,70,.35),0 8px 20px rgba(0,0,0,.35)}
+.vrule h3{margin:0 0 2px;font-family:var(--fb);font-size:20px;text-align:center}
+.vrule .lead{margin:0 0 8px;font-size:13px;color:#6a5e50;text-align:center}
+.vrule .tap-tip{top:12px;right:12px;writing-mode:horizontal-tb;padding:2px 6px;font-size:12px;letter-spacing:.05em}
+.vrule .te-row{width:100%;line-height:1.9}
+.te-row .fl{font-weight:700;font-size:15px;color:#3a322b}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1049,6 +1055,7 @@ function advance(){battle.i++;if(battle.trace&&battle.i>=battle.list.length){toa
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
 function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.autoT);battle.locked=true;battle.shooting=false;go('s-home')}
 document.addEventListener('click',e=>{const b=e.target.closest('#r-list .say,#g-list .say');if(b){ac();say(b.dataset.say)}});
+document.addEventListener('click',e=>{const b=e.target.closest('.vrule .te-row');if(b){ac();say(b.dataset.say)}});
 
 /* ===== 遊戲特效：墨花粒子、震動、印章字卡、數字滾動 ===== */
 const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let cv,cx,parts=[],raf=0;
@@ -1249,9 +1256,9 @@ const vb={q:[],i:0,combo:0,best:0,score:0,t0:0,raf:0,done:false};
 const GNAME=["","第一類（五段）","第二類（る動詞）","第三類（不規則）"];
 const RULE_CARD=(t,b)=>`<div class="gcard rules"><span class="k" style="font-size:18px">${t}</span><span class="m" style="grid-column:1/-1;line-height:1.7">${b}</span></div>`;
 const VERB_RULES={
-1:RULE_CARD('第一類（五段）：字尾的假名換段',`・ます形：い段＋ます（書く→書きます）<br>・ない形：あ段＋ない（書く→書かない；う→わ：買う→買わない）<br>・て／た形：う・つ・る→って／った；む・ぶ・ぬ→んで／んだ；く→いて；ぐ→いで；す→して<br>　例外：行く→行って・行った<br>・可能形：え段＋る（書く→書ける）<br>・意向形：お段＋う（書く→書こう）<br><b>陷阱</b>：帰る・走る・知る・入る 長得像第二類，其實是第一類`),
-2:RULE_CARD('第二類（る動詞）：去掉る，再接',`ます形：食べ＋ます<br>ない形：食べ＋ない<br>て形：食べ＋て　た形：食べ＋た<br>可能形：食べ＋られる<br>意向形：食べ＋よう<br><b>怎麼認</b>：る 前面是 い段 或 え段（見る、食べる），但帰る・走る・知る・入る 是例外`),
-3:RULE_CARD('第三類（不規則）：整個背',`<b>する</b>→します・しない・して・した・できる・しよう<br><b>来る（くる）</b>→きます・こない・きて・きた・こられる・こよう<br>〇〇する（勉強する、運動する…）就是前面加名詞，後面照 する 變<br>持って来る 也是照 来る 變`)};
+1:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第一類（五段）</h3><p class="lead">字尾換掉，紅字就是變化</p><div class="te-rows"><button class="te-row" data-say="かく、かきます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>きます</b></span></span></button><button class="te-row" data-say="かく、かかない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>かない</b></span></span></button><button class="te-row" data-say="かく、かいて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>いて</b></span></span></button><button class="te-row" data-say="かく、かいた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>いた</b></span></span></button><button class="te-row" data-say="かく、かける" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>ける</b></span></span></button><button class="te-row" data-say="かく、かこう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">書く</span><span class="ar">→</span><span class="tx">書<b>こう</b></span></span></button><button class="te-row ex-row" data-say="かえる、かえります" style="--d:6"><span class="exl">像第二類</span><span class="th"><span class="fl">陷阱</span></span><span class="exs"><span class="tx">帰る</span><span class="ar">→</span><span class="tx">帰<b>ります</b></span></span></button></div></div>`,
+2:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第二類（る動詞）</h3><p class="lead">去掉る，接上紅字</p><div class="te-rows"><button class="te-row" data-say="たべる、たべます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ます</b></span></span></button><button class="te-row" data-say="たべる、たべない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ない</b></span></span></button><button class="te-row" data-say="たべる、たべて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>て</b></span></span></button><button class="te-row" data-say="たべる、たべた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>た</b></span></span></button><button class="te-row" data-say="たべる、たべられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>られる</b></span></span></button><button class="te-row" data-say="たべる、たべよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>よう</b></span></span></button></div></div>`,
+3:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第三類（不規則）</h3><p class="lead">する／来る 整個背</p><div class="te-rows"><button class="te-row" data-say="します、きます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">し<b>ます</b><span class="ar">／</span>き<b>ます</b></span></span></button><button class="te-row" data-say="しない、こない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">し<b>ない</b><span class="ar">／</span>こ<b>ない</b></span></span></button><button class="te-row" data-say="して、きて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">し<b>て</b><span class="ar">／</span>き<b>て</b></span></span></button><button class="te-row" data-say="した、きた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">し<b>た</b><span class="ar">／</span>き<b>た</b></span></span></button><button class="te-row" data-say="できる、こられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx"><b>できる</b><span class="ar">／</span>こ<b>られる</b></span></span></button><button class="te-row" data-say="しよう、こよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">し<b>よう</b><span class="ar">／</span>こ<b>よう</b></span></span></button></div></div>`};
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
@@ -1312,7 +1319,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.15d';
+const APP_VER='2026.11.15e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
