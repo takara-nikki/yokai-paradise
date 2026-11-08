@@ -734,7 +734,7 @@ function shHud(){document.getElementById('sh-hp').innerHTML=[0,1,2].map(k=>`<svg
 function shTrToggle(){const t=document.getElementById('sh-tr');t.hidden=!t.hidden;SFX.click()}
 function shSkip(){if(SH.run)return;const w=SH.list[SH.i];SH.failed.push(w);SH.streak=0;shHud();shNext()}
 /* 踩住時：御札真的衝上去追到妖怪腳下 */
-function shCatchUp(done){const t0=performance.now(),from=Math.min(.6,.02+.48*SH.pu),to=.55+.4*SH.py-.03;SH.win=true;
+function shCatchUp(done){const t0=performance.now(),from=Math.min(.6,.02+.48*SH.pu),to=Math.max(from,.55+.4*SH.py-.5+.08);SH.win=true;
   const f=t=>{const k=Math.min(1,(t-t0)/650),e=1-Math.pow(1-k,3);SH.winT=from+(to-from)*e;shDraw();if(k<1)requestAnimationFrame(f);else done&&done()};requestAnimationFrame(f)}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
   const h={start:0};u.onstart=()=>{h.start=performance.now()};u.onend=()=>{onend&&onend()};u.onerror=()=>{onend&&onend()};ss.speak(u);return h}
@@ -1288,7 +1288,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13d';
+const APP_VER='2026.11.13e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
