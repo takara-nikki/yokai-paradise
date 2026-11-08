@@ -706,7 +706,11 @@ const EX_RUBY={"悪いことをしたら、すぐ謝るべきです。":"<ruby>�
 const exRb=t=>EX_RUBY[t]||t;
 const SH={hp:3,streak:0,win:false,winT:0,list:[],i:0,ok:0,best:0,failed:[],run:false,raf:0,py:0,pu:0,t0:0,est:0,ended:0,rec:null,heard:'',follow:[],started:false};
 function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&normJa(w.ex).length>=8&&normJa(w.ex).length<=26)}
-function startShadow(prev){ac();const pool=shPool();const len=w=>normJa(w.ex).length;const list=(prev&&prev.length?prev.slice():(()=>{const b=[...pool].sort((x,y)=>len(x)-len(y)),q=b.length,pk=[];for(let k=0;k<5;k++){const lo=Math.floor(q*k/5),hi=Math.floor(q*(k+1)/5);pk.push(b[lo+Math.floor(Math.random()*(hi-lo))])}return pk})()).sort((x,y)=>len(x)-len(y));Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0,maxStreak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
+function startShadow(prev){ac();const pool=shPool();const len=w=>normJa(w.ex).length;
+  /* 溜走過的句子存起來，之後每組混進 1～2 句，踩住才移除 */
+  const missEx=(META.shMiss||[]).filter(ex=>pool.some(w=>w.ex===ex));const miss=shuffle(missEx).slice(0,Math.min(2,missEx.length)).map(ex=>pool.find(w=>w.ex===ex));
+  const list=(()=>{const b=[...pool].filter(w=>!miss.includes(w)).sort((x,y)=>len(x)-len(y)),q=b.length,pk=[...miss];const bins=[0,1,2,3,4].filter(k=>!miss.some(m=>{const r=b.findIndex(w=>len(w)>=len(m));return Math.floor(Math.max(0,r)/q*5)===k}));
+    for(const k of bins){if(pk.length>=5)break;const lo=Math.floor(q*k/5),hi=Math.floor(q*(k+1)/5);pk.push(b[lo+Math.floor(Math.random()*(hi-lo))])}while(pk.length<5)pk.push(b[Math.floor(Math.random()*q)]);return pk})().sort((x,y)=>len(x)-len(y));if(prev&&prev.length)list.splice(0,list.length,...prev);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0,maxStreak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
 function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hidden=true};if(!ask){close();return}ac();
   const done=ok=>{close();const fb=document.getElementById('sh-fb');if(ok){fb.className='feedback ok';fb.textContent='麥克風準備好了'}else{vc.denied=true;fb.className='feedback no';fb.textContent=SR?'麥克風沒開：唸完自己判斷有沒有跟上':'這個開啟方式不支援語音辨識：唸完自己判斷有沒有跟上'}};
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(!!SR);return}
@@ -740,7 +744,7 @@ function shHud(){document.getElementById('sh-hp').innerHTML=[0,1,2].map(k=>`<svg
   const sc=document.getElementById('sh-score');sc.textContent=`連續 ${SH.streak}`;sc.classList.toggle('hot',SH.streak>=3);
   }
 function shTrToggle(){const t=document.getElementById('sh-tr');t.hidden=!t.hidden;SFX.click()}
-function shSkip(){if(SH.run)return;const w=SH.list[SH.i];SH.failed.push(w);SH.streak=0;shHud();shNext()}
+function shSkip(){if(SH.run)return;const w=SH.list[SH.i];SH.failed.push(w);if(!(META.shMiss||[]).includes(w.ex)){META.shMiss=[...(META.shMiss||[]),w.ex].slice(-60);save()}SH.streak=0;shHud();shNext()}
 /* 踩住時：御札真的衝上去追到妖怪腳下 */
 function shCatchUp(done){const t0=performance.now(),from=Math.min(.6,.02+.48*SH.pu),to=Math.max(from,.38+.55*SH.py-.42+.08);SH.win=true;
   const f=t=>{const k=Math.min(1,(t-t0)/650),e=1-Math.pow(1-k,3);SH.winT=from+(to-from)*e;shDraw();if(k<1)requestAnimationFrame(f);else done&&done()};requestAnimationFrame(f)}
@@ -766,14 +770,14 @@ function shFinish(mic){document.getElementById('sh-stage').classList.remove('run
 function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.length?SH.follow.reduce((a,b)=>a+b,0)/SH.follow.length:0,score=Math.round(100*(.7*acc+.3*fol));SH.best=Math.max(SH.best,score);
   const fb=document.getElementById('sh-fb'),yk=document.getElementById('sh-yk');document.getElementById('sh-pct').textContent=`影踏み ${score} 點`;
   {const tx=document.getElementById('sh-text');tx.innerHTML=exRb(w.ex);tx.classList.add('rb')}
-  if(score>=65){SH.ok++;SH.streak++;SH.maxStreak=Math.max(SH.maxStreak||0,SH.streak);fb.className='feedback ok';fb.innerHTML='踩住了！';shCatchUp(()=>{FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);FX.combo(SH.streak);setTimeout(()=>{yk.style.transition='opacity .35s';yk.style.opacity=0;const sv=document.getElementById('sh-forest');sv.style.transition='opacity .35s';sv.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)})}
-  else{SH.failed.push(w);SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
+  if(score>=65){META.shMiss=(META.shMiss||[]).filter(ex=>ex!==w.ex);save();SH.ok++;SH.streak++;SH.maxStreak=Math.max(SH.maxStreak||0,SH.streak);fb.className='feedback ok';fb.innerHTML='踩住了！';shCatchUp(()=>{FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);FX.combo(SH.streak);setTimeout(()=>{yk.style.transition='opacity .35s';yk.style.opacity=0;const sv=document.getElementById('sh-forest');sv.style.transition='opacity .35s';sv.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)})}
+  else{SH.failed.push(w);if(!(META.shMiss||[]).includes(w.ex)){META.shMiss=[...(META.shMiss||[]),w.ex].slice(-60);save()}SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
   shHud();setTimeout(()=>SH.hp<=0?shEnd():shNext(),score>=65?3400:4200)}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
 function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
   showResult({win,big:'影',title:win?'影踏み成功':'影子都溜走了',sub:`${n} 句踩住 ${SH.ok} 句。`,l1:'踩住',v1:SH.ok,l2:'溜走',v2:n-SH.ok,v3:SH.maxStreak||0,
     list:SH.failed.map(w=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${w.ex}"><svg><use href="#i-snd"/></svg></button><span class="k sh-rk" style="font-size:17px">${exRb(w.ex)}</span><span class="m">${w.tr||''}</span></div>`).join(''),
-    again:()=>startShadow(SH.failed.length?SH.failed:null),againLabel:SH.failed.length?`再追一次（溜走的 ${SH.failed.length} 句）`:'下一組 5 句'})}
+    again:()=>startShadow(),againLabel:'下一組 5 句'})}
 function leaveShadow(){document.getElementById('sh-stage').classList.remove('run');document.getElementById('sh-intro').hidden=true;cancelAnimationFrame(SH.raf);try{SH.rec&&SH.rec.abort()}catch(e){}SH.rec=null;try{speechSynthesis.cancel()}catch(e){}go('s-home')}
 
 /* 全部按鍵都有按壓音（招式鍵、已有專屬音效的除外） */
@@ -1296,7 +1300,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13r';
+const APP_VER='2026.11.13s';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
