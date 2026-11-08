@@ -236,20 +236,31 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .scroll-wrap{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(10,8,7,.72);backdrop-filter:blur(2px);padding:calc(16px + env(safe-area-inset-top,0px)) 10px calc(16px + env(safe-area-inset-bottom,0px))}
 .scroll{position:relative;display:flex;align-items:stretch;max-height:100%;width:min(100%,440px);animation:unroll .95s cubic-bezier(.22,1,.36,1) both}
 @keyframes unroll{from{max-width:40px}to{max-width:440px}}
-.rod{flex:0 0 18px;border-radius:9px;background:linear-gradient(90deg,#2b1a0f,#6b4524 45%,#3a2312);box-shadow:0 6px 14px rgba(0,0,0,.6);position:relative;z-index:2}
-.rod::before,.rod::after{content:"";position:absolute;left:-3px;right:-3px;height:14px;border-radius:5px;background:linear-gradient(180deg,#e6c46a,#9a7428)}
+.rod{flex:0 0 18px;border-radius:9px;background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(255,220,170,.18) 38%,rgba(255,220,170,.05) 50%,rgba(0,0,0,.5)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='300'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .015' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .06 0 0 0 0 .02 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"),linear-gradient(90deg,#2b1a0f,#6b4524 45%,#3a2312);box-shadow:0 6px 14px rgba(0,0,0,.6);position:relative;z-index:2}
+.rod::before,.rod::after{content:"";position:absolute;left:-3px;right:-3px;height:14px;border-radius:5px;background:linear-gradient(90deg,rgba(0,0,0,.25),rgba(255,255,255,.35) 35%,rgba(255,255,255,0) 55%,rgba(0,0,0,.3)),linear-gradient(180deg,#e9cc78,#b08a36 60%,#8a6a24);box-shadow:inset 0 1px 0 rgba(255,245,210,.6),inset 0 -1px 0 rgba(60,40,10,.5),0 2px 4px rgba(0,0,0,.5)}
 .rod::before{top:-8px}.rod::after{bottom:-8px}
-.paper{flex:1 1 auto;min-width:0;overflow:hidden;background:linear-gradient(180deg,#F6F1E4,#E9DFC8);color:#1E1A17;box-shadow:inset 0 0 30px rgba(120,90,40,.25);display:flex;justify-content:center}
+.paper{flex:1 1 auto;min-width:0;overflow:hidden;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .33 0 0 0 0 .18 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='q'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06 .012' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .42 0 0 0 0 .22 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23q)'/%3E%3C/svg%3E"),radial-gradient(120% 80% at 50% 40%,rgba(255,252,242,.6),rgba(255,252,242,0) 70%),linear-gradient(180deg,#F6F1E4,#E9DFC8);color:#1E1A17;box-shadow:inset 0 0 30px rgba(120,90,40,.28),inset 0 0 0 1px rgba(120,90,40,.18);display:flex;justify-content:center}
 .paper .inner{flex:0 0 auto;width:calc(min(100vw - 20px,440px) - 36px);box-sizing:border-box;padding:18px 16px 16px;overflow:auto;max-height:calc(100dvh - 60px);animation:inkin .6s .6s both}
 @keyframes inkin{from{opacity:0}to{opacity:1}}
 .paper h3{margin:0 0 4px;font-family:var(--fb);font-weight:400;font-size:28px;text-align:center;letter-spacing:.1em}
 .paper .lead{margin:0 0 12px;font-size:14px;color:#5a4f44;text-align:center}
-.te-rows{display:flex;flex-direction:column;gap:6px}
-.te-row{display:grid;grid-template-columns:86px 64px 1fr;align-items:center;gap:8px;min-height:46px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.55);border:1px solid #d9cdb2;color:inherit;text-align:left}
-.te-row .from{font-weight:700;font-size:17px}
-.te-row .to{font-weight:700;font-size:20px;color:#B8291E}
-.te-row .ex{font-size:14px;color:#5a4f44}
+.te-rows{display:flex;flex-direction:column;gap:8px}
+.te-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 10px 9px;border-radius:10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .33 0 0 0 0 .18 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),rgba(255,253,246,.55);border:1px solid rgba(150,120,70,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(120,90,40,.12),0 1px 2px rgba(80,55,20,.12);color:inherit;font:inherit;text-align:center;position:relative}
+.te-row .th{display:flex;align-items:baseline;justify-content:center;gap:10px}
+.te-row .ar{color:#a39580;font-size:15px}
+.te-row .to{font-weight:700;font-size:24px;color:#B8291E}
+.te-row .exs{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:2px 4px;font-size:17px;color:#3a322b;line-height:1.9}
+.te-row .exs i{font-style:normal;color:#b0a28c}
+.te-row .tx b{font-weight:700;color:#B8291E}
+.te-row .note{font-size:13px;color:#7a6e60}
+.te-row .exl{position:absolute;left:10px;top:9px;font-size:12px;font-weight:700;color:#B8291E;border:1px solid rgba(184,41,30,.5);border-radius:4px;padding:0 5px}
 .te-row.ex-row{background:rgba(200,64,47,.08);border-color:rgba(200,64,47,.35)}
+.sx{position:relative;display:inline-block;color:#9a8c7a}
+.sx.big{font-weight:700;font-size:19px;color:#8a7c68}
+.sx::after{content:'';position:absolute;left:-3px;right:-3px;top:54%;height:2.5px;border-radius:2px;background:#D83A2C;transform:rotate(-10deg) scaleX(0);transform-origin:left;animation:smStrike .3s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(.9s + var(--d,0) * .12s)}
+.sx.big::after{height:3px;transform:rotate(-3deg) scaleX(0);animation-name:smStrikeB}
+@keyframes smStrikeB{to{transform:rotate(-3deg) scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.sx::after{animation:none;transform:rotate(-10deg)}}
 .paper .tip{margin:12px 0 4px;font-size:14px;color:#3a332c}
 #sm-scroll rt{font-size:.5em;font-weight:500;color:#7a6e60;letter-spacing:0}
 #sm-scroll .te-row,#sm-scroll .ans-it{line-height:1.9}
@@ -433,14 +444,14 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
       <div class="rod l"></div>
       <div class="paper"><div class="inner">
         <h3>て形の巻</h3>
-        <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（<ruby>書<rt>か</rt></ruby>き＋て→<ruby>書<rt>か</rt></ruby>いて）。點一列可以聽例子。</p>
+        <p class="lead">て形不在五段表裡，是「い段＋て」唸快變音來的（<ruby>書<rt>か</rt></ruby>き＋て→<ruby>書<rt>か</rt></ruby>いて）。</p>
         <div class="te-rows">
-          <button class="te-row" data-say="かって、まって、かえって"><span class="from">う・つ・る</span><span class="to">って</span><span class="ex"><ruby>買<rt>か</rt></ruby>って・<ruby>待<rt>ま</rt></ruby>って・<ruby>帰<rt>かえ</rt></ruby>って</span></button>
-          <button class="te-row" data-say="のんで、あそんで、しんで"><span class="from">む・ぶ・ぬ</span><span class="to">んで</span><span class="ex"><ruby>飲<rt>の</rt></ruby>んで・<ruby>遊<rt>あそ</rt></ruby>んで・<ruby>死<rt>し</rt></ruby>んで</span></button>
-          <button class="te-row" data-say="かいて"><span class="from">く</span><span class="to">いて</span><span class="ex"><ruby>書<rt>か</rt></ruby>いて</span></button>
-          <button class="te-row" data-say="およいで"><span class="from">ぐ</span><span class="to">いで</span><span class="ex"><ruby>泳<rt>およ</rt></ruby>いで</span></button>
-          <button class="te-row" data-say="はなして"><span class="from">す</span><span class="to">して</span><span class="ex"><ruby>話<rt>はな</rt></ruby>して</span></button>
-          <button class="te-row ex-row" data-say="いって"><span class="from">例外</span><span class="to"><ruby>行<rt>い</rt></ruby>って</span><span class="ex"><ruby>行<rt>い</rt></ruby>く 不是 <ruby>行<rt>い</rt></ruby>いて</span></button>
+          <button class="te-row" data-say="かって、まって、かえって" style="--d:0"><span class="th"><span class="sx big">う・つ・る</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx"><ruby>買<rt>か</rt></ruby><span class="sx">う</span><b>って</b></span><i>・</i><span class="tx"><ruby>待<rt>ま</rt></ruby><span class="sx">つ</span><b>って</b></span><i>・</i><span class="tx"><ruby>帰<rt>かえ</rt></ruby><span class="sx">る</span><b>って</b></span></span></button>
+          <button class="te-row" data-say="のんで、あそんで、しんで" style="--d:1"><span class="th"><span class="sx big">む・ぶ・ぬ</span><span class="ar">→</span><span class="to">んで</span></span><span class="exs"><span class="tx"><ruby>飲<rt>の</rt></ruby><span class="sx">む</span><b>んで</b></span><i>・</i><span class="tx"><ruby>遊<rt>あそ</rt></ruby><span class="sx">ぶ</span><b>んで</b></span><i>・</i><span class="tx"><ruby>死<rt>し</rt></ruby><span class="sx">ぬ</span><b>んで</b></span></span></button>
+          <button class="te-row" data-say="かいて" style="--d:2"><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">いて</span></span><span class="exs"><span class="tx"><ruby>書<rt>か</rt></ruby><span class="sx">く</span><b>いて</b></span></span></button>
+          <button class="te-row" data-say="およいで" style="--d:3"><span class="th"><span class="sx big">ぐ</span><span class="ar">→</span><span class="to">いで</span></span><span class="exs"><span class="tx"><ruby>泳<rt>およ</rt></ruby><span class="sx">ぐ</span><b>いで</b></span></span></button>
+          <button class="te-row" data-say="はなして" style="--d:4"><span class="th"><span class="sx big">す</span><span class="ar">→</span><span class="to">して</span></span><span class="exs"><span class="tx"><ruby>話<rt>はな</rt></ruby><span class="sx">す</span><b>して</b></span></span></button>
+          <button class="te-row ex-row" data-say="いって" style="--d:5"><span class="exl">例外</span><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx"><ruby>行<rt>い</rt></ruby><span class="sx">く</span><b>って</b></span></span><span class=note>行く 不是 行いて</span></button>
         </div>
         <p class="chant">口訣：うつる小っ、むぶぬ撥ん、く→い、ぐ→いで、す→して</p>
         <h4 class="ans-h">この場の題目（點一下聽）</h4>
@@ -1038,7 +1049,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10q';
+const APP_VER='2026.11.10s';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
