@@ -459,6 +459,22 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 #s-vsel .list{flex:1;display:flex;flex-direction:column}
 #s-vsel .vsel{flex:1;position:relative;overflow:hidden;min-height:96px}
 #s-vsel .vsel .wm{position:absolute;right:-6px;bottom:-22px;font-family:var(--fb);font-size:120px;line-height:1;color:var(--accent);opacity:.09;pointer-events:none}
+.wwrap{grid-column:1/-1;display:grid;place-items:center;margin:2px 0 6px}
+.wsvg{width:min(84vw,310px);height:auto;overflow:visible}
+.wsec{cursor:pointer}.wsec path{fill:#241d18;stroke:#5a4632;stroke-width:1.2;transition:fill .12s}
+.wsec:nth-child(2n) path{fill:#2c231c}
+.wsec.on path{fill:#5a4520;stroke:var(--gold);stroke-width:2}
+.wsec.right path{fill:rgba(79,163,122,.6);stroke:var(--ok)}
+.wsec.wrong path{fill:rgba(216,58,44,.55);stroke:#D83A2C}
+.wlb .wst{font-size:.72em}.wlb{fill:var(--ink);font-weight:700;text-anchor:middle;pointer-events:none}.wlb .wch{fill:#F08A72}
+.wcen{fill:#1a1512;stroke:var(--seal);stroke-width:2.5}.wcent{fill:var(--ink);font-weight:700;text-anchor:middle;font-family:var(--fb)}
+.wptr{fill:var(--gold);stroke:#1a1512;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.wteach .wsec path{fill:rgba(255,255,255,.62);stroke:#c9b994}.wteach .wsec:nth-child(2n) path{fill:rgba(244,239,227,.95)}
+.wteach .wlb{fill:#1E1A17}.wteach .wlb .wch{fill:#B8291E}.wteach .wfm{font-size:11px;font-weight:600;fill:#7a6e60}
+.wteach .wcen{fill:#F4EFE3;stroke:#B8291E}.wteach .wcent{fill:#B8291E}.wteach .wptr{display:none}
+.vq .verb #v-verb.sent{display:inline-block;font-size:22px;line-height:1.5;font-weight:600}
+.wblank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--gold);margin:0 2px}
+.wfill{color:#F08A72}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1074,7 +1090,7 @@ function advance(){battle.i++;if(battle.trace&&battle.i>=battle.list.length){toa
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
 function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.autoT);battle.locked=true;battle.shooting=false;go('s-home')}
 document.addEventListener('click',e=>{const b=e.target.closest('#r-list .say,#g-list .say');if(b){ac();say(b.dataset.say)}});
-document.addEventListener('click',e=>{const b=e.target.closest('.vrule .te-row,.vrule .wc');if(b){ac();say(b.dataset.say)}});
+document.addEventListener('click',e=>{const b=e.target.closest('.vrule .te-row,.vrule .wc,.vrule .wsec');if(b){ac();say(b.dataset.say)}});
 
 /* ===== 遊戲特效：墨花粒子、震動、印章字卡、數字滾動 ===== */
 const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let cv,cx,parts=[],raf=0;
@@ -1275,14 +1291,15 @@ const vb={q:[],i:0,combo:0,best:0,score:0,t0:0,raf:0,done:false};
 const GNAME=["","第一類（五段）","第二類（る動詞）","第三類（不規則）"];
 const RULE_CARD=(t,b)=>`<div class="gcard rules"><span class="k" style="font-size:18px">${t}</span><span class="m" style="grid-column:1/-1;line-height:1.7">${b}</span></div>`;
 const VERB_RULES={
-1:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第一類（五段）</h3><p class="lead">中間是辭書形，四邊是基本變化</p><div class="wheel wt"><button class="wc top" data-say="かく、かきます"><small>ます形</small><span>書<b>きます</b></span></button><button class="wc rgt" data-say="かく、かいて"><small>て形</small><span>書<b>いて</b></span></button><button class="wc bot" data-say="かく、かいた"><small>た形</small><span>書<b>いた</b></span></button><button class="wc lft" data-say="かく、かかない"><small>ない形</small><span>書<b>かない</b></span></button><button class="wc wc-c" data-say="かく"><span>書く</span></button></div></div>`,
+1:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第一類（五段）</h3><p class="lead">中間是う段，四格是い・あ・え・お段</p>%WHEEL%</div>`,
 2:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第二類（る動詞）</h3><p class="lead">去掉る，接上紅字</p><div class="te-rows"><button class="te-row" data-say="たべる、たべます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ます</b></span></span></button><button class="te-row" data-say="たべる、たべない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ない</b></span></span></button><button class="te-row" data-say="たべる、たべて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>て</b></span></span></button><button class="te-row" data-say="たべる、たべた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>た</b></span></span></button><button class="te-row" data-say="たべる、たべられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>られる</b></span></span></button><button class="te-row" data-say="たべる、たべよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>よう</b></span></span></button></div></div>`,
 3:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第三類（不規則）</h3><p class="lead">する／来る 整個背</p><div class="te-rows"><button class="te-row" data-say="します、きます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">し<b>ます</b><span class="ar">／</span>き<b>ます</b></span></span></button><button class="te-row" data-say="しない、こない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">し<b>ない</b><span class="ar">／</span>こ<b>ない</b></span></span></button><button class="te-row" data-say="して、きて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">し<b>て</b><span class="ar">／</span>き<b>て</b></span></span></button><button class="te-row" data-say="した、きた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">し<b>た</b><span class="ar">／</span>き<b>た</b></span></span></button><button class="te-row" data-say="できる、こられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx"><b>できる</b><span class="ar">／</span>こ<b>られる</b></span></span></button><button class="te-row" data-say="しよう、こよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">し<b>よう</b><span class="ar">／</span>こ<b>よう</b></span></span></button></div></div>`};
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
-  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
+  if(g===1)q.forEach(it=>{if(it&&!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)]});
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく"},true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 /* 四種玩法輪流：狸の變身 → 河童相撲 → 誰是冒牌妖怪 → 雪女の逆呪文 */
 const VMODES=[
@@ -1290,8 +1307,40 @@ const VMODES=[
  {id:'kappa',seal:'河',name:'河童相撲・て形／た形',sec:4,intro:'河童推過來了！4 秒內選出正確的音變。'},
  {id:'fake',seal:'偽',name:'誰是冒牌妖怪',sec:8,intro:'四隻妖怪各說一個變化，抓出說錯的那隻。'},
  {id:'yuki',seal:'雪',name:'雪女の逆呪文',sec:6,intro:'雪女唸出變化形，說出它的原形，太慢會被冰凍。'}];
-const WHEEL={id:'wheel',seal:'轉',name:'妖怪轉盤',sec:14,intro:'看題目的形，轉到那一格時按「停」。'};
-const WPOS=[[0,'top'],[2,'rgt'],[3,'bot'],[1,'lft']];
+const WHEEL={id:'wheel',seal:'轉',name:'妖怪轉盤',sec:14,intro:'轉到對的那一格，按「停」。'};
+const WF=[0,1,4,5],WDAN={0:'い段',1:'あ段',4:'え段',5:'お段'},WZH={0:'禮貌形',1:'否定形',4:'會、能',5:'一起…吧'};
+const SENT={
+'かく':[['毎日、日記を＿。','每天寫日記。'],['今日はブログを＿。','今天不寫部落格。'],['私は漢字が少し＿。','我會寫一點漢字。'],['先生に手紙を＿。','寫信給老師吧。']],
+'のむ':[['毎朝コーヒーを＿。','每天早上喝咖啡。'],['私はお酒を＿。','我不喝酒。'],['この水は＿。','這水可以喝。'],['一緒にお茶を＿。','一起喝茶吧。']],
+'よむ':[['毎晩、本を＿。','每晚看書。'],['新聞はあまり＿。','不太看報紙。'],['この漢字、＿？','這個漢字會唸嗎？'],['一緒に漫画を＿。','一起看漫畫吧。']],
+'いく':[['来週、京都へ＿。','下週去京都。'],['明日は学校へ＿。','明天不去學校。'],['一人で駅まで＿。','能一個人去車站。'],['週末、海へ＿。','週末去海邊吧。']],
+'かう':[['駅で切符を＿。','在車站買票。'],['高いから＿。','太貴了，不買。'],['ここで切符が＿。','這裡可以買票。'],['新しい靴を＿。','買新鞋吧。']],
+'あう':[['明日、友達に＿。','明天跟朋友見面。'],['今週は彼に＿。','這週不跟他見面。'],['土曜日なら＿。','星期六的話可以見面。'],['また＿ね。','再見面吧。']],
+'まつ':[['駅で友達を＿。','在車站等朋友。'],['もう＿。','不等了。'],['十分なら＿。','十分鐘的話可以等。'],['ここで少し＿。','在這裡等一下吧。']],
+'はなす':[['母と電話で＿。','跟媽媽講電話。'],['彼は何も＿。','他什麼都不說。'],['日本語が少し＿。','會說一點日文。'],['後でゆっくり＿。','等一下慢慢聊吧。']],
+'およぐ':[['夏は海で＿。','夏天在海裡游泳。'],['今日はプールで＿。','今天不在泳池游。'],['私は百メートル＿。','我能游一百公尺。'],['一緒に川で＿。','一起在河裡游吧。']],
+'あそぶ':[['子供が公園で＿。','小孩在公園玩。'],['今日は外で＿。','今天不在外面玩。'],['雨でも家で＿。','下雨也能在家玩。'],['週末、一緒に＿。','週末一起玩吧。']],
+'はしる':[['毎朝、公園を＿。','每天早上在公園跑步。'],['廊下を＿でください。','請不要在走廊奔跑。'],['私は速く＿。','我能跑很快。'],['駅まで＿。','跑到車站吧。']],
+'かえる':[['六時に家へ＿。','六點回家。'],['今日は家に＿。','今天不回家。'],['明日なら早く＿。','明天的話能早點回家。'],['そろそろ＿。','差不多該回去了吧。']],
+'つくる':[['毎日、晩ご飯を＿。','每天做晚餐。'],['今日は料理を＿。','今天不做菜。'],['私はケーキが＿。','我會做蛋糕。'],['一緒にカレーを＿。','一起做咖哩吧。']],
+'のる':[['毎朝、電車に＿。','每天早上搭電車。'],['今日はバスに＿。','今天不搭公車。'],['子供も一人で自転車に＿。','小孩也能自己騎腳踏車。'],['タクシーに＿。','搭計程車吧。']],
+'とる':[['旅行で写真を＿。','旅行時拍照。'],['ここでは写真を＿でください。','這裡請不要拍照。'],['このカメラできれいに＿。','用這台相機能拍得很漂亮。'],['みんなで写真を＿。','大家一起拍照吧。']],
+'やすむ':[['日曜日は家で＿。','星期天在家休息。'],['今日は会社を＿。','今天不請假。'],['明日は＿。','明天可以休息。'],['少し＿。','休息一下吧。']],
+'よぶ':[['先生が名前を＿。','老師叫名字。'],['今日は誰も＿。','今天誰都不找。'],['電話で車が＿。','打電話就能叫車。'],['タクシーを＿。','叫計程車吧。']],
+'あるく':[['毎日、駅まで＿。','每天走到車站。'],['今日はあまり＿。','今天不太走路。'],['ここから十分で＿。','從這裡走十分鐘就到。'],['少し＿。','走一走吧。']],
+'はたらく':[['父は銀行で＿。','爸爸在銀行工作。'],['日曜日は＿。','星期天不工作。'],['来年から日本で＿。','明年起能在日本工作。'],['もっと＿。','再多努力工作吧。']],
+'さがす':[['部屋で鍵を＿。','在房間找鑰匙。'],['もう＿。','不找了。'],['ネットで安いホテルが＿。','網路上能找到便宜的飯店。'],['一緒に猫を＿。','一起找貓吧。']],
+'ならう':[['週に一回ピアノを＿。','每週學一次鋼琴。'],['今年は何も＿。','今年什麼都不學。'],['近くで日本語が＿。','附近能學日文。'],['来年、料理を＿。','明年來學做菜吧。']],
+'てつだう':[['母の料理を＿。','幫媽媽做菜。'],['今日は＿。','今天不幫忙。'],['少しなら＿。','一點點的話可以幫忙。'],['私も＿。','我也來幫忙吧。']]};
+function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
+function wSector(c){const r=110,ri=34,rad=x=>(x-90)*Math.PI/180,P=(R,x)=>`${(R*Math.cos(rad(x))).toFixed(2)} ${(R*Math.sin(rad(x))).toFixed(2)}`;return `M${P(ri,c-45)} L${P(r,c-45)} A${r} ${r} 0 0 1 ${P(r,c+45)} L${P(ri,c+45)} A${ri} ${ri} 0 0 0 ${P(ri,c-45)}Z`}
+function wheelSVG(v,teach){const L=WF.map((f,i)=>{const t=wLabel(v,f),c=i*90,x=(73*Math.sin(c*Math.PI/180)).toFixed(1),y=(-73*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1,fs=Math.min(21,70/(stem*.7+t.length-stem)).toFixed(1);
+  return `<text class="wlb" data-i="${i}" x="${x}" y="${teach?(+y-4):(+y+6)}" font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}${teach?`<tspan class="wfm" x="${x}" dy="17">${FORMS[f]}</tspan>`:''}</text>`}).join('');
+ return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-118 -132 236 248"><g class="wrot">${WF.map((f,i)=>`<g class="opt wsec" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><circle class="wcen" r="31"/><text class="wcent" y="7" font-size="${Math.min(20,54/v.k.length).toFixed(1)}">${v.k}</text><path class="wptr" d="M-11 -131 L11 -131 L0 -111Z"/></svg></div>`}
+function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
+  root.querySelectorAll('.wlb').forEach(t=>{const c=+t.dataset.i*90+a,x=73*Math.sin(c*Math.PI/180),y=-73*Math.cos(c*Math.PI/180);t.setAttribute('x',x.toFixed(1));t.setAttribute('y',(y+6).toFixed(1))});
+  root.querySelectorAll('.wsec').forEach((g,i)=>g.classList.toggle('on',i===idx));return idx}
+function wGain(){const st=META.wst||1;META.wok=(META.wok||0)+1;if(META.wok>=8&&st<3){META.wst=st+1;META.wok=0;toast(st===1?'解鎖第二階段：這是什麼段？':'解鎖第三階段：句子填空');}save()}
 const U_OF={};Object.entries(ROW).forEach(([u,r])=>{for(let k=0;k<4;k++)U_OF[r[k]]=u});
 function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice(-2),s2=c.slice(0,-2);
   if(f===2||f===3){if(/っ[てた]$/.test(c))["う","つ","る"].forEach(x=>out.add(c.slice(0,-2)+x));if(/ん[でだ]$/.test(c))["む","ぶ","ぬ"].forEach(x=>out.add(c.slice(0,-2)+x));
@@ -1302,23 +1351,27 @@ function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice
   if(f===5){if(c.endsWith("よう"))out.add(c.slice(0,-2)+"る");const s=c.slice(0,-1);const l=s.slice(-1);if(U_OF[l])out.add(s.slice(0,-1)+U_OF[l]);out.add(s+"る")}
   out.delete(v.d);let arr=shuffle([...out].filter(x=>x&&x.length>1));
   if(arr.length<3)arr=arr.concat(shuffle(VERBS.filter(x=>x.d!==v.d&&x.g===v.g).map(x=>x.d)));return [...new Set(arr)].slice(0,3)}
-function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1&&vb.i%2===0;if(isW&&it.f>3)it.f=Math.floor(Math.random()*4);const {v,f}=it,M=isW?WHEEL:VMODES[(vb.g===1?vb.i>>1:vb.i)%4];vb.done=false;vb.mode=M;
+function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;cancelAnimationFrame(vb.wraf);if(isW){if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];const st=META.wst||1;it.st=st===1||Math.random()<.7?st:1+Math.floor(Math.random()*(st-1));if(it.st===3&&!SENT[it.v.d]){const ks=Object.keys(SENT),kk=ks[Math.floor(Math.random()*ks.length)];it.v=VERBS.find(x=>x.d===kk)}}const {v,f}=it,M=isW?WHEEL:VMODES[vb.i%4];vb.done=false;vb.mode=M;
   document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
-  document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;
+  document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;document.getElementById('v-verb').classList.remove('sent');
   const vEl=document.getElementById('v-verb'),kEl=document.getElementById('v-k'),fEl=document.getElementById('v-form'),box=document.getElementById('v-opts');let opts,cur;
   if(M.id==='yuki'){const c=conj(v.d,v.g,f);vEl.textContent=c;kEl.textContent='這是哪個動詞的變化？';fEl.textContent=FORMS[f];
     cur={ans:v.d};opts=shuffle([v.d,...revCands(v,f)]).map(o=>({o,label:o}))}
   else if(M.id==='fake'){vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent='哪一個變錯了？';
     const forms=shuffle([0,1,2,3,4,5]).slice(0,4),bad=Math.floor(Math.random()*4),wrong=distract(v,forms[bad]).filter(x=>x!==conj(v.d,v.g,forms[bad]))[0];
     cur={ans:String(bad),badForm:forms[bad],wrong};opts=forms.map((ff,k)=>({o:String(k),label:`<small>${FORMS[ff]}</small>${k===bad?wrong:conj(v.d,v.g,ff)}`,small:true}))}
-  else if(M.id==='wheel'){vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent=`停在「${FORMS[f]}」`;cur={ans:String(f)};
-    box.innerHTML=`<div class="wheel wg">${WPOS.map(([ff,pos])=>`<div class="opt wc ${pos}" data-o="${ff}"><span>${conj(v.d,v.g,ff)}</span></div>`).join('')}<div class="wc wc-c"><span>${v.d}</span></div></div><button class="btn main wstop" id="w-stop">停！</button>`;
-    vb.cur=cur;let k=Math.floor(Math.random()*4);const cs=[...box.querySelectorAll('.wc.opt')].sort((a,b)=>['top','rgt','bot','lft'].indexOf(a.classList[2])-['top','rgt','bot','lft'].indexOf(b.classList[2]));
-    const step=()=>{cs.forEach(c=>c.classList.remove('on'));cs[k].classList.add('on');vb.wk=k;try{SFX.click()}catch(e){}k=(k+1)%4};step();
-    vb.spin=setInterval(step,Math.max(300,720-vb.combo*45));
-    document.getElementById('w-stop').onclick=()=>{clearInterval(vb.spin);const c=cs[vb.wk];verbPick(c,c.dataset.o)};
+  else if(M.id==='wheel'){const st=it.st,m=v.m.split(/[（、(]/)[0];cur={ans:String(f)};vEl.classList.toggle('sent',st===3);
+    document.getElementById('v-mname').textContent=`妖怪轉盤・第${['','一','二','三'][META.wst||1]}階段　${META.wok||0}/8`;
+    if(st===3){const [sj,sz]=SENT[v.d][WF.indexOf(f)];vEl.innerHTML=sj.replace('＿','<span class="wblank">　　　</span>');kEl.textContent=sz;fEl.textContent='空格要填哪一個？'}
+    else if(st===2){vEl.textContent=v.k;kEl.textContent=`${v.d}（${m}）`;fEl.textContent=`停在「${WDAN[f]}」`+(f===1&&v.d.endsWith('う')?'（う→わ）':'')}
+    else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=`${FORMS[f]}・${WZH[f]}`}
+    box.innerHTML=wheelSVG(v,false)+`<button class="btn main wstop" id="w-stop">停！</button>`;vb.cur=cur;
+    const root=box.querySelector('.wwrap');let a=-90*Math.floor(Math.random()*4)-20,last=performance.now(),prev=-1;const sp=Math.min(300,130+vb.combo*18+(st-1)*20);
+    const loop=t=>{a+=sp*(t-last)/1000;last=t;const k=wSet(root,a);if(k!==prev){prev=k;try{SFX.click()}catch(e){}}vb.wa=a;vb.wraf=requestAnimationFrame(loop)};vb.wraf=requestAnimationFrame(loop);
+    document.getElementById('w-stop').onclick=()=>{cancelAnimationFrame(vb.wraf);const k=wSet(root,vb.wa),g=root.querySelectorAll('.wsec')[k];verbPick(g,g.dataset.o);
+      if(g.dataset.o!==cur.ans){const ti=WF.indexOf(f),from=vb.wa;let to=-ti*90;while(to<from)to+=360;const t0=performance.now();const an=t=>{const e=Math.min(1,(t-t0)/700),q=1-Math.pow(1-e,3);wSet(root,from+(to-from)*q);if(e<1)vb.wraf=requestAnimationFrame(an)};setTimeout(()=>{vb.wraf=requestAnimationFrame(an)},500)}};
     document.getElementById('v-exp').textContent=M.intro;document.getElementById('v-next').disabled=true;
-    say(v.d);vb.dur=M.sec*1000;vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick();return}
+    if(st!==3)say(v.d);vb.dur=(st===3?18:M.sec)*1000;vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick();return}
   else{vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent=FORMS[f];const right=conj(v.d,v.g,f);cur={ans:right};opts=shuffle([right,...distract(v,f)]).map(o=>({o,label:o}))}
   vb.cur=cur;box.innerHTML=opts.map(x=>`<button class="opt${x.small?' small':''}" data-o="${x.o}">${x.label}</button>`).join('');
   box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>verbPick(b,b.dataset.o));
@@ -1331,10 +1384,10 @@ function explainFor(v,f){const right=conj(v.d,v.g,f);const gname=["","第一類�
   else{const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"，但 いく 是例外":"";rule=[`「${e}」改成い段再接 ます`,`「${e}」改成あ段再接 ない`+(e==="う"?"（う要變わ）":""),`${e} 結尾的て形是「${ROW[e][4]}」${ex}`,`${e} 結尾的た形是「${ROW[e][5]}」${ex}`,`「${e}」改成え段再接 る`,`「${e}」改成お段再接 う`][f]}
   if(v.g===1&&v.d.endsWith("る"))rule+="。長得像る動詞，其實是第一類，陷阱字";
   return `<b>${v.k}</b> 是${gname}：${rule} → <b>${right}</b>`}
-function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin);document.getElementById('w-stop')?.setAttribute('disabled','');cancelAnimationFrame(vb.raf);const {v,f}=vb.q[vb.i],M=vb.mode,cur=vb.cur;
+function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);document.getElementById('w-stop')?.setAttribute('disabled','');cancelAnimationFrame(vb.raf);const {v,f}=vb.q[vb.i],M=vb.mode,cur=vb.cur;
   document.querySelectorAll('#v-opts .opt').forEach(b=>{if(b.dataset.o===cur.ans)b.classList.add(M.id==='fake'?'wrong':'right');else if(b===btn)b.classList.add(M.id==='fake'?'right':'wrong')});
   if(M.id==='fake'&&btn&&ans!==cur.ans)btn.classList.add('wrong');
-  const exp=document.getElementById('v-exp'),ok=ans===cur.ans;
+  const exp=document.getElementById('v-exp'),ok=ans===cur.ans;if(M.id==='wheel'){if(ok)wGain();const it=vb.q[vb.i];if(it.st===3)document.getElementById('v-verb').innerHTML=SENT[v.d][WF.indexOf(f)][0].replace('＿',`<b class="wfill">${wLabel(v,f)}</b>`);say(conj(v.d,1,f))}
   let detail;if(M.id==='fake'){const ff=cur.badForm;detail=`冒牌的是「${cur.wrong}」，${FORMS[ff]}應該是 <b>${conj(v.d,v.g,ff)}</b>。 `+explainFor(v,ff)}
   else if(M.id==='yuki')detail=`「${conj(v.d,v.g,f)}」是 ${v.k}（${v.m}）的${FORMS[f]}，原形是 <b>${v.d}</b>。 `+explainFor(v,f);
   else detail=explainFor(v,f);
@@ -1345,10 +1398,10 @@ function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin)
   say(M.id==='yuki'?v.d:M.id==='fake'?conj(v.d,v.g,cur.badForm):conj(v.d,v.g,f));
   document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;document.getElementById('v-next').disabled=false}
 function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
-function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);go('s-home')}
+function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.15g';
+const APP_VER='2026.11.16';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
