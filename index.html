@@ -700,7 +700,7 @@ function shForest(W,H,b){const svg=document.getElementById('sh-forest');if(!SHF.
   for(const tr of SHF.trees){const s=shT.S(tr.t),x=shT.cx(tr.t,W,b)+tr.side*(shT.hw(tr.t,W)*1.15+W*tr.off*s),y=shT.y(tr.t,H),sc=H*tr.h*s;tr.el.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(sc*.95).toFixed(1)} ${sc.toFixed(1)})`)}
   const now=performance.now()/1000;document.querySelectorAll('#shFlies circle').forEach(c=>{const p=+c.dataset.p;c.setAttribute('cx',(W*(+c.dataset.x)+Math.sin(now*.7+p)*10).toFixed(1));c.setAttribute('cy',(H*(+c.dataset.y)+Math.cos(now*.9+p)*8).toFixed(1));c.setAttribute('opacity',(.3+.35*Math.sin(now*2+p)).toFixed(2))})}
 function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;
-  const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const b=Math.sin(SHF.phase*.55+.8)*.2;shForest(W,H,b);
+  const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const b=0;shForest(W,H,b);
   const ty=.5+.4*SH.py,tt=Math.max(0,ty-.55),tm=Math.min(.88,.02+.44*SH.pu),caught=SH.started&&SH.pu>.1&&tm>=tt-.02;
   const yk=document.getElementById('sh-yk'),yw=W*.42*shT.S(ty);yk.style.width=yw+'px';yk.style.bottom=(H-shT.y(ty,H)-yw*.06)+'px';yk.style.left=shT.cx(ty,W,b)+'px';
   const ys=document.getElementById('shYSh');ys.setAttribute('d',shPoly(W,H,b,ty,tt,.16,.62));const gid=caught?'shYSr':'shYS';const gr=document.getElementById(gid);gr.setAttribute('x1',0);gr.setAttribute('x2',0);gr.setAttribute('y1',shT.y(ty,H));gr.setAttribute('y2',shT.y(tt,H));ys.setAttribute('fill',`url(#${gid})`);
@@ -1260,7 +1260,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12t';
+const APP_VER='2026.11.12u';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
