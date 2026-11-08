@@ -467,8 +467,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wsec.on path{fill:#5a4520;stroke:var(--gold);stroke-width:2}
 .wsec.right path{fill:rgba(79,163,122,.6);stroke:var(--ok)}
 .wsec.wrong path{fill:rgba(216,58,44,.55);stroke:#D83A2C}
-.wlb .wst{font-size:.72em}.wlb{fill:var(--ink);font-weight:700;text-anchor:middle;pointer-events:none}.wlb .wch{fill:#F08A72}
-.wcen{fill:#1a1512;stroke:var(--seal);stroke-width:2.5}.wcent{fill:var(--ink);font-weight:700;text-anchor:middle;font-family:var(--fb)}
+.wlb .wst{font-size:1em}.wlb{fill:var(--ink);font-weight:700;text-anchor:middle;pointer-events:none}.wlb .wch{fill:#F08A72}
+.wcen{fill:#1a1512;stroke:var(--seal);stroke-width:2.5}.wcent{fill:var(--ink);font-weight:700;text-anchor:middle;font-family:var(--fs)}
 .wptr{display:none;fill:var(--gold);stroke:#1a1512;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
 .wteach .wsec path{fill:rgba(255,255,255,.62);stroke:#c9b994}.wteach .wsec:nth-child(2n) path{fill:rgba(244,239,227,.95)}
 .wteach .wlb{fill:#1E1A17}.wteach .wlb .wch{fill:#B8291E}.wteach .wfm{font-size:11px;font-weight:600;fill:#7a6e60}
@@ -482,6 +482,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 #s-verb:has(.wwrap) #v-form{font-size:24px;padding:8px 22px;margin-top:6px}
 #s-verb.wnov #v-k{font-size:17px;margin-top:4px}
 .wczh{fill:var(--dim);text-anchor:middle;font-weight:500}
+.wsvg text{font-family:var(--fs)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1341,7 +1342,7 @@ const SENT={
 'てつだう':[['母の料理を＿。','幫媽媽做菜。'],['今日は＿。','今天不幫忙。'],['少しなら＿。','一點點的話可以幫忙。'],['私も＿。','我也來幫忙吧。']]};
 function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
 function wSector(c){const r=110,ri=46,rad=x=>(x-90)*Math.PI/180,P=(R,x)=>`${(R*Math.cos(rad(x))).toFixed(2)} ${(R*Math.sin(rad(x))).toFixed(2)}`;return `M${P(ri,c-45)} L${P(r,c-45)} A${r} ${r} 0 0 1 ${P(r,c+45)} L${P(ri,c+45)} A${ri} ${ri} 0 0 0 ${P(ri,c-45)}Z`}
-function wheelSVG(v,teach){const stem0=v.k.length-1,wFs=Math.min(21,...WF.map(f=>60/(stem0*.7+wLabel(v,f).length-stem0))).toFixed(1);const L=WF.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(79*Math.sin(c*Math.PI/180)).toFixed(1),y=(-79*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
+function wheelSVG(v,teach){const stem0=v.k.length-1,wFs=Math.min(19,...WF.map(f=>64/wLabel(v,f).length)).toFixed(1);const L=WF.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(79*Math.sin(c*Math.PI/180)).toFixed(1),y=(-79*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
   return `<text class="wlb" data-i="${i}" x="${x}" y="${teach?(+y-4):(+y+6)}" font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}${teach?`<tspan class="wfm" x="${x}" dy="17">${FORMS[f]}</tspan>`:''}</text>`}).join('');
  return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-118 -132 236 248"><g class="wrot">${WF.map((f,i)=>`<g class="opt wsec" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="43"/>${teach?`<text class="wcent" y="8" font-size="${Math.min(24,70/v.k.length).toFixed(1)}">${v.k}</text>`:`<svg class="wsnd" x="-8" y="-36" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg><text class="wcent" y="6" font-size="${Math.min(21,66/v.k.length).toFixed(1)}">${v.k}</text><text class="wczh" y="25" font-size="${Math.min(12,64/((v.m||"").split(/[（、(]/)[0].length||1)).toFixed(1)}">${(v.m||"").split(/[（、(]/)[0]}</text>`}</g><path class="wptr" d="M-11 -131 L11 -131 L0 -111Z"/></svg></div>`}
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
@@ -1408,7 +1409,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.16h';
+const APP_VER='2026.11.16i';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
