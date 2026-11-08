@@ -490,6 +490,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 #s-verb.wst3 #v-form{display:none}#s-verb.wst3 #v-k{font-size:20px;color:var(--ink);margin-top:8px}
 .vrule2{grid-column:1/-1;text-align:center;margin:0 0 14px}.vrule2 h3{margin:4px 0 2px;font-size:20px;color:var(--ink)}.vrule2 .lead{margin:0 0 4px;font-size:13px;color:var(--dim)}.vrule2 .wwrap .wsvg{width:min(86vw,330px);height:auto}.vrule2 .wfm{fill:var(--dim)}
 .wsvg{overflow:visible}
+.wreset{margin:2px auto 0;display:block;font:inherit;font-size:12px;color:var(--dim);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:30px;cursor:pointer}.wreset[data-arm]{color:#F29AB8;border-color:#F29AB8}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1306,7 +1307,7 @@ const vb={q:[],i:0,combo:0,best:0,score:0,t0:0,raf:0,done:false};
 const GNAME=["","第一類（五段）","第二類（る動詞）","第三類（不規則）"];
 const RULE_CARD=(t,b)=>`<div class="gcard rules"><span class="k" style="font-size:18px">${t}</span><span class="m" style="grid-column:1/-1;line-height:1.7">${b}</span></div>`;
 const VERB_RULES={
-1:`<div class="vrule2"><h3>第一類五段動詞轉轉盤</h3><p class="lead">中間是う段，亮起來的是這一關要學的</p>%WHEEL%</div>`,
+1:`<div class="vrule2"><h3>第一類五段動詞轉轉盤</h3><p class="lead">中間是う段，亮起來的是這一關要學的</p><button class="wreset" onclick="wReset(this)">從第1關重練</button>%WHEEL%</div>`,
 2:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第二類（る動詞）</h3><p class="lead">去掉る，接上紅字</p><div class="te-rows"><button class="te-row" data-say="たべる、たべます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ます</b></span></span></button><button class="te-row" data-say="たべる、たべない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>ない</b></span></span></button><button class="te-row" data-say="たべる、たべて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>て</b></span></span></button><button class="te-row" data-say="たべる、たべた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>た</b></span></span></button><button class="te-row" data-say="たべる、たべられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>られる</b></span></span></button><button class="te-row" data-say="たべる、たべよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">食べる</span><span class="ar">→</span><span class="tx">食べ<b>よう</b></span></span></button></div></div>`,
 3:`<div class="vrule"><span class="tap-tip" aria-hidden="true">點就聽</span><h3>第三類（不規則）</h3><p class="lead">する／来る 整個背</p><div class="te-rows"><button class="te-row" data-say="します、きます" style="--d:0"><span class="th"><span class="fl">ます形</span></span><span class="exs"><span class="tx">し<b>ます</b><span class="ar">／</span>き<b>ます</b></span></span></button><button class="te-row" data-say="しない、こない" style="--d:1"><span class="th"><span class="fl">ない形</span></span><span class="exs"><span class="tx">し<b>ない</b><span class="ar">／</span>こ<b>ない</b></span></span></button><button class="te-row" data-say="して、きて" style="--d:2"><span class="th"><span class="fl">て形</span></span><span class="exs"><span class="tx">し<b>て</b><span class="ar">／</span>き<b>て</b></span></span></button><button class="te-row" data-say="した、きた" style="--d:3"><span class="th"><span class="fl">た形</span></span><span class="exs"><span class="tx">し<b>た</b><span class="ar">／</span>き<b>た</b></span></span></button><button class="te-row" data-say="できる、こられる" style="--d:4"><span class="th"><span class="fl">可能形</span></span><span class="exs"><span class="tx"><b>できる</b><span class="ar">／</span>こ<b>られる</b></span></span></button><button class="te-row" data-say="しよう、こよう" style="--d:5"><span class="th"><span class="fl">意向形</span></span><span class="exs"><span class="tx">し<b>よう</b><span class="ar">／</span>こ<b>よう</b></span></span></button></div></div>`};
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
@@ -1367,6 +1368,7 @@ function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rota
   root.querySelectorAll('.wlbs text').forEach(t=>{const c=+t.dataset.i*90+a,x=86*Math.sin(c*Math.PI/180),y=-86*Math.cos(c*Math.PI/180);t.setAttribute('x',(x+(+t.dataset.ox||0)).toFixed(1));t.setAttribute('y',(y+(+t.dataset.oy||0)).toFixed(1))});
   root.querySelectorAll('.wsec').forEach((g,i)=>g.classList.toggle('on',i===idx));return idx}
 function wNeed(){const st=META.wst||1;return st===1?[10,20,40][(META.wlv||1)-1]:40}
+function wReset(b){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='再按一次確認重練';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='從第1關重練'}},3000);return}META.wst=1;META.wlv=1;META.wok=0;save();pendClear('v1');toast('轉盤進度歸零，從第1關開始');startVerb(1)}
 function wGain(){const st=META.wst||1,lv=META.wlv||1;META.wok=(META.wok||0)+1;if(META.wok>=wNeed()){META.wok=0;if(st===1&&lv<3){META.wlv=lv+1;toast(lv===1?'加入新的形：可能形':'加入新的形：意向形')}else if(st<3){META.wst=st+1;toast(st===1?'解鎖第二階段：這是什麼段？':'解鎖第三階段：句子填空')}}save()}
 const U_OF={};Object.entries(ROW).forEach(([u,r])=>{for(let k=0;k<4;k++)U_OF[r[k]]=u});
 function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice(-2),s2=c.slice(0,-2);
@@ -1428,7 +1430,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17n';
+const APP_VER='2026.11.17o';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
