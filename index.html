@@ -494,6 +494,11 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .inkfly{filter:drop-shadow(0 0 6px rgba(255,80,50,.95)) drop-shadow(0 0 16px rgba(255,60,40,.8))}
 .good canvas{filter:drop-shadow(0 0 6px rgba(255,80,50,.95)) drop-shadow(0 0 14px rgba(255,60,40,.7))}
 .sh-text{transition:filter .4s,opacity .4s}.sh-text.fog{filter:blur(8px);opacity:.55;cursor:pointer;-webkit-user-select:none;user-select:none}
+.sh-me{width:96px!important;height:112px!important;background:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible}
+.nk-svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+.nk-bob{animation:nkRun .38s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes nkRun{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-7px) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.nk-bob{animation:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -583,7 +588,63 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
     <div class="sh-stage" id="sh-stage">
     <svg class="sh-forest" id="sh-forest" preserveAspectRatio="none"></svg>
     <img class="sh-yk" id="sh-yk" alt="">
-    <div class="sh-me" id="sh-me"><span>宝</span></div>
+    <div class="sh-me" id="sh-me"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 280" class="nk-svg">
+  <defs>
+    <filter id="nkr" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/>
+    </filter>
+    <radialGradient id="nkb" cx="50%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#FBF7EE"/><stop offset=".7" stop-color="#EDE3CE"/><stop offset="1" stop-color="#D3C6AA"/>
+    </radialGradient>
+    <linearGradient id="nkg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6DA86"/><stop offset=".55" stop-color="#D9A93E"/><stop offset="1" stop-color="#A9781F"/>
+    </linearGradient>
+    <radialGradient id="nkglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFD978" stop-opacity=".6"/><stop offset="1" stop-color="#FFD978" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="120" cy="266" rx="72" ry="11" fill="#000" opacity=".4"/>
+  <g class="nk-bob">
+  <g filter="url(#nkr)" stroke="#1E1A17" stroke-linejoin="round" stroke-linecap="round">
+    <!-- 尾巴：往上捲 -->
+    <path d="M160 236 C200 236 214 200 196 180 C188 172 178 178 184 188 C194 202 184 218 158 220" fill="url(#nkb)" stroke-width="4"/>
+    <path d="M190 182 C198 190 198 200 192 208" fill="none" stroke="#C8402F" stroke-width="5"/>
+    <!-- 腳底（跑步，一腳抬起看到肉球） -->
+    <ellipse cx="94" cy="254" rx="15" ry="11" fill="#F4EFE3" stroke-width="4"/>
+    <ellipse cx="94" cy="256" rx="6" ry="4.5" fill="#E07A6A" stroke="none"/>
+    <circle cx="86" cy="248" r="2.6" fill="#E07A6A" stroke="none"/><circle cx="94" cy="246" r="2.6" fill="#E07A6A" stroke="none"/><circle cx="102" cy="248" r="2.6" fill="#E07A6A" stroke="none"/>
+    <path d="M138 252 C138 240 156 240 156 252Z" fill="#F4EFE3" stroke-width="4"/>
+    <!-- 身體背面 -->
+    <path d="M66 246 C52 210 58 168 84 150 L156 150 C182 168 188 210 174 246 C150 256 90 256 66 246Z" fill="url(#nkb)" stroke-width="4.5"/>
+    <path d="M70 200 C80 186 98 190 98 206 C90 214 76 212 70 200Z" fill="#2A2420" stroke="none"/>
+    <path d="M150 178 C166 184 174 204 168 222 C156 212 148 196 150 178Z" fill="#D9773A" stroke="none" opacity=".9"/>
+    <!-- 背在背上的小判 + 朱紅繩 -->
+    <ellipse cx="120" cy="202" rx="46" ry="34" fill="url(#nkglow)" stroke="none"/>
+    <path d="M78 160 L162 236 M162 160 L78 236" fill="none" stroke="#C8402F" stroke-width="6"/>
+    <ellipse cx="120" cy="200" rx="26" ry="35" fill="url(#nkg)" stroke="#5A3E10" stroke-width="3.5"/>
+    <ellipse cx="120" cy="200" rx="19" ry="27" fill="none" stroke="#8A6214" stroke-width="1.5" stroke-dasharray="2 4"/>
+    <text x="120" y="211" text-anchor="middle" font-family="Yuji Syuku, Noto Serif TC, serif" font-size="28" font-weight="700" fill="#7A1C10" stroke="none">宝</text>
+    <!-- 頭（後腦） -->
+    <path d="M44 104 C44 64 74 46 120 46 C166 46 196 64 196 104 C196 140 164 158 120 158 C76 158 44 140 44 104Z" fill="url(#nkb)" stroke-width="4.5"/>
+    <path d="M60 72 L52 22 L98 50" fill="url(#nkb)" stroke-width="4.5"/>
+    <path d="M180 72 L188 22 L142 50" fill="url(#nkb)" stroke-width="4.5"/>
+    <path d="M134 52 C160 50 182 62 188 82 C166 82 146 70 134 52Z" fill="#D9773A" stroke="none" opacity=".9"/>
+    <path d="M58 70 C68 56 84 50 94 52 C88 66 74 72 58 70Z" fill="#2A2420" stroke="none"/>
+    <!-- 頭帶：後腦打結，帶子往右後飄 -->
+    <path d="M46 92 C80 82 160 82 194 92 L194 106 C160 96 80 96 46 106Z" fill="#C8402F" stroke-width="3.5"/>
+    <path d="M120 92 C132 96 150 104 166 120 C170 126 164 132 158 126 C146 114 132 106 120 100" fill="#C8402F" stroke-width="3"/>
+    <path d="M122 96 C140 92 166 94 182 106 C186 112 180 116 174 112 C160 102 140 100 122 102" fill="#C8402F" stroke-width="3"/>
+    <ellipse cx="120" cy="98" rx="9" ry="8" fill="#B23526" stroke-width="3"/>
+    <!-- 舉起的招手（從背後看，舉在頭的左邊） -->
+    <path d="M62 150 C42 132 30 100 36 74 C48 64 64 68 66 80 C62 102 70 124 82 140" fill="url(#nkb)" stroke-width="4.5"/>
+    <path d="M38 72 C40 66 46 64 50 68 M48 68 C51 63 57 64 59 70" fill="none" stroke-width="2.5"/>
+    <path d="M26 72 L18 66 M24 86 L14 86 M28 98 L20 104" fill="none" stroke="#D9A93E" stroke-width="3"/>
+    <!-- 鬍鬚從臉頰兩側露出 -->
+    <path d="M44 124 L18 120 M44 132 L20 136 M196 124 L222 120 M196 132 L220 136" fill="none" stroke-width="2.5"/>
+  </g>
+  </g>
+</svg></div>
     <div class="sh-pct" id="sh-pct"></div>
   </div>
   <div class="sh-intro" id="sh-intro" hidden>
@@ -1436,7 +1497,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17x';
+const APP_VER='2026.11.17y';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
