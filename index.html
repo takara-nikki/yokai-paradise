@@ -432,6 +432,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 
 #sakura{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .screen{position:relative;z-index:1}
+.g-intro{position:fixed;inset:0;z-index:900}
+.g-intro .sh-kanji{color:var(--k,#9aa4c8)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -455,8 +457,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>最高連擊 <b id="st-combo">0</b></span>
   </div>
   <div class="tiles">
-    <button class="tile stage1" onclick="startBattle()"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
-    <button class="tile stage2" onclick="startLava()"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
+    <button class="tile stage1" onclick="gIntro('startBattle')"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
+    <button class="tile stage2" onclick="gIntro('startLava')"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
     <button class="tile stage3" onclick="startShadow()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">影</span><span class="no">第三關 · 跟讀</span><h2>影踏み</h2><p>聽妖怪唸一句，<br>慢半拍追著唸、踩住牠的影子。</p></button>
     <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞分三類練變身，<br>相撲、變身都在這。</p></button>
     <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
@@ -574,7 +576,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
     <button class="gcard vsel" onclick="startVerb(1)"><span class="k">第一類　五段動詞</span><span class="due">書く・飲む・帰る</span><span class="m">字尾的假名換段，て形最多變化</span></button>
     <button class="gcard vsel" onclick="startVerb(2)"><span class="k">第二類　る動詞</span><span class="due">食べる・見る</span><span class="m">去掉る再接，最簡單</span></button>
     <button class="gcard vsel" onclick="startVerb(3)"><span class="k">第三類　する・来る</span><span class="due">勉強する</span><span class="m">不規則，只能整個背</span></button>
-    <button class="gcard vsel sumo-card" onclick="startSumo()"><span class="k">河童相撲　て形特訓</span><span class="due">飲んで・書いて</span><span class="m">出招把妖怪推出土俵</span></button>
+    <button class="gcard vsel sumo-card" onclick="gIntro('startSumo')"><span class="k">河童相撲　て形特訓</span><span class="due">飲んで・書いて</span><span class="m">出招把妖怪推出土俵</span></button>
   </div>
 </section>
 
@@ -1310,7 +1312,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.15c';
+const APP_VER='2026.11.15d';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1441,5 +1443,19 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){if(documen
   document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelAnimationFrame(raf);else start()});
   start()})();
 
+
+/* 遊戲前說明卡（跟影踏み同樣式） */
+const GINTRO={
+ startBattle:{k:'封',c:'#E06A55',p:['妖怪排隊闖進參道，<br>每一隻都喊著一個單字。','聽清楚發音，寫出平假名，<br>寫對就把牠封印！'],s:['先看一輪單字卡','聽發音，用手指寫平假名'],b:'拿起筆，開始封印'},
+ startLava:{k:'溶',c:'#FF7A3D',p:['洞窟深處岩漿翻滾，<br>片語方塊一塊塊往下掉。','唸對日文就能消掉方塊，<br>別讓它們掉進岩漿！'],s:['先看一輪片語卡','對著方塊唸出日文','唸不出來，點方塊聽提示'],b:'打開麥克風，開始',mic:1},
+ startSumo:{k:'河',c:'#6FB89A',p:['河童擺好架式，<br>要跟你比一場相撲。','選出正確的音變，<br>把牠推出土俵！'],s:['看原形，選對て形','答錯會被推回來'],b:'上土俵'}};
+function gIntro(fn){ac();const g=GINTRO[fn];let el=document.getElementById('g-intro');
+ if(!el){el=document.createElement('div');el.id='g-intro';el.className='sh-intro g-intro';document.body.appendChild(el)}
+ el.innerHTML=`<div class="sh-in"><div class="sh-kanji" style="--k:${g.c}">${g.k}</div>${g.p.map(t=>`<p>${t}</p>`).join('')}<ol>${g.s.map(t=>`<li>${t}</li>`).join('')}</ol>${g.mic?'<p class="sh-micnote">要用麥克風聽你唸，跳出詢問時請按「允許」</p>':''}<div class="actions" style="justify-content:center"><button class="btn sm" id="gi-back">回去</button><button class="btn main" id="gi-go">${g.b}</button></div></div>`;
+ el.hidden=false;const close=()=>{el.hidden=true};
+ el.querySelector('#gi-back').onclick=close;
+ el.querySelector('#gi-go').onclick=()=>{const run=()=>{close();window[fn]()};
+  if(!g.mic||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){run();return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;run()}).catch(()=>{vc.denied=true;run()})}}
 </script>
 </body></html>
