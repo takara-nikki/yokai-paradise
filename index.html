@@ -529,6 +529,13 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .setRow .sw i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#8a7c6c;transition:transform .25s cubic-bezier(.3,1.4,.5,1),background .2s}
 .setRow .sw.r{background:rgba(224,106,85,.35);border-color:rgba(224,106,85,.6)}.setRow .sw.r i{transform:translateX(20px);background:radial-gradient(circle at 35% 30%,#F08A72,#C8402F)}
 .setRow.danger em{font-style:normal;color:var(--dim);font-size:22px}.setRow[data-arm]{border-color:#F29AB8}.setRow[data-arm] b{color:#F29AB8}
+.coach{position:fixed;inset:0;z-index:10040;cursor:pointer}
+.coRing{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,6,5,.62),0 0 0 2px var(--gold),0 0 18px rgba(212,165,74,.6);transition:all .35s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.coTip{position:fixed;padding:12px 14px 10px;border-radius:14px;background:rgba(24,18,15,.96);border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);box-shadow:0 12px 30px rgba(0,0,0,.5);color:var(--ink)}
+.coTip.pop{animation:coPop .35s cubic-bezier(.22,1,.36,1)}@keyframes coPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.coTip p{margin:0 0 8px;font-size:15px;line-height:1.5;text-wrap:balance}
+.coNav{display:flex;justify-content:space-between;align-items:center;gap:10px}.coN{font-size:11.5px;color:var(--dim)}
+.coSkip{font:inherit;font-size:12.5px;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:30px;cursor:pointer}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -999,7 +1006,7 @@ function toggleMute(){META.mute=!META.mute;save();paintMute();const onLava=docum
 function paintMute(){document.querySelectorAll('#muteHome,[data-mute]').forEach(b=>b.innerHTML=`<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><use href="#${META.mute?'i-mute':'i-snd'}"/></svg>`)}
 
 /* ===== 畫面 ===== */
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.body.dataset.scr=id;['s-home','s-box','s-set'].forEach((k,i)=>{const b=document.getElementById(['tabHome','tabBox','tabSet'][i]);if(b)b.classList.toggle('on',k===id)});window.scrollTo({top:0,behavior:'instant'});if(id==='s-home')refreshHome()}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.body.dataset.scr=id;setTimeout(()=>coachFor(id),650);['s-home','s-box','s-set'].forEach((k,i)=>{const b=document.getElementById(['tabHome','tabBox','tabSet'][i]);if(b)b.classList.toggle('on',k===id)});window.scrollTo({top:0,behavior:'instant'});if(id==='s-home')refreshHome()}
 function refreshHome(){document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;document.getElementById('st-due').textContent=dueCount();document.getElementById('st-combo').textContent=META.best;
   const g=Object.values(SRS).filter(r=>r.wrong>0).length;document.getElementById('grave-sub').textContent=g?`帳上記著 ${g} 隻，${dueCount()} 隻今天復活。`:'封印失敗的妖怪會記在這裡。'}
 let toastT;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1600)}
@@ -1168,7 +1175,7 @@ function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
   const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?YOKAI[4]:YOKAI[Math.floor(Math.random()*4)];
   const el=document.getElementById('yokai');el.className='yokai hop'+(y.boss?' boss':'');el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
-  document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.i+1} / ${battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
+  document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.trace?1:battle.i+1} / ${battle.trace?1:battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
   document.getElementById('p-mean').textContent=w.m;document.getElementById('p-hint').innerHTML='';
   const fb=document.getElementById('fb');fb.className='feedback';fb.textContent=battle.trace?`描字練習：照著淡淡的字描，描錯不扣命`:`${y.n}が来た！聽發音，寫 ${w.k.length} 個平假名`;
   newBox(w.k[0]);if(battle.trace)battle.box.querySelector('.ghost').hidden=false;renderSlots();updStroke();
@@ -1221,7 +1228,7 @@ function miss(reason){clearTimeout(battle.autoT);if(battle.locked||battle.shooti
   fb.className='feedback no';fb.innerHTML=`${reason}。${battle.y.n}逃走了，答案是 <span class="ans">${w.k}</span>`;box.querySelector('.ghost').hidden=false;say(w.k);mark(wKey(w),false);if(!battle.fled.includes(w))battle.fled.push(w);requeue(w);setTimeout(advance,2300)}
 function requeue(w){if(battle.trace)return;battle.failed.add(w);const t=battle.reTimes.get(w)||0;if(t>=2||battle.hp<=0)return;battle.reTimes.set(w,t+1);
   const pos=Math.min(battle.list.length,battle.i+3);battle.list.splice(pos,0,w);toast(`「${w.m}」等一下會再出現`)}
-function advance(){battle.i++;if(battle.trace&&battle.i>=battle.list.length){toast('描字完成，正式封印！');setTimeout(()=>{if(document.getElementById('s-battle').classList.contains('on'))beginBattle(shuffle(battle.list),false)},1200);return}
+function advance(){battle.i++;if(battle.trace&&battle.i>=1){toast('描字完成，正式封印！');setTimeout(()=>{if(document.getElementById('s-battle').classList.contains('on'))beginBattle(shuffle(battle.list),false)},1200);return}
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
 function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.autoT);battle.locked=true;battle.shooting=false;go('s-home')}
 document.addEventListener('click',e=>{const b=e.target.closest('#r-list .say,#g-list .say');if(b){ac();say(b.dataset.say)}});
@@ -1549,7 +1556,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18';
+const APP_VER='2026.11.18b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1722,6 +1729,7 @@ function renderSet(){document.getElementById('setList').innerHTML=
   setRow('聲音','語音朗讀和所有音效',!META.mute,'toggleMute();renderSet()')+
   setRow('按鍵與特效音效','只關掉音效，保留日文語音',!META.sfxOff,'META.sfxOff=!META.sfxOff;save();renderSet()')+
   setRow('漢字讀音','預設在漢字上方顯示讀音',META.ruby!==false,"META.ruby=!(META.ruby!==false);META.shRuby=META.ruby;save();renderSet()")+
+  setRow('重新顯示按鍵說明','下次進關卡會再出現小框框介紹',false,"META.coach={};save();toast('下次進關卡會再介紹一次');renderSet()")+
   setBtn('轉轉盤從第1關重練','只清轉盤進度，其他紀錄保留',"setArm(this,()=>{META.wst=1;META.wlv=1;META.wok=0;pendClear('v1');save();toast('轉盤進度歸零')})",'setWheel')+
   setBtn('清除全部紀錄','封印、寶物、進度全部歸零，無法復原',"setArm(this,()=>{try{localStorage.removeItem('fu_srs');localStorage.removeItem('fu_meta')}catch(e){}location.reload()})",'setAll');
   document.getElementById('setVer').textContent='版本 '+APP_VER}
@@ -1729,5 +1737,29 @@ function setArm(b,fn){if(!b.dataset.arm){b.dataset.arm=1;const t=b.querySelector
 function tabGo(id){ac();if(id==='s-box')renderBox();if(id==='s-set')renderSet();go(id)}
 document.body.dataset.scr='s-home';document.getElementById('tabHome').classList.add('on');try{achCheck()}catch(e){}
 (()=>{const sp=document.getElementById('splash');if(!sp)return;setTimeout(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),760)},2000)})();
+
+/* ===== 第一次進關：小框框介紹按鍵 ===== */
+const COACH={
+ 's-study':[['#st-mode','輪播會自動一張張唸；自讀自己慢慢看'],['#st-ruby','漢字上方的讀音，可以開或關'],['#s-study .btn.main','背好了按這裡開始挑戰']],
+ 's-battle':[['#s-battle .say','再聽一次發音'],['#boxes','在格子裡用手指寫平假名'],['#s-battle [onclick="peek()"]','想不起來？偷看一下（天機）'],['#sealBtn','寫完按這裡判定'],['#s-battle [data-mute]','聲音開關']],
+ 's-lava':[['#arena','方塊會往下掉，唸出上面的日文就消掉'],['#mic','麥克風在聽你唸，亮起來代表收音中'],['#l-pause','需要喘口氣就暫停']],
+ 's-shadow':[['#sh-rt','漢字讀音開關'],['#sh-listen','先聽妖怪唸一次'],['#sh-go','按下去，慢半拍跟著唸，踩住影子']],
+ 's-verb':[['#v-form','題目：要停在哪一個形'],['#v-opts .wcbtn','點中間聽原形的發音'],['#v-next','亮到對的那格時按「停」']]};
+function coachFor(id){const st=COACH[id];if(!st)return;if(id==='s-verb'&&!document.querySelector('#v-opts .wwrap'))return;META.coach=META.coach||{};if(META.coach[id])return;
+  let tries=0;const wait=()=>{if(!document.getElementById(id).classList.contains('on'))return;const blocked=document.getElementById('splash')||[...document.querySelectorAll('#g-intro,#sh-intro')].some(e=>!e.hidden)||document.querySelector('.coach');
+    if(blocked){if(++tries<60)setTimeout(wait,400);return}coachRun(id,st)};wait()}
+function coachRun(id,steps){let k=0;const ov=document.createElement('div');ov.className='coach';ov.innerHTML='<div class="coRing"></div><div class="coTip"><p></p><div class="coNav"><button class="coSkip">略過</button><span class="coN"></span></div></div>';document.body.appendChild(ov);
+  const ring=ov.querySelector('.coRing'),tip=ov.querySelector('.coTip');const lvP=id==='s-lava'&&typeof lv!=='undefined'&&!lv.paused&&!lv.over;if(lvP){pauseLava();document.getElementById('arena').style.filter=''}
+  const done=()=>{META.coach[id]=1;save();ov.remove();if(lvP&&lv.paused)pauseLava()};
+  const show=()=>{while(k<steps.length){const el=document.querySelector(steps[k][0]);const r=el&&el.getBoundingClientRect();if(r&&r.width>0&&r.height>0)break;k++}
+    if(k>=steps.length){done();return}
+    const el=document.querySelector(steps[k][0]),r=el.getBoundingClientRect(),pad=6;
+    Object.assign(ring.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
+    tip.querySelector('p').textContent=steps[k][1];tip.querySelector('.coN').textContent=`${k+1} / ${steps.length}　點一下繼續`;
+    const below=r.top+r.height/2<innerHeight/2,tw=Math.min(innerWidth-32,300);tip.style.width=tw+'px';
+    tip.style.left=Math.max(16,Math.min(innerWidth-16-tw,r.left+r.width/2-tw/2))+'px';
+    if(below){tip.style.top=(r.bottom+pad+12)+'px';tip.style.bottom='auto'}else{tip.style.bottom=(innerHeight-r.top+pad+12)+'px';tip.style.top='auto'}
+    tip.classList.toggle('up',!below);tip.classList.remove('pop');void tip.offsetWidth;tip.classList.add('pop')};
+  ov.onclick=e=>{if(e.target.closest('.coSkip')){done();return}k++;show()};show()}
 </script>
 </body></html>
