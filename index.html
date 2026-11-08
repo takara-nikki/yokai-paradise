@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="タカラ妖怪天国"><meta name="theme-color" content="#161311"><meta name="description" content="Yokai Paradise — タカラ妖怪天国：N4 日文練習遊戲"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#161311}img{max-width:100%}[hidden]{display:none!important}html,body{overscroll-behavior:none}</style></head><body><title>タカラ妖怪天国</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="タカラ妖怪天国"><meta name="theme-color" content="#161311"><meta name="description" content="Yokai Paradise — タカラ妖怪天国：N4 日文練習遊戲"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><style>:root{padding-top:env(safe-area-inset-top,0px);background:#161311}img{max-width:100%}[hidden]{display:none!important}html,body{overscroll-behavior:none}</style></head><body><title>タカラ妖怪天国</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;700&family=Yuji+Syuku&family=Cinzel:wght@500;600&display=swap">
 <style>
@@ -30,7 +30,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .screen{display:none;min-height:100%;max-width:520px;margin:0 auto;padding-block:14px 60px}
 .screen.on{display:block;animation:slide .52s var(--ease)}
 @keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
-.focus{box-sizing:border-box;padding-bottom:max(12px,env(safe-area-inset-bottom,0px));height:calc(100vh - env(safe-area-inset-top,0px));height:calc(100svh - env(safe-area-inset-top,0px));flex-direction:column;overflow:hidden}
+.focus{box-sizing:border-box;padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 16px));height:calc(100vh - env(safe-area-inset-top,0px));height:calc(100svh - env(safe-area-inset-top,0px));flex-direction:column;overflow:hidden}
 .screen.focus.on{display:flex}
 /* 頂部名片 */
 .card-top{display:grid;grid-template-columns:62px 1fr auto;gap:4px 14px;align-items:center;margin-bottom:18px}
@@ -455,7 +455,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wg .wc.right{transform:scale(1.04)}
 .wg .wc-c{color:var(--ink);border-color:var(--seal);font-family:var(--fs);font-size:17px}
 .wstop{grid-column:1/-1;min-height:54px;font-size:22px}
-#s-vsel.on{display:flex;flex-direction:column;min-height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));box-sizing:border-box;padding-bottom:max(18px,env(safe-area-inset-bottom,0px))}
+#s-vsel.on{display:flex;flex-direction:column;min-height:calc(100svh - env(safe-area-inset-top,0px));box-sizing:border-box;padding-bottom:max(12px,calc(env(safe-area-inset-bottom,0px) - 12px))}
 #s-vsel .list{flex:1;display:flex;flex-direction:column}
 #s-vsel .vsel{flex:1;position:relative;overflow:hidden;min-height:96px}
 #s-vsel .vsel .wm{position:absolute;right:-6px;bottom:-22px;font-family:var(--fb);font-size:120px;line-height:1;color:var(--accent);opacity:.09;pointer-events:none}
@@ -1430,7 +1430,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17o';
+const APP_VER='2026.11.17p';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
