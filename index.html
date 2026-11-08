@@ -752,6 +752,7 @@ const SFX={
   sizzle(){noise(.7,3000,'highpass',.12);tone('sine',140,60,.5,.07)},
   pick(){if(playS('tap',.6))return;tone('triangle',660,700,.07,.08)},
   /* 以下沒有素材檔，用合成音做 */
+  wtick(){tone('triangle',1320,1240,.07,.2);noise(.03,3800,'highpass',.16)},
   click(){noise(.035,2600,'bandpass',.22);tone('triangle',1150,880,.045,.06)},
   toggle(on){tone('square',on?520:420,on?780:300,.06,.05,2400);setTimeout(()=>noise(.03,3200,'bandpass',.15),40)},
   taiko(v=.5){tone('sine',120,48,.55,v);noise(.09,380,'lowpass',v*.7)},
@@ -1398,9 +1399,9 @@ function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;canc
     else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=`${FORMS[f]}・${WZH[f]}`}
     box.innerHTML=wheelSVG(v,false,null,st===1,shuffle([...WF]));vb.cur=cur;
     const root=box.querySelector('.wwrap'),secs=root.querySelectorAll('.wsec');wSet(root,0);let k=Math.floor(Math.random()*4);
-    const hop=()=>{secs.forEach((g,n)=>g.classList.toggle('on',n===k));secs[k].parentNode.appendChild(secs[k]);vb.wk=k;try{SFX.click()}catch(e){}k=(k+1)%4};hop();
+    const hop=()=>{secs.forEach((g,n)=>g.classList.toggle('on',n===k));secs[k].parentNode.appendChild(secs[k]);vb.wk=k;try{SFX.wtick()}catch(e){}k=(k+1)%4};hop();
     vb.spin=setInterval(hop,Math.max(320,780-vb.combo*35-(st-1)*40));
-    root.querySelector('.wcbtn').onclick=()=>{ac();say(v.d)};const sb=document.getElementById('v-next');sb.textContent='停！';sb.onclick=()=>{clearInterval(vb.spin);const g=secs[vb.wk];sb.onclick=verbNext;sb.textContent='次へ（下一題）';verbPick(g,g.dataset.o)};
+    root.querySelector('.wcbtn').onclick=()=>{ac();say(v.d)};const sb=document.getElementById('v-next');sb.textContent='停！';sb.onclick=()=>{clearInterval(vb.spin);ac();try{SFX.taiko(.6)}catch(e){}const g=secs[vb.wk];sb.onclick=verbNext;sb.textContent='次へ（下一題）';verbPick(g,g.dataset.o)};
     document.getElementById('v-exp').textContent=M.intro;sb.disabled=false;
     if(st!==3)say(v.d);vb.dur=(st===3?18:M.sec)*1000;vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick();return}
   else{vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent=FORMS[f];const right=conj(v.d,v.g,f);cur={ans:right};opts=shuffle([right,...distract(v,f)]).map(o=>({o,label:o}))}
@@ -1432,7 +1433,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17s';
+const APP_VER='2026.11.17t';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
