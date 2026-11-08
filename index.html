@@ -1063,11 +1063,11 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11g';
+const APP_VER='2026.11.11h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
-const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
+const SUMO_FOES=[YOKAI[0],YOKAI[1],{n:'河童大關',img:'img/kappa.webp',wave:'square',f:[180,140,160],vib:9,cut:900,len:.9,boss:true,taunt:'河童把盤子裡的水都笑灑了'}];
 const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=10;
 const isK=c=>/[\u3400-\u9fff々]/.test(c);
 function rb(k,r){let a=0,b=0;while(a<k.length&&a<r.length&&!isK(k[a])&&k[a]===r[a])a++;while(b<k.length-a&&b<r.length-a&&!isK(k[k.length-1-b])&&k[k.length-1-b]===r[r.length-1-b])b++;const mid=k.slice(a,k.length-b),rm=r.slice(a,r.length-b);if(!mid||!rm||!/[\u3400-\u9fff]/.test(mid))return k;return k.slice(0,a)+`<ruby>${mid}<rt>${rm}</rt></ruby>`+k.slice(k.length-b)}
