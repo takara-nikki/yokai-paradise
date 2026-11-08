@@ -77,6 +77,13 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .yokai{position:absolute;bottom:0;left:0;width:112px;height:112px}
 .yokai.boss{width:142px;height:142px}
 .yokai.boss .yname{top:4px;left:calc(100% + 2px);color:#E06A55;font-weight:700}
+.boss-dim{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(60% 70% at 70% 55%,rgba(0,0,0,.15),rgba(0,0,0,.7));animation:bossDim .4s ease-out both}
+@keyframes bossDim{from{opacity:0}to{opacity:1}}
+.boss-ban{position:absolute;left:-6%;right:-6%;top:38%;z-index:8;pointer-events:none;display:flex;align-items:baseline;justify-content:center;gap:10px;padding:8px 0 6px;background:linear-gradient(90deg,transparent,rgba(184,41,30,.92) 12%,rgba(200,64,47,.95) 50%,rgba(184,41,30,.92) 88%,transparent);box-shadow:0 0 0 1px rgba(212,165,74,.5),0 10px 30px rgba(0,0,0,.6);color:#fff;white-space:nowrap}
+.boss-ban small{font-size:13px;letter-spacing:.2em;color:#F6D9A0}
+.boss-ban b{font-family:var(--fb);font-weight:400;font-size:34px;letter-spacing:.06em;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.boss-ban span{font-family:var(--fb);font-size:22px;color:#F6D9A0}
+.fighter{z-index:4}
 .fighter.foe.boss{width:48%;max-width:250px;bottom:calc(7% + 9%)}
 .fighter.foe.boss img{animation-name:foeFloatB}
 @keyframes foeFloatB{0%,100%{translate:0 0;rotate:-1.5deg}50%{translate:0 -5%;rotate:1.5deg}}
@@ -1063,7 +1070,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11h';
+const APP_VER='2026.11.11j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1087,7 +1094,22 @@ function smPlace(){const ring=document.getElementById('ring').clientWidth,step=r
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
 function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
-  requestAnimationFrame(smPlace);cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
+  requestAnimationFrame(smPlace);if(y.boss&&!FX.reduce){smBossIntro(y);return}cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
+/* 大魔王進場：場內暗下、橫幅「見参」劃過、從天而降水花四濺、重震 */
+function smBossIntro(y){SM.lock=true;const ring=document.getElementById('ring'),foe=document.getElementById('sm-foe'),img=document.getElementById('sm-foe-img');document.getElementById('sm-moves').innerHTML='';
+  const dim=document.createElement('div');dim.className='boss-dim';ring.appendChild(dim);
+  const ban=document.createElement('div');ban.className='boss-ban';ban.innerHTML=`<small>大魔王</small><b>${y.n}</b><span>見参</span>`;ring.appendChild(ban);
+  img.style.visibility='hidden';SFX.back();
+  ban.animate([{transform:'translateX(110%) skewX(-12deg)',opacity:0},{transform:'translateX(0) skewX(-12deg)',opacity:1,offset:.25},{transform:'translateX(-3%) skewX(-12deg)',opacity:1,offset:.8},{transform:'translateX(-120%) skewX(-12deg)',opacity:0}],{duration:1500,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
+  setTimeout(()=>{SFX.seal();FX.buzz([20,30,20])},250);
+  setTimeout(()=>{img.style.visibility='';img.animate([{transform:'translateY(-140%) scale(.8)',filter:'brightness(3)'},{transform:'translateY(4%) scale(1.08,.9)',filter:'brightness(1.4)',offset:.55},{transform:'translateY(-6%) scale(.97,1.03)',offset:.75},{transform:'none',filter:'none'}],{duration:620,easing:'cubic-bezier(.5,0,.7,.4)'});
+    setTimeout(()=>{cry(y);SFX.hit();const r=foe.getBoundingClientRect();const x=r.left+r.width/2,yy=r.bottom-8;
+      FX.burst(x,yy,{n:46,w:r.width*.8,speed:7,up:4,g:.3,size:5,life:50,cols:['#BFE3F0','#7FB8D0','#F4EFE3','#4E8FAE','#ffffff']});
+      FX.burst(x,yy,{n:14,w:r.width,speed:3,up:1,g:.05,size:10,life:60,kind:2,cols:['rgba(190,227,240,.5)','rgba(127,184,208,.45)']});
+      FX.shake(ring,12,420);FX.shake(document.getElementById('s-sumo'),6,420);FX.buzz([60,40,90]);
+      FX.stamp('大関',{cls:'big',top:'34%',sound:false})},340)},900);
+  setTimeout(()=>{dim.animate([{opacity:1},{opacity:0}],{duration:500}).onfinish=()=>dim.remove();ban.remove();smCall('はっけよい！',900)},2200);
+  setTimeout(smNext,3000)}
 function smNext(){if(!SM.q.length)SM.q=shuffle(SM.deck.slice());let v=SM.q.shift();if(SM.verb&&v===SM.verb&&SM.q.length){SM.q.push(v);v=SM.q.shift()}
   const f=2;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
   document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
