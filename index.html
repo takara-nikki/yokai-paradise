@@ -1298,7 +1298,7 @@ const REPEAT=3;
 function buildQueue(list){let q=[],uid=0;for(let r=0;r<REPEAT;r++){let part=shuffle(list);if(q.length&&part[0]===q[q.length-1].p&&part.length>1)part.push(part.shift());part.forEach(p=>q.push({p,uid:uid++}))}return q}
 function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,ease:1,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
   go('s-lava');const ar=document.getElementById('arena');ar.querySelectorAll('.blk').forEach(b=>b.remove());
-  lavaStart();ar.style.flex='';ar.style.height='';requestAnimationFrame(()=>{lv.H=ar.clientHeight;ar.style.flex='0 0 auto';ar.style.height=lv.H+'px';lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
+  lavaStart();ar.style.flex='';ar.style.height='';requestAnimationFrame(()=>{lv.H=ar.clientHeight;ar.style.flex='0 0 auto';ar.style.height=lv.H+'px';lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30)*(META.lavaSkill||1);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
   const pre='';
   if(voiceStart()){fb.textContent=pre+'唸出日文，方塊就消掉';setTimeout(()=>{if(vc.on)lavaVol(.1)},1400)}else fb.textContent=pre+'唸出日文後點一下方塊'}
@@ -1328,7 +1328,7 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
     const mateWaiting=lv.bag.length&&lv.blocks.some(b=>b.alive&&b.uid===lv.bag[0].uid);
     if((lv.bag.length||lv.queue.length)&&alive<7&&(lv.spawnAcc>=gap||alive<2||(mateWaiting&&lv.spawnAcc>=.35))){if(spawnOne())lv.spawnAcc=0}
     const order=lv.blocks.filter(b=>b.alive).sort((p,q)=>q.y-p.y);
-    for(const b of order){if(!b.alive)continue;let ny=b.y+lv.speed*b.v*dt*(lv.ease??1);
+    for(const b of order){if(!b.alive)continue;let ny=b.y+lv.speed*b.v*dt*(lv.ease??1)*(1+.45*Math.min(1,lv.done/Math.max(1,lv.total)));
       const below=order.filter(x=>x.alive&&x!==b&&x.lane===b.lane&&x.y>b.y);if(below.length){const nb=below.reduce((m,x)=>x.y<m.y?x:m);const lim=nb.y-b.el.offsetHeight-8;if(ny>lim)ny=Math.max(b.y,lim)}
       b.y=ny;b.el.style.transform=`translateY(${b.y}px)`;if(b.y+b.el.offsetHeight>=lv.lavaY)burn(b)}
     lv.blocks=lv.blocks.filter(b=>b.alive);
@@ -1409,7 +1409,7 @@ function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=docume
 function pauseLava(){if(lv.over)return;lv.paused=!lv.paused;document.getElementById('l-pause').textContent=lv.paused?'再開（繼續）':'待って（暫停）';document.getElementById('arena').style.filter=lv.paused?'blur(6px)':'';lavaVol(lv.paused?.05:(vc.on?.1:.22));if(lv.paused){try{vc.rec&&vc.rec.abort()}catch(e){}}else{lv.last=performance.now();if(vc.on)listen()}}
 function leaveLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();document.getElementById('arena').style.filter='';go('s-home')}
 function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.raf);voiceStop();toast('練習完成，正式開始！');setTimeout(()=>{if(document.getElementById('s-lava').classList.contains('on'))beginLava(shuffle(lv.list),false)},1300);return}endLava()}
-function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');const dead=lv.hp<=0;if(!dead)META.lavaWin=(META.lavaWin||0)+1;save();
+function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');const dead=lv.hp<=0;{const burn=lv.missed.length,acc=lv.total?1-burn/lv.total:1;let k=META.lavaSkill||1;k+=acc>=.95?.08:acc>=.85?.04:acc<.6?-.1:acc<.75?-.05:0;META.lavaSkill=Math.round(Math.max(.75,Math.min(1.8,k))*100)/100}if(!dead)META.lavaWin=(META.lavaWin||0)+1;save();
   showResult({win:!dead,big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
@@ -1563,7 +1563,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18j';
+const APP_VER='2026.11.18k';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
