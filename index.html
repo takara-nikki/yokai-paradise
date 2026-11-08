@@ -132,6 +132,11 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
 .blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
+#fx{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
+.fx-flash{position:fixed;inset:0;pointer-events:none;z-index:59}
+.fx-stamp{position:fixed;left:50%;top:38%;z-index:61;pointer-events:none;font-family:"Yuji Syuku",serif;font-size:52px;line-height:1.1;color:#E06A55;border:4px double #E06A55;border-radius:12px;padding:6px 18px 2px;background:rgba(22,19,17,.6);text-shadow:0 2px 0 rgba(0,0,0,.45);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.fx-stamp.combo{color:#E7C47A;border-color:#D4A54A;font-size:46px}
+.fx-stamp.big{font-size:68px}
 .tgl{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 10px}
 .tgl .lb{background:none;border:0;padding:6px 2px;min-height:40px;font:inherit;font-size:15px;color:var(--dim);transition:color .25s}
 .tgl .lb.on{color:var(--ink);font-weight:700}
@@ -712,16 +717,17 @@ function hitChar(){if(battle.locked||battle.shooting)return;const w=battle.word,
     const z=document.getElementById('yokai').getBoundingClientRect(),sc=.32,tw=r.width*sc;
     const ex=z.left+z.width/2-r.width/2,ey=z.top+z.height*.4-r.height/2;
     const done=()=>{img.remove();SFX.hit();const y=document.getElementById('yokai');y.classList.remove('hit');void y.offsetWidth;y.classList.add('hit');battle.shooting=false;
-      if(final){battle.locked=true;cancelAnimationFrame(battle.raf);y.classList.remove('hop');setTimeout(()=>{y.classList.add('sealed');SFX.seal()},180);
-        if(!battle.trace){battle.okSet.add(w);battle.combo++;battle.best=Math.max(battle.best,battle.combo);battle.sealed++;META.sealed++;if(battle.combo>META.best)META.best=battle.combo;mark(wKey(w),true)}
+      FX.at(y,{n:final?40:24,speed:final?7:5});FX.shake(document.querySelector('#s-battle .stage'),final?9:5);FX.buzz(final?[30,40,60]:25);if(!FX.reduce){y.animate([{filter:'brightness(3) saturate(0)',translate:'0 0'},{filter:'brightness(1)',translate:'16px -6px',offset:.35},{translate:'0 0'}],{duration:final?700:360,easing:'ease-out'})}
+      if(final){battle.locked=true;cancelAnimationFrame(battle.raf);y.classList.remove('hop');setTimeout(()=>{y.classList.add('sealed');FX.stamp('封印',{cls:'big',top:'28%'})},final&&!FX.reduce?420:180);
+        if(!battle.trace){battle.okSet.add(w);battle.combo++;setTimeout(()=>FX.combo(battle.combo),1100);battle.best=Math.max(battle.best,battle.combo);battle.sealed++;META.sealed++;if(battle.combo>META.best)META.best=battle.combo;mark(wKey(w),true)}
         fb.className='feedback ok';fb.innerHTML=`やった！${battle.y.n}封印 <span class="ans">${w.k}</span>${battle.combo>1?`　連擊 ×${battle.combo}`:''}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;updStroke();setTimeout(advance,1500)}
       else{setTimeout(()=>y.classList.remove('hit'),460);battle.t0=Math.min(performance.now(),battle.t0+battle.dur*.16);fb.textContent=`「${ch}」命中！`;updStroke()}};
     if(reduce){done();return}
-    img.animate([{transform:`translate(${r.left}px,${r.top}px) scale(1)`},{transform:`translate(${r.left}px,${r.top-24}px) scale(1.04)`,offset:.18},{transform:`translate(${(r.left+ex)/2}px,${Math.min(r.top,ey)-70}px) scale(.6) rotate(-18deg)`,offset:.6},{transform:`translate(${ex}px,${ey}px) scale(${sc}) rotate(-40deg)`}],{duration:620,easing:'cubic-bezier(0.55,0,0.7,0.2)'}).onfinish=done;
+    img.animate([{transform:`translate(${r.left}px,${r.top}px) scale(1)`},{transform:`translate(${r.left}px,${r.top-24}px) scale(1.04)`,offset:.18},{transform:`translate(${(r.left+ex)/2}px,${Math.min(r.top,ey)-70}px) scale(.6) rotate(-18deg)`,offset:.6},{transform:`translate(${ex}px,${ey}px) scale(${sc}) rotate(-40deg)`}],{duration:620,easing:'cubic-bezier(0.55,0,0.7,0.2)'}).onfinish=done;FX.trail(img,620);
   },reduce?0:220)}
 function miss(reason){clearTimeout(battle.autoT);if(battle.locked||battle.shooting)return;const w=battle.word,box=battle.box,fb=document.getElementById('fb');
   if(battle.trace){box.classList.add('bad');SFX.wrong();fb.className='feedback no';fb.textContent=`${reason}。照著淡字再描一次`;setTimeout(()=>{clearBox(box);updStroke()},650);return}
-  battle.charTries++;battle.combo=0;document.getElementById('b-combo').textContent='連擊 0';box.classList.add('bad');renderSlots(true);
+  battle.charTries++;battle.combo=0;document.getElementById('b-combo').textContent='連擊 0';box.classList.add('bad');renderSlots(true);FX.flash();FX.shake(box,7);FX.buzz(70);
   if(battle.charTries===1){battle.hp--;document.getElementById('hp').innerHTML=hearts(battle.hp);SFX.back();fb.className='feedback no';fb.textContent=`符咒反噬！${reason}。${battle.y.taunt}，重寫這個字。`;document.getElementById('p-hint').innerHTML=`漢字：<b>${w.j}</b>${w.orig&&PUN[w.k]?`　諧音：<b>${PUN[w.k][0]}</b>`:''}`;
     document.querySelector('.stage').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300});
     setTimeout(()=>{clearBox(box);updStroke()},650);if(battle.hp<=0){battle.locked=true;cancelAnimationFrame(battle.raf);mark(wKey(w),false);if(!battle.fled.includes(w))battle.fled.push(w);battle.failed.add(w);setTimeout(advance,1200)}return}
@@ -733,9 +739,42 @@ function advance(){battle.i++;if(battle.trace&&battle.i>=battle.list.length){toa
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
 function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.autoT);battle.locked=true;battle.shooting=false;go('s-home')}
 document.addEventListener('click',e=>{const b=e.target.closest('#r-list .say,#g-list .say');if(b){ac();say(b.dataset.say)}});
+
+/* ===== 遊戲特效：墨花粒子、震動、印章字卡、數字滾動 ===== */
+const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let cv,cx,parts=[],raf=0;
+  function size(){const d=Math.min(2,devicePixelRatio||1);cv.width=innerWidth*d;cv.height=innerHeight*d;cx=cv.getContext('2d');cx.setTransform(d,0,0,d,0,0)}
+  function ensure(){if(cv)return;cv=document.createElement('canvas');cv.id='fx';document.body.appendChild(cv);size();addEventListener('resize',size)}
+  function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.t<p.life);
+    for(const p of parts){p.t++;p.vy+=p.g;p.vx*=.96;p.vy*=.99;p.x+=p.vx;p.y+=p.vy;const a=1-p.t/p.life;cx.globalAlpha=Math.max(0,a);cx.fillStyle=p.c;
+      if(p.k===0){cx.beginPath();cx.arc(p.x,p.y,p.r*(.5+.5*a),0,6.3);cx.fill()}
+      else if(p.k===1){cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot+=p.vr);cx.fillRect(-p.r,-p.r*.4,p.r*2,p.r*.8);cx.restore()}
+      else{cx.beginPath();cx.arc(p.x,p.y,p.r*(1.6-a),0,6.3);cx.fill()}}
+    cx.globalAlpha=1;raf=parts.length?requestAnimationFrame(loop):0}
+  function burst(x,y,o={}){if(reduce)return;ensure();const n=o.n||22,cols=o.cols||['#1E1A17','#D4A54A','#E06A55','#F4EFE3','#D4A54A'];
+    for(let i=0;i<n;i++){const a=o.dir!=null?o.dir+(Math.random()-.5)*(o.spread||1.2):Math.random()*6.283,sp=(o.speed||5)*(.35+Math.random());
+      parts.push({x:x+(Math.random()-.5)*(o.w||0),y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(o.up||1.5),g:o.g??.2,r:(o.size||4)*(.5+Math.random()),c:cols[i%cols.length],k:o.kind??(Math.random()<.55?0:1),rot:Math.random()*6,vr:(Math.random()-.5)*.4,t:0,life:(o.life||40)*(.7+Math.random()*.6)})}
+    if(!raf)raf=requestAnimationFrame(loop)}
+  function at(el,o){if(!el)return;const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,Object.assign({w:r.width*.6},o))}
+  function shake(el,amp=6,dur=300){if(reduce||!el)return;el.animate([{translate:'0 0'},{translate:`${-amp}px ${amp/2}px`},{translate:`${amp}px ${-amp/2}px`},{translate:`${-amp/2}px ${amp/3}px`},{translate:'0 0'}],{duration:dur})}
+  function buzz(pt){try{navigator.vibrate&&navigator.vibrate(pt)}catch(e){}}
+  function flash(col='rgba(224,106,85,.45)'){if(reduce)return;const d=document.createElement('div');d.className='fx-flash';d.style.boxShadow=`inset 0 0 0 5px ${col},inset 0 0 70px ${col}`;document.body.appendChild(d);d.animate([{opacity:1},{opacity:0}],{duration:450,easing:'ease-out'}).onfinish=()=>d.remove()}
+  function stamp(txt,o={}){const d=document.createElement('div');d.className='fx-stamp'+(o.cls?' '+o.cls:'');d.textContent=txt;if(o.top)d.style.top=o.top;document.body.appendChild(d);if(o.sound!==false)SFX.seal();buzz(30);
+    if(reduce){setTimeout(()=>d.remove(),900);return}
+    d.animate([{transform:'translate(-50%,-50%) scale(2.6) rotate(-14deg)',opacity:0},{transform:'translate(-50%,-50%) scale(.9) rotate(-6deg)',opacity:1,offset:.2},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.3},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.78},{transform:'translate(-50%,-65%) scale(1.04) rotate(-6deg)',opacity:0}],{duration:o.dur||1150,easing:'cubic-bezier(.2,.9,.3,1)'}).onfinish=()=>d.remove();
+    setTimeout(()=>{const r=d.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:16,w:r.width,cols:o.cls==='combo'?['#D4A54A','#F4EFE3','#E7C47A']:['#E06A55','#C8402F','#F4EFE3'],speed:4,up:1,size:3})},220)}
+  const COMBO={3:'三連',5:'五連',10:'十連！',15:'十五連！',20:'二十連！！',30:'三十連！！！'};
+  function combo(n){if(COMBO[n])stamp(COMBO[n],{cls:'combo',top:'30%'})}
+  function bump(el){if(reduce||!el)return;el.animate([{scale:'1'},{scale:'1.35'},{scale:'1'}],{duration:340,easing:'cubic-bezier(.3,1.6,.5,1)'})}
+  function roll(el,to,dur=900,delay=0){if(!el)return;if(typeof to!=='number'||reduce){el.textContent=to;return}el.textContent='0';setTimeout(()=>{const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/dur);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else bump(el)};requestAnimationFrame(f)},delay)}
+  function trail(img,ms){if(reduce)return;const id=setInterval(()=>{if(!img.isConnected){clearInterval(id);return}const r=img.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:3,speed:.7,up:0,g:.02,size:5,life:26,kind:0,cols:['#1E1A17','#2b2420','#D4A54A']})},28);setTimeout(()=>clearInterval(id),ms+60)}
+  return {burst,at,shake,buzz,flash,stamp,combo,bump,roll,trail,reduce}})();
 function showResult(o){document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
   document.getElementById('r-l1').textContent=o.l1;document.getElementById('r-v1').textContent=o.v1;document.getElementById('r-l2').textContent=o.l2;document.getElementById('r-v2').textContent=o.v2;document.getElementById('r-v3').textContent=o.v3;
-  document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result')}
+  document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result');
+  if(!FX.reduce){const bg=document.getElementById('r-big');bg.animate([{transform:'scale(2.8) rotate(-16deg)',opacity:0},{transform:'scale(.92) rotate(-4deg)',opacity:1,offset:.6},{transform:'scale(1) rotate(-4deg)',opacity:1}],{duration:520,easing:'cubic-bezier(.2,.9,.3,1)',fill:'both'});setTimeout(()=>{SFX.seal();FX.buzz(30);FX.at(bg,{n:26,cols:['#E06A55','#C8402F','#F4EFE3','#D4A54A'],speed:5})},320);
+    document.querySelectorAll('#s-result .pill').forEach((pl,i)=>pl.animate([{transform:'translateY(14px) scale(.8)',opacity:0},{transform:'translateY(0) scale(1)',opacity:1}],{duration:380,delay:520+i*160,easing:'cubic-bezier(.3,1.5,.5,1)',fill:'both'}));
+    ['r-v1','r-v2','r-v3'].forEach((id,i)=>FX.roll(document.getElementById(id),typeof [o.v1,o.v2,o.v3][i]==='number'?[o.v1,o.v2,o.v3][i]:[o.v1,o.v2,o.v3][i],800,600+i*160));
+    document.querySelectorAll('#r-list .gcard').forEach((c,i)=>c.animate([{transform:'translateX(-20px)',opacity:0},{transform:'none',opacity:1}],{duration:320,delay:1000+i*70,fill:'both'}))}}
 function endBattle(){cancelAnimationFrame(battle.raf);if(!battle.trace)pendClear('w');save();const dead=battle.hp<=0;
   showResult({big:dead?'敗':'封',title:dead?'鳥居被攻破了':'お疲れさま（辛苦了）',sub:dead?'妖怪太多，去妖怪帳複習一下再來。':battle.fled.length?'逃走的妖怪明天會復活。':'全部封印，一隻都沒跑掉。',
     l1:'封印',v1:battle.sealed,l2:'逃走',v2:battle.fled.length,v3:battle.best,
@@ -788,12 +827,14 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
   }
   lv.raf=requestAnimationFrame(lvLoop)}
 function kill(b,cls){b.alive=false;if(lv.sel===b)lv.sel=null;b.el.onclick=null;if(cls){b.el.classList.add(cls);setTimeout(()=>b.el.remove(),520)}else b.el.remove()}
-function burn(b){const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
+function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementById('arena').getBoundingClientRect();const x=r.left+r.width/2,y=ar.top+lv.lavaY;FX.burst(x,y,{n:30,w:r.width,dir:-1.57,spread:1.1,speed:6,up:1,g:.16,size:4,life:44,cols:['#FF7A2B','#FFC14A','#FF4A1F']});FX.burst(x,y-10,{n:12,w:r.width,dir:-1.57,spread:.6,speed:1.4,up:.4,g:-.03,size:9,life:70,kind:2,cols:['rgba(90,80,72,.55)','rgba(60,52,46,.5)']});FX.flash('rgba(255,110,40,.4)');FX.shake(document.getElementById('arena'),5);FX.buzz(60)}
+  const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r);match(b,null)}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
+  FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:26,w:ra.width,up:3.5,g:.28,speed:5,kind:1,size:5,cols:['#5a3a20','#8a5a2a','#D4A54A','#F4EFE3','#BFD0FF']});FX.buzz(15);
   lv.gems++;lv.done++;lv.combo++;lv.best=Math.max(lv.best,lv.combo);META.gems++;if(lv.combo>META.best)META.best=lv.combo;if(!lv.practice){lv.hit.set(a.p,(lv.hit.get(a.p)||0)+1);if(lv.hit.get(a.p)===REPEAT&&!lv.missed.includes(a.p))mark(pKey(a.p),true)}lv.speed=Math.min(lv.base*2,lv.speed+lv.base*.07);lvHud();
-  SFX.gem();const fb=document.getElementById('l-fb');fb.className='feedback ok';fb.innerHTML=`宝物ゲット！<span class="ans">${a.p.j}</span>　${a.p.m}${lv.combo>1?`　連擊 ×${lv.combo}`:''}`;
+  SFX.gem();FX.combo(lv.combo);setTimeout(()=>FX.bump(document.getElementById('l-gems')),650);const fb=document.getElementById('l-fb');fb.className='feedback ok';fb.innerHTML=`宝物ゲット！<span class="ans">${a.p.j}</span>　${a.p.m}${lv.combo>1?`　連擊 ×${lv.combo}`:''}`;
   {const z=document.createElement('div');z.className='zhfloat';z.textContent=a.p.m;document.body.appendChild(z);const zw=z.offsetWidth,cx=ra.left+ra.width/2-zw/2,cy=ra.top+ra.height/2-20;
    if(matchMedia('(prefers-reduced-motion: reduce)').matches){z.style.transform=`translate(${cx}px,${cy}px)`;setTimeout(()=>z.remove(),1200)}
    else z.animate([{transform:`translate(${cx}px,${cy}px) scale(.7)`,opacity:0},{transform:`translate(${cx}px,${cy-30}px) scale(1.1)`,opacity:1,offset:.2},{transform:`translate(${cx}px,${cy-150}px) scale(1)`,opacity:0}],{duration:1700,easing:'cubic-bezier(0.22,1,0.36,1)'}).onfinish=()=>z.remove()}
@@ -942,15 +983,15 @@ function verbPick(btn,ans){if(vb.done)return;vb.done=true;cancelAnimationFrame(v
   else detail=explainFor(v,f);
   const praise={tanuki:'ドロン！變身成功。',kappa:'河童被推出土俵了！',fake:'抓到冒牌貨！',yuki:'雪女的咒語破解了！'}[M.id],
         boo={tanuki:`變成四不像了，${v.k}都認不出自己。`,kappa:'被河童推出土俵了。',fake:'冒牌妖怪逃走了。',yuki:'被雪女冰凍了。'}[M.id];
-  if(ok){vb.combo++;vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/vb.dur)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();exp.innerHTML=(vb.combo>=3?`連擊 ×${vb.combo}！`:praise)+' '+detail}
-  else{vb.combo=0;SFX.wrong();exp.innerHTML=(ans===null?'時間到！':boo)+' '+detail}
+  if(ok){vb.combo++;FX.combo(vb.combo);if(btn)FX.at(btn,{n:18,speed:4});FX.buzz(18);vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/vb.dur)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();exp.innerHTML=(vb.combo>=3?`連擊 ×${vb.combo}！`:praise)+' '+detail}
+  else{vb.combo=0;SFX.wrong();FX.flash();if(btn)FX.shake(btn,6);FX.buzz(60);exp.innerHTML=(ans===null?'時間到！':boo)+' '+detail}
   say(M.id==='yuki'?v.d:M.id==='fake'?conj(v.d,v.g,cur.badForm):conj(v.d,v.g,f));
   document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;document.getElementById('v-next').disabled=false}
 function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10a';
+const APP_VER='2026.11.10b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -987,10 +1028,10 @@ function smTick(){const el=(performance.now()-SM.t0)/SM.dur;document.getElementB
 function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);document.querySelectorAll('#sm-moves .move').forEach(b=>b.disabled=true);
   const v=SM.verb,full=conj(v.d,v.g,SM.f),e=v.d.slice(-1),m=document.getElementById('sm-msg'),ok=o===SM.ans;
   const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
-  if(ok){SM.pos++;SFX.hit();smCall('のこった！');m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
-  else{SM.pos--;SM.missNext.push(v.d);SFX.back();smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.at(document.getElementById('sm-foe'),{n:16,speed:4});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
+  else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('ring'),6);FX.buzz(60);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
-    if(SM.pos>=3){document.getElementById('sm-foe').classList.add('out');SFX.seal();SM.wins++;smCall('押し出し！',1200);setTimeout(smBoutEnd,1300)}
+    if(SM.pos>=3){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
     else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?900:1500)}
 function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
