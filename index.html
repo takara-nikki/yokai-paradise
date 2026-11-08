@@ -650,7 +650,7 @@ function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=stud
   else{document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)'}study.raf=requestAnimationFrame(stTick)}
 function endStudy(){cancelAnimationFrame(study.raf);try{speechSynthesis.cancel()}catch(e){}study.onStart()}
 function leaveStudy(){cancelAnimationFrame(study.raf);try{speechSynthesis.cancel()}catch(e){}go('s-home')}
-function beginBattle(list,trace){ac();if(!trace)pendClear('w');Object.assign(battle,{list:[...list],trace:!!trace,boxSize:0,failed:new Set(),reTimes:new Map(),okSet:new Set(),i:0,hp:5,combo:0,best:0,sealed:0,fled:[],locked:false,shooting:false});go('s-battle');nextYokai()}
+function beginBattle(list,trace){ac();Object.assign(battle,{list:[...list],trace:!!trace,boxSize:0,failed:new Set(),reTimes:new Map(),okSet:new Set(),i:0,hp:5,combo:0,best:0,sealed:0,fled:[],locked:false,shooting:false});go('s-battle');nextYokai()}
 function renderSlots(bad){const w=battle.word;document.getElementById('slots').innerHTML=[...w.k].map((ch,i)=>`<span class="slot ${i<battle.ci?'done':i===battle.ci?(bad?'cur bad':'cur'):''}">${i<battle.ci?ch:''}</span>`).join('')}
 function updStroke(r){const w=battle.word;if(battle.ci>=w.k.length){document.getElementById('strk').textContent='';return}const ch=w.k[battle.ci];r=r||analyze(battle.box,ch);
   const need=r.total.join('或'),cls=r.n>Math.max(...r.total)?'over':r.total.includes(r.n)?'ok':'';
@@ -722,7 +722,7 @@ function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.auto
 function showResult(o){document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
   document.getElementById('r-l1').textContent=o.l1;document.getElementById('r-v1').textContent=o.v1;document.getElementById('r-l2').textContent=o.l2;document.getElementById('r-v2').textContent=o.v2;document.getElementById('r-v3').textContent=o.v3;
   document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result')}
-function endBattle(){cancelAnimationFrame(battle.raf);save();const dead=battle.hp<=0;
+function endBattle(){cancelAnimationFrame(battle.raf);if(!battle.trace)pendClear('w');save();const dead=battle.hp<=0;
   showResult({big:dead?'敗':'封',title:dead?'鳥居被攻破了':'お疲れさま（辛苦了）',sub:dead?'妖怪太多，去妖怪帳複習一下再來。':battle.fled.length?'逃走的妖怪明天會復活。':'全部封印，一隻都沒跑掉。',
     l1:'封印',v1:battle.sealed,l2:'逃走',v2:battle.fled.length,v3:battle.best,
     ...(()=>{const left=[...new Set(battle.list)].filter(w=>!battle.okSet.has(w)||battle.failed.has(w));return {again:()=>{pendClear('w');startBattle(left)},againLabel:left.length?`もう一回（錯的 ${left.length} 題）`:'新的 5 個字'}})(),
@@ -733,7 +733,7 @@ const lv={queue:[],total:15,blocks:[],hp:3,gems:0,done:0,missed:[],sel:null,raf:
 const GEM_SVG=`<svg viewBox="0 0 24 24"><path d="M6 4h12l4 6-10 11L2 10z" fill="#E8CD76" stroke="#B8862A" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 10h20M9 4l3 6 3-6M12 10v11" stroke="#B8862A" stroke-width="1.2" fill="none"/></svg>`;
 const REPEAT=3;
 function buildQueue(list){let q=[],uid=0;for(let r=0;r<REPEAT;r++){let part=shuffle(list);if(q.length&&part[0]===q[q.length-1].p&&part.length>1)part.push(part.shift());part.forEach(p=>q.push({p,uid:uid++}))}return q}
-function beginLava(list,practice){ac();pendClear('p');Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
+function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
   go('s-lava');const ar=document.getElementById('arena');ar.querySelectorAll('.blk').forEach(b=>b.remove());
   lavaStart();requestAnimationFrame(()=>{lv.H=ar.clientHeight;lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
@@ -795,7 +795,7 @@ function showHeard(t,final){if(!t)return;const fb=document.getElementById('l-fb'
 function voiceStart(){if(!SR||vc.denied)return false;vc.on=true;vc.want='ja';vc.pick=null;listen();voiceUi();return true}
 function voiceStop(){vc.on=false;try{vc.rec&&vc.rec.abort()}catch(e){}vc.rec=null;voiceUi()}
 function listen(){if(!vc.on||lv.over||lv.paused||vc.rec)return;let r;try{r=new SR()}catch(e){vc.on=false;voiceUi();return}vc.rec=r;
-  vc.cuts={};r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
+  vc.cuts={};r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=6;
   r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i],full=res[0].transcript,cut=vc.cuts[i]||0,t=full.slice(cut);if(!t.trim())continue;showHeard(t,res.isFinal);if(tryVoice([t],res.isFinal))vc.cuts[i]=full.length}};
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){vc.denied=true;vc.on=false;voiceUi();const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent='麥克風沒開，這次改用點的：先點一塊，再點它的另一半'}};
   r.onend=()=>{if(vc.rec===r)vc.rec=null;if(vc.on&&!lv.over&&!lv.paused)listen()};
@@ -803,9 +803,11 @@ function listen(){if(!vc.on||lv.over||lv.paused||vc.rec)return;let r;try{r=new S
 function setWant(w){if(vc.want===w&&w==='ja'&&!vc.pick){voiceUi();return}vc.want=w;if(w==='ja'){if(vc.pick&&vc.pick.alive)vc.pick.el.classList.remove('sel');vc.pick=null;lv.sel=null}voiceUi();try{vc.rec&&vc.rec.abort()}catch(e){}}
 /* 同一句的各種寫法：漢字部分可以換成讀音（年を取る／年をとる／としを取る／としをとる） */
 const varCache=new Map();
+const HOMO={"かぐ":["嗅ぐ", "嗅く", "カグ"],"かみ":["紙", "神", "上"],"くび":["クビ"],"ゆび":["ユビ"],"せ":["瀬", "背", "せい"],"ち":["地", "千"],"け":["毛", "気"],"ねつ":["ネツ"],"なく":["鳴く", "無く"],"いや":["イヤ", "嫌"],"なか":["中"],"ゆか":["由香", "ユカ"],"たな":["田中", "タナ"],"かむ":["カム"],"はく":["吐く", "掃く", "白"],"ほす":["欲す"],"かえす":["帰す"],"かがく":["化学", "価格"],"かじ":["家事", "舵", "鍛冶"],"きせつ":["既設"],"せき":["咳", "関", "積"],"しま":["縞"],"はれる":["腫れる"],"やむ":["病む"],"さく":["割く", "柵", "策"],"へん":["辺", "変", "編"],"かえる":["帰る", "蛙", "替える", "換える", "代える"],"かわる":["代わる", "替わる", "換わる"],"あげる":["揚げる", "挙げる"],"あがる":["揚がる", "挙がる"],"さげる":["提げる"],"おこす":["興す"],"おこる":["興る"],"おる":["織る", "居る"],"とめる":["泊める", "留める"],"とまる":["泊まる", "留まる"],"なる":["成る", "為る"],"かわく":["渇く"],"かつ":["カツ"],"かける":["書ける", "欠ける", "賭ける", "駆ける", "架ける"],"かたい":["堅い", "難い", "固い"],"こい":["恋", "鯉"],"からい":["辛い"],"きゅう":["九", "球", "旧"],"じこ":["自己"],"しけん":["私見"],"かいぎ":["懐疑"],"つる":["吊る", "鶴"],"うつ":["撃つ", "討つ"],"うつす":["移す", "映す"],"あう":["会う", "遭う"],"かう":["買う"],"よる":["夜"],"すむ":["住む", "澄む"],"こむ":["込む"],"すく":["好く"],"にる":["似る", "煮る"],"やく":["約", "役", "訳"],"わく":["枠"],"あじ":["アジ", "鯵"],"しお":["潮"],"こめ":["込め"],"みそ":["ミソ"],"はで":["ハデ"],"すな":["砂"],"もり":["守", "盛り"],"むし":["無視"],"うら":["浦"],"ふむ":["不務"],"なれる":["馴れる"],"たつ":["建つ", "経つ"],"わたる":["亘る"],"くもる":["雲る"],"おと":["乙"],"いし":["意思", "医師", "意志"],"いと":["意図"],"てら":["寺"],"ゆめ":["夢"],"おれる":["俺る"],"ひかる":["光"],"らく":["落"],"へる":["経る"],"かべ":["カベ"],"まくら":["マクラ"],"やね":["ヤネ"],"るす":["ルス"],"みなと":["港"],"さか":["坂"],"ぬる":["ヌル"],"こわす":["壊す"],"わる":["悪"],"つらい":["辛い"],"ふとい":["太い"],"だいじ":["大字"],"むり":["ムリ"],"へいき":["兵器"],"たしか":["確か"],"すごい":["凄い"],"もし":["若し"],"ぬるい":["温い"]};
 function variantsOf(p){if(varCache.has(p))return varCache.get(p);const j=normJa(p.j),r=normJa(p.r);const runs=j.match(/[\u4e00-\u9fff々]+|[^\u4e00-\u9fff々]+/g)||[j];
   let out=[j,r];const re=new RegExp('^'+runs.map(x=>/[\u4e00-\u9fff々]/.test(x)?'(.+?)':x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('')+'$');const m=r.match(re);
   if(m){const reads=m.slice(1);let combos=[''];let ki=0;for(const x of runs){if(/[\u4e00-\u9fff々]/.test(x)){const rd=reads[ki++];combos=combos.flatMap(c=>[c+x,c+rd])}else combos=combos.map(c=>c+x)}out=out.concat(combos)}
+  if(r.length<=4&&HOMO[r])out=out.concat(HOMO[r].map(normJa));
   out=[...new Set(out)];varCache.set(p,out);return out}
 /* 在聽到的文字裡找最像的一段（長度要至少跟整句一樣，唸一半不算） */
 function voiceScore(x,p){let best=0;for(const v of variantsOf(p)){const L=v.length;if(x.length<L)continue;if(x.includes(v))return 1;
@@ -828,7 +830,7 @@ function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=docume
 function pauseLava(){if(lv.over)return;lv.paused=!lv.paused;document.getElementById('l-pause').textContent=lv.paused?'再開（繼續）':'待って（暫停）';document.getElementById('arena').style.filter=lv.paused?'blur(6px)':'';lavaVol(lv.paused?.05:(vc.on?.1:.22));if(lv.paused){try{vc.rec&&vc.rec.abort()}catch(e){}}else{lv.last=performance.now();if(vc.on)listen()}}
 function leaveLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();document.getElementById('arena').style.filter='';go('s-home')}
 function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.raf);voiceStop();toast('練習完成，正式開始！');setTimeout(()=>{if(document.getElementById('s-lava').classList.contains('on'))beginLava(shuffle(lv.list),false)},1300);return}endLava()}
-function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();save();const dead=lv.hp<=0;
+function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');save();const dead=lv.hp<=0;
   showResult({big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組（新 10＋錯 ${left.length}＝${10+left.length} 題）`:'下一組 10 題'}})(),
@@ -922,7 +924,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09k';
+const APP_VER='2026.11.09m';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -930,12 +932,13 @@ const SUMO_FOES=[YOKAI[0],YOKAI[1],YOKAI[4]];
 const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=10;
 const isK=c=>/[\u3400-\u9fff々]/.test(c);
 function rb(k,r){let a=0,b=0;while(a<k.length&&a<r.length&&!isK(k[a])&&k[a]===r[a])a++;while(b<k.length-a&&b<r.length-a&&!isK(k[k.length-1-b])&&k[k.length-1-b]===r[r.length-1-b])b++;const mid=k.slice(a,k.length-b),rm=r.slice(a,r.length-b);if(!mid||!rm||!/[\u3400-\u9fff]/.test(mid))return k;return k.slice(0,a)+`<ruby>${mid}<rt>${rm}</rt></ruby>`+k.slice(k.length-b)}
-function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];
+function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];smPaintAns()}
+function smPaintAns(){
   document.getElementById('sm-ans').innerHTML=SM.deck.map(v=>{const e=smEnding(v,2);return `<button class="ans-it${SM.miss.includes(v.d)?' miss':''}" data-say="${conj(v.d,1,2)}"><span class="a1">${rb(v.k,v.d)}</span><span class="a2">${rb(v.k.slice(0,-1)+e,conj(v.d,1,2))}</span><span class="a3">${v.m}</span></button>`}).join('');
   document.querySelectorAll('#sm-ans .ans-it').forEach(b=>b.onclick=()=>say(b.dataset.say))}
 const TE_SET={2:["って","んで","いて","いで","して"],3:["った","んだ","いた","いだ","した"]};
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
-function startSumo(){ac();SM.miss=[...new Set(SM.missNext)];Object.assign(SM,{bout:0,wins:0,lock:true});smDeal();go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
+function startSumo(){ac();if(!SM.open||!SM.deck.length){SM.miss=[...new Set(SM.missNext)];smDeal()}else smPaintAns();SM.open=true;Object.assign(SM,{bout:0,wins:0,lock:true});go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
   w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
@@ -964,7 +967,7 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
     if(SM.pos>=3){document.getElementById('sm-foe').classList.add('out');SFX.seal();SM.wins++;smCall('押し出し！',1200);setTimeout(smBoutEnd,1300)}
     else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?900:1500)}
-function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
+function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
 function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;document.getElementById('sm-scroll').hidden=true;go('s-vsel')}
 window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').classList.contains('on'))smPlace()});
 
