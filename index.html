@@ -193,7 +193,8 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .mic i{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25;transform:scale(.6)}}
 .heard{display:none}
-#s-lava .feedback{font-size:14px;min-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#s-lava .mic{height:24px}#s-lava .mic[hidden]{display:flex!important;visibility:hidden}
+#s-lava .feedback{font-size:14px;height:1.4em;line-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #s-lava .actions .btn{min-height:44px}
 @media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
 /* 河童相撲：開場卷軸 */
@@ -944,7 +945,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09v';
+const APP_VER='2026.11.09x';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
