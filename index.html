@@ -340,18 +340,28 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tile.stage3 .scene{width:52%;right:-2%;top:-14%}
 .tile.stage3 .wm{color:#9aa4c8;opacity:.22}
 .sh-stage{position:relative;flex:1 1 auto;min-height:220px;margin:6px 0 8px;border-radius:16px;overflow:hidden;background:radial-gradient(70% 45% at 50% 0%,rgba(143,168,224,.22),transparent 70%),linear-gradient(180deg,#0e0e14,#1c1712)}
-.sh-road{position:absolute;inset:0;clip-path:polygon(43% 4%,57% 4%,96% 100%,4% 100%);background:linear-gradient(180deg,rgba(242,236,228,.02),rgba(242,236,228,.09));}
-.sh-road::after{content:'';position:absolute;left:50%;top:4%;bottom:0;width:2px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,rgba(242,236,228,.28) 0 10px,transparent 10px 20px);mask-image:linear-gradient(180deg,transparent,#000 40%)}
+.sh-light{position:absolute;left:50%;top:-6%;width:120%;height:70%;transform:translateX(-50%);pointer-events:none;background:radial-gradient(18% 22% at 50% 12%,rgba(255,244,222,.95),rgba(255,214,160,.45) 35%,rgba(255,180,120,.12) 65%,transparent 80%),conic-gradient(from 180deg at 50% 10%,transparent 0 150deg,rgba(255,230,190,.08) 160deg,transparent 170deg,rgba(255,230,190,.07) 180deg,transparent 190deg,rgba(255,230,190,.08) 200deg,transparent 210deg 360deg);mix-blend-mode:screen}
+.sh-road{position:absolute;inset:0;clip-path:polygon(44% 8%,56% 8%,90% 100%,10% 100%);background:linear-gradient(180deg,#3a342e,#2a2420 40%,#1f1a16);}
+.sh-road::after{content:'';position:absolute;left:50%;top:8%;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,rgba(255,236,200,.75) 0 16px,transparent 16px 34px);mask-image:linear-gradient(180deg,transparent,#000 30%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)}
+.sh-curb{position:absolute;inset:0;background:repeating-linear-gradient(180deg,#E5483A 0 14px,#F4EFE3 14px 28px);mask-image:linear-gradient(180deg,transparent 6%,#000 35%)}
+.sh-curb.l{clip-path:polygon(43% 8%,44% 8%,10% 100%,4% 100%)}
+.sh-curb.r{clip-path:polygon(56% 8%,57% 8%,96% 100%,90% 100%)}
+.sh-speed{position:absolute;inset:0;pointer-events:none;opacity:0;background:repeating-conic-gradient(from 0deg at 50% 8%,transparent 0 6deg,rgba(255,240,220,.05) 6deg 7deg);transition:opacity .4s}
+.sh-stage.run .sh-road::after,.sh-stage.run .sh-curb{animation:shRoll .45s linear infinite}
+.sh-stage.run .sh-speed{opacity:1}
+@keyframes shRoll{from{background-position:0 0}to{background-position:0 34px}}
+.sh-stage.run .sh-curb{animation-duration:.4s}
+@media (prefers-reduced-motion:reduce){.sh-stage.run .sh-road::after,.sh-stage.run .sh-curb{animation:none}}
 .sh-ysh,.sh-psh{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
-.sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.75) 35%,rgba(0,0,0,.95) 85%);border-radius:45% 45% 50% 50%/20% 20% 80% 80%;filter:blur(2.5px)}
+.sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.7) 40%,rgba(0,0,0,.92) 90%);border-radius:0;filter:blur(3px)}
 .sh-stage.caught .sh-ysh{background:linear-gradient(0deg,rgba(200,64,47,0) 0%,rgba(120,20,12,.8) 35%,rgba(0,0,0,.95) 85%)}
 .sh-psh{background:linear-gradient(0deg,rgba(224,106,85,0),rgba(224,106,85,.55));filter:blur(4px);mix-blend-mode:screen}
-.sh-yk{position:absolute;left:50%;aspect-ratio:1;object-fit:contain;transform:translate(-50%,0);transition:opacity .3s;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.sh-yk{position:absolute;left:50%;aspect-ratio:1;object-fit:contain;transform:translate(-50%,0);transition:opacity .3s;filter:brightness(.42) contrast(1.15) drop-shadow(0 0 2px rgba(255,236,205,.95)) drop-shadow(0 0 12px rgba(255,214,160,.55))}
 .sh-me{position:absolute;left:50%;width:34px;height:52px;transform:translateX(-50%);background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:3px;box-shadow:0 6px 12px rgba(0,0,0,.6);display:grid;place-items:center;transition:box-shadow .2s}
 .sh-me span{width:24px;height:24px;border:1.5px solid var(--shu);border-radius:3px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:14px;transform:rotate(-5deg)}
 .sh-stage.caught .sh-me{box-shadow:0 0 0 2px rgba(224,106,85,.8),0 0 22px rgba(224,106,85,.8)}
 .sh-pct{position:absolute;left:0;right:0;top:10px;text-align:center;font-family:var(--fm);font-size:13px;color:var(--dim)}
-.sh-stage.caught .sh-yk{filter:drop-shadow(0 0 14px rgba(224,106,85,.8)) brightness(1.3)}
+.sh-stage.caught .sh-yk{filter:brightness(.55) drop-shadow(0 0 3px rgba(255,236,205,1)) drop-shadow(0 0 16px rgba(224,106,85,.9))}
 .sh-sp{flex:0 0 0}
 .sh-card{flex:0 0 auto;text-align:center;padding:4px 6px 2px}
 .sh-text{text-wrap:balance;font-size:21px;line-height:1.6;font-weight:600;color:var(--dim)}
@@ -458,7 +468,10 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 <section class="screen focus" id="s-shadow">
   <div class="hud"><span id="sh-count">1 / 5</span><span class="combo" id="sh-score">踏 0</span><button class="ico" data-mute onclick="toggleMute()" aria-label="聲音開關"></button></div>
   <div class="sh-stage" id="sh-stage">
+    <div class="sh-light"></div>
     <div class="sh-road"></div>
+    <div class="sh-curb l"></div><div class="sh-curb r"></div>
+    <div class="sh-speed"></div>
     <div class="sh-ysh" id="sh-ysh"></div>
     <div class="sh-psh" id="sh-psh"></div>
     <img class="sh-yk" id="sh-yk" alt="">
@@ -659,7 +672,7 @@ function shShow(){const w=SH.list[SH.i];SH.run=false;SH.py=0;SH.pu=0;SH.heard=''
 function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;const B=v=>H*(.05+v*.8),S=v=>1-.55*v;
   const yv=.45+.5*SH.py,tail=Math.max(0,yv-.42),mv=Math.min(.95,.02+.55*SH.pu);
   const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';
-  const sh=document.getElementById('sh-ysh'),sw=W*.3*S((yv+tail)/2);sh.style.width=sw+'px';sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
+  const sh=document.getElementById('sh-ysh'),sw=W*.5*S(tail),tw=yw*.55,f=Math.min(1,tw/sw);sh.style.width=sw+'px';sh.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`;sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
   const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.scale=ms.toFixed(3);
   const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';ps.style.width=(W*.12)+'px';
   const chars=document.querySelectorAll('#sh-text i'),n=chars.length;chars.forEach((c,k)=>{c.className=k<SH.pu*n?'u':k<SH.py*n?'y':''});
@@ -669,7 +682,7 @@ function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.len
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
 /* 唸到哪裡：聽到的字依序對進句子（容許跳 3 個字） */
 function shProg(target,heard){const t=normJa(target),h=normJa(heard);let i=0;for(const c of h){for(let j=i;j<Math.min(t.length,i+4);j++){if(t[j]===c){i=j+1;break}}}return t.length?i/t.length:0}
-function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
+function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='妖怪開跑了——慢半拍跟著唸！';
   const useMic=!!SR&&!vc.denied;if(useMic){try{const r=new SR();SH.rec=r;r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
       r.onresult=e=>{let all='';for(let i=0;i<e.results.length;i++)all+=e.results[i][0].transcript;SH.heard=all;const p=shProg(w.ex,all);if(p>SH.pu){SH.pu=p;SH.started=true}};
@@ -680,7 +693,7 @@ function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document
     document.getElementById('sh-pct').textContent=SH.started?`重疊 ${Math.round(Math.min(SH.pu/Math.max(SH.py,.01),1)*100)}%`:'';
     shDraw();const done=SH.ended&&(now-SH.ended>2600||SH.pu>=.96);if(done){shFinish(useMic&&!!SH.rec&&!vc.denied);return}SH.raf=requestAnimationFrame(tick)};SH.raf=requestAnimationFrame(tick)}
 function shSelf(v){document.getElementById('sh-self').hidden=true;SH.pu=v;SH.started=true;SH.follow=[v];shDraw();shJudge()}
-function shFinish(mic){try{SH.rec&&SH.rec.stop()}catch(e){}SH.rec=null;if(!mic){document.getElementById('sh-self').hidden=false;const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='麥克風沒開：自己判斷有沒有跟上';return}shJudge()}
+function shFinish(mic){document.getElementById('sh-stage').classList.remove('run');try{SH.rec&&SH.rec.stop()}catch(e){}SH.rec=null;if(!mic){document.getElementById('sh-self').hidden=false;const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='麥克風沒開：自己判斷有沒有跟上';return}shJudge()}
 function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.length?SH.follow.reduce((a,b)=>a+b,0)/SH.follow.length:0,score=Math.round(100*(.7*acc+.3*fol));SH.best=Math.max(SH.best,score);
   const fb=document.getElementById('sh-fb'),yk=document.getElementById('sh-yk');document.getElementById('sh-pct').textContent=`影踏み ${score} 點`;
   {const tx=document.getElementById('sh-text');tx.innerHTML=exRb(w.ex);tx.classList.add('rb')}
@@ -692,7 +705,7 @@ function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=
   showResult({win,big:'影',title:win?'影踏み成功':'影子都溜走了',sub:`${n} 句踩住 ${SH.ok} 句。`,l1:'踩住',v1:SH.ok,l2:'溜走',v2:n-SH.ok,v3:SH.best,
     list:SH.failed.map(w=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${w.ex}"><svg><use href="#i-snd"/></svg></button><span class="k sh-rk" style="font-size:17px">${exRb(w.ex)}</span><span class="m">${w.tr||''}</span></div>`).join(''),
     again:()=>startShadow(SH.failed.length?SH.failed:null),againLabel:SH.failed.length?`再追一次（溜走的 ${SH.failed.length} 句）`:'下一組 5 句'})}
-function leaveShadow(){document.getElementById('sh-intro').hidden=true;cancelAnimationFrame(SH.raf);try{SH.rec&&SH.rec.abort()}catch(e){}SH.rec=null;try{speechSynthesis.cancel()}catch(e){}go('s-home')}
+function leaveShadow(){document.getElementById('sh-stage').classList.remove('run');document.getElementById('sh-intro').hidden=true;cancelAnimationFrame(SH.raf);try{SH.rec&&SH.rec.abort()}catch(e){}SH.rec=null;try{speechSynthesis.cancel()}catch(e){}go('s-home')}
 
 /* 全部按鍵都有按壓音（招式鍵、已有專屬音效的除外） */
 document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.tile,.gcard,.te-row,.ans-it');if(!b||b.disabled||b.closest('#sm-moves,.blk')||b.dataset.nosfx!==undefined)return;if(b.classList.contains('sw')||b.closest('.tgl'))SFX.toggle(!b.classList.contains('r'));else SFX.click()},{capture:true,passive:true});
@@ -1214,7 +1227,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12i';
+const APP_VER='2026.11.12j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
