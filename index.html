@@ -26,7 +26,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .screen{display:none;min-height:100%;max-width:520px;margin:0 auto;padding-block:14px 60px}
 .screen.on{display:block;animation:slide .52s var(--ease)}
 @keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
-.focus{padding-bottom:14px;height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));flex-direction:column;overflow:hidden}
+.focus{padding-bottom:14px;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));flex-direction:column;overflow:hidden}
 .screen.focus.on{display:flex}
 /* 頂部名片 */
 .card-top{display:grid;grid-template-columns:62px 1fr auto;gap:4px 14px;align-items:center;margin-bottom:18px}
@@ -749,7 +749,7 @@ const REPEAT=3;
 function buildQueue(list){let q=[],uid=0;for(let r=0;r<REPEAT;r++){let part=shuffle(list);if(q.length&&part[0]===q[q.length-1].p&&part.length>1)part.push(part.shift());part.forEach(p=>q.push({p,uid:uid++}))}return q}
 function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,ease:1,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
   go('s-lava');const ar=document.getElementById('arena');ar.querySelectorAll('.blk').forEach(b=>b.remove());
-  lavaStart();requestAnimationFrame(()=>{lv.H=ar.clientHeight;lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
+  lavaStart();ar.style.flex='';ar.style.height='';requestAnimationFrame(()=>{lv.H=ar.clientHeight;ar.style.flex='0 0 auto';ar.style.height=lv.H+'px';lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
   const pre='';
   if(voiceStart()){fb.textContent=pre+'唸出日文，方塊就消掉';setTimeout(()=>{if(vc.on)lavaVol(.1)},1400)}else fb.textContent=pre+'唸出日文後點一下方塊'}
@@ -950,7 +950,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09z';
+const APP_VER='2026.11.10a';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
