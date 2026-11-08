@@ -712,9 +712,9 @@ function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hid
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(!!SR);return}
   navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;done(!!SR)}).catch(()=>done(false))}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
-  const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
+  const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());{const sv=document.getElementById('sh-forest');sv.getAnimations().forEach(a=>a.cancel());sv.style.transition='';sv.style.opacity=1}yk.style.transition='';yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
-  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{tx.style.whiteSpace='nowrap';let fs=22;tx.style.fontSize=fs+'px';while(tx.scrollWidth>tx.clientWidth&&fs>19){fs--;tx.style.fontSize=fs+'px'}if(tx.scrollWidth>tx.clientWidth){tx.style.whiteSpace='normal';tx.style.fontSize='20px'}});document.getElementById('sh-tr').textContent=w.tr||'';
+  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{tx.style.whiteSpace='nowrap';let fs=22;tx.style.fontSize=fs+'px';while(tx.scrollWidth>tx.clientWidth&&fs>19){fs--;tx.style.fontSize=fs+'px'}if(tx.scrollWidth>tx.clientWidth){tx.style.whiteSpace='normal';fs=20;tx.style.fontSize=fs+'px';const lh=()=>parseFloat(getComputedStyle(tx).lineHeight)||fs*2;while(tx.offsetHeight>lh()*2.2&&fs>15){fs--;tx.style.fontSize=fs+'px'}}});document.getElementById('sh-tr').textContent=w.tr||'';
   document.getElementById('sh-stage').classList.remove('caught');document.getElementById('sh-self').hidden=true;document.getElementById('sh-pct').textContent='';
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='';
   document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
@@ -724,19 +724,17 @@ const SHF={phase:0,last:0};
 const shT={y:(t,H)=>H*(.97-t*.74),hw:(t,W)=>W*(.30*(1-t)+.045*t),S:t=>1-.72*t};
 function shForest(){}
 function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth,cx=W/2;
-  const ty=.55+.4*SH.py,tt=Math.max(0,ty-.5),tm=SH.win?Math.min(ty-.04,SH.winT):Math.min(.6,.02+.48*SH.pu),caught=SH.started&&SH.pu>.1&&tm>=tt-.02;
-  const yk=document.getElementById('sh-yk'),yw=Math.min(W*.36,H*.42)*shT.S(ty);yk.style.width=yw+'px';yk.style.left=cx+'px';yk.style.bottom=(H-shT.y(ty,H)-yw*.04)+'px';
+  const ty=.38+.55*SH.py,tt=Math.max(0,ty-.42),tm=SH.win?Math.min(ty-.04,SH.winT):Math.min(.6,.02+.48*SH.pu),caught=SH.started&&SH.pu>.1&&tm>=tt-.02;
+  const yk=document.getElementById('sh-yk'),yw=Math.min(W*.6,H*.6)*(1-.72*ty);yk.style.width=yw+'px';yk.style.left=cx+'px';yk.style.bottom=(H-shT.y(ty,H)-yw*.04)+'px';
   const me=document.getElementById('sh-me'),ms=shT.S(tm)*Math.min(1,H/320);me.style.left=cx+'px';me.style.bottom=(H-shT.y(tm,H))+'px';me.style.scale=ms.toFixed(3);
   /* 影子：從妖怪腳下拖到 tt，越近越寬；裡面是往前指的箭頭 */
   const svg=document.getElementById('sh-forest');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  const yA=shT.y(ty,H),yB=shT.y(tt,H),wA=shT.hw(ty,W)*.55,wB=shT.hw(tt,W)*.75;
+  const yA=shT.y(ty,H),yB=shT.y(tt,H),wA=yw*.32,wB=Math.max(yw*.6,shT.hw(tt,W)*.7);
   let h=`<defs><linearGradient id="shSG" x1="0" y1="${yA}" x2="0" y2="${yB}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${caught?'#3a0c06':'#0a0a10'}" stop-opacity=".88"/><stop offset="1" stop-color="${caught?'#7a1a10':'#0a0a10'}" stop-opacity=".25"/></linearGradient><filter id="shSb"><feGaussianBlur stdDeviation="2"/></filter></defs>`;
   h+=`<path d="M${cx-wA} ${yA} L${cx+wA} ${yA} L${cx+wB} ${yB} L${cx-wB} ${yB}Z" fill="url(#shSG)" filter="url(#shSb)"/>`;
-  const n=Math.max(2,Math.round((yB-yA)/(H*.09)));const col=caught?'#F08A72':'#F2C46A';
-  for(let k=0;k<n;k++){const f=(k+.5)/n,yy=yA+(yB-yA)*f,ww=(wA+(wB-wA)*f)*.55,hh=ww*.38,op=(.25+.55*f).toFixed(2);h+=`<path d="M${cx-ww} ${yy+hh} L${cx} ${yy} L${cx+ww} ${yy+hh}" fill="none" stroke="${col}" stroke-width="${(2+3*f).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}"/>`}
   svg.innerHTML=h;
   {const units=[...document.querySelectorAll('#sh-text i')];const nn=units.reduce((a,u)=>a+(+u.dataset.n||1),0);let k=0;units.forEach(u=>{u.className=k<SH.pu*nn?'u':k<SH.py*nn?'y':'';k+=(+u.dataset.n||1)})}
-  if(SH.started&&!SH.win)yk.style.opacity=Math.max(.45,1-SH.pu*.5).toFixed(2);st.classList.toggle('caught',caught||!!SH.win);
+  if(!SH.win)svg.style.opacity=yk.style.opacity||1;if(SH.started&&!SH.win)yk.style.opacity=Math.max(.45,1-SH.pu*.5).toFixed(2);st.classList.toggle('caught',caught||!!SH.win);
   const L=SH.list.length||1;}
 function shHud(){document.getElementById('sh-hp').innerHTML=[0,1,2].map(k=>`<svg viewBox="0 0 24 24" class="${k<SH.hp?'':'off'}"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3.1 4.8 6.6 4.8c2.2 0 3.6 1.3 4.4 2.6.8-1.3 2.2-2.6 4.4-2.6 3.5 0 5.7 3.5 4.2 6.9C19.5 16.4 12 21 12 21z"/></svg>`).join('');
   const sc=document.getElementById('sh-score');sc.textContent=`連續 ${SH.streak}`;sc.classList.toggle('hot',SH.streak>=3);
@@ -744,7 +742,7 @@ function shHud(){document.getElementById('sh-hp').innerHTML=[0,1,2].map(k=>`<svg
 function shTrToggle(){const t=document.getElementById('sh-tr');t.hidden=!t.hidden;SFX.click()}
 function shSkip(){if(SH.run)return;const w=SH.list[SH.i];SH.failed.push(w);SH.streak=0;shHud();shNext()}
 /* 踩住時：御札真的衝上去追到妖怪腳下 */
-function shCatchUp(done){const t0=performance.now(),from=Math.min(.6,.02+.48*SH.pu),to=Math.max(from,.55+.4*SH.py-.5+.08);SH.win=true;
+function shCatchUp(done){const t0=performance.now(),from=Math.min(.6,.02+.48*SH.pu),to=Math.max(from,.38+.55*SH.py-.42+.08);SH.win=true;
   const f=t=>{const k=Math.min(1,(t-t0)/650),e=1-Math.pow(1-k,3);SH.winT=from+(to-from)*e;shDraw();if(k<1)requestAnimationFrame(f);else done&&done()};requestAnimationFrame(f)}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
   const h={start:0};u.onstart=()=>{h.start=performance.now()};u.onend=()=>{onend&&onend()};u.onerror=()=>{onend&&onend()};ss.speak(u);return h}
@@ -768,8 +766,8 @@ function shFinish(mic){document.getElementById('sh-stage').classList.remove('run
 function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.length?SH.follow.reduce((a,b)=>a+b,0)/SH.follow.length:0,score=Math.round(100*(.7*acc+.3*fol));SH.best=Math.max(SH.best,score);
   const fb=document.getElementById('sh-fb'),yk=document.getElementById('sh-yk');document.getElementById('sh-pct').textContent=`影踏み ${score} 點`;
   {const tx=document.getElementById('sh-text');tx.innerHTML=exRb(w.ex);tx.classList.add('rb')}
-  if(score>=65){SH.ok++;SH.streak++;SH.maxStreak=Math.max(SH.maxStreak||0,SH.streak);fb.className='feedback ok';fb.innerHTML='踩住了！';shCatchUp(()=>{FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);FX.combo(SH.streak);setTimeout(()=>{yk.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)})}
-  else{SH.failed.push(w);SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'})}
+  if(score>=65){SH.ok++;SH.streak++;SH.maxStreak=Math.max(SH.maxStreak||0,SH.streak);fb.className='feedback ok';fb.innerHTML='踩住了！';shCatchUp(()=>{FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);FX.combo(SH.streak);setTimeout(()=>{yk.style.transition='opacity .35s';yk.style.opacity=0;const sv=document.getElementById('sh-forest');sv.style.transition='opacity .35s';sv.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)})}
+  else{SH.failed.push(w);SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
   shHud();setTimeout(()=>SH.hp<=0?shEnd():shNext(),score>=65?2200:3000)}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
 function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
@@ -1298,7 +1296,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13n';
+const APP_VER='2026.11.13o';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
