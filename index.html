@@ -468,7 +468,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wsec.wrong path{fill:rgba(216,58,44,.55);stroke:#D83A2C}
 .wlb .wst{font-size:.72em}.wlb{fill:var(--ink);font-weight:700;text-anchor:middle;pointer-events:none}.wlb .wch{fill:#F08A72}
 .wcen{fill:#1a1512;stroke:var(--seal);stroke-width:2.5}.wcent{fill:var(--ink);font-weight:700;text-anchor:middle;font-family:var(--fb)}
-.wptr{fill:var(--gold);stroke:#1a1512;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.wptr{display:none;fill:var(--gold);stroke:#1a1512;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
 .wteach .wsec path{fill:rgba(255,255,255,.62);stroke:#c9b994}.wteach .wsec:nth-child(2n) path{fill:rgba(244,239,227,.95)}
 .wteach .wlb{fill:#1E1A17}.wteach .wlb .wch{fill:#B8291E}.wteach .wfm{font-size:11px;font-weight:600;fill:#7a6e60}
 .wteach .wcen{fill:#F4EFE3;stroke:#B8291E}.wteach .wcent{fill:#B8291E}.wteach .wptr{display:none}
@@ -1366,10 +1366,10 @@ function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;canc
     else if(st===2){vEl.textContent=v.k;kEl.textContent=`${v.d}（${m}）`;fEl.textContent=`停在「${WDAN[f]}」`+(f===1&&v.d.endsWith('う')?'（う→わ）':'')}
     else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=`${FORMS[f]}・${WZH[f]}`}
     box.innerHTML=wheelSVG(v,false)+`<button class="btn main wstop" id="w-stop">停！</button>`;vb.cur=cur;
-    const root=box.querySelector('.wwrap');let a=-90*Math.floor(Math.random()*4)-20,last=performance.now(),prev=-1;const sp=Math.min(300,130+vb.combo*18+(st-1)*20);
-    const loop=t=>{a+=sp*(t-last)/1000;last=t;const k=wSet(root,a);if(k!==prev){prev=k;try{SFX.click()}catch(e){}}vb.wa=a;vb.wraf=requestAnimationFrame(loop)};vb.wraf=requestAnimationFrame(loop);
-    document.getElementById('w-stop').onclick=()=>{cancelAnimationFrame(vb.wraf);const k=wSet(root,vb.wa),g=root.querySelectorAll('.wsec')[k];verbPick(g,g.dataset.o);
-      if(g.dataset.o!==cur.ans){const ti=WF.indexOf(f),from=vb.wa;let to=-ti*90;while(to<from)to+=360;const t0=performance.now();const an=t=>{const e=Math.min(1,(t-t0)/700),q=1-Math.pow(1-e,3);wSet(root,from+(to-from)*q);if(e<1)vb.wraf=requestAnimationFrame(an)};setTimeout(()=>{vb.wraf=requestAnimationFrame(an)},500)}};
+    const root=box.querySelector('.wwrap'),secs=root.querySelectorAll('.wsec');wSet(root,0);let k=Math.floor(Math.random()*4);
+    const hop=()=>{secs.forEach((g,n)=>g.classList.toggle('on',n===k));vb.wk=k;try{SFX.click()}catch(e){}k=(k+1)%4};hop();
+    vb.spin=setInterval(hop,Math.max(320,780-vb.combo*35-(st-1)*40));
+    document.getElementById('w-stop').onclick=()=>{clearInterval(vb.spin);const g=secs[vb.wk];verbPick(g,g.dataset.o)};
     document.getElementById('v-exp').textContent=M.intro;document.getElementById('v-next').disabled=true;
     if(st!==3)say(v.d);vb.dur=(st===3?18:M.sec)*1000;vb.t0=performance.now();cancelAnimationFrame(vb.raf);vtick();return}
   else{vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent=FORMS[f];const right=conj(v.d,v.g,f);cur={ans:right};opts=shuffle([right,...distract(v,f)]).map(o=>({o,label:o}))}
@@ -1401,7 +1401,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.16';
+const APP_VER='2026.11.16b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
