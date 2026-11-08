@@ -772,7 +772,7 @@ function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.len
   {const tx=document.getElementById('sh-text');tx.innerHTML=exRb(w.ex);tx.classList.add('rb')}
   if(score>=65){META.shMiss=(META.shMiss||[]).filter(ex=>ex!==w.ex);save();SH.ok++;SH.streak++;SH.maxStreak=Math.max(SH.maxStreak||0,SH.streak);fb.className='feedback ok';fb.innerHTML='踩住了！';shCatchUp(()=>{FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);FX.combo(SH.streak);setTimeout(()=>{yk.style.transition='opacity .35s';yk.style.opacity=0;const sv=document.getElementById('sh-forest');sv.style.transition='opacity .35s';sv.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)})}
   else{SH.failed.push(w);if(!(META.shMiss||[]).includes(w.ex)){META.shMiss=[...(META.shMiss||[]),w.ex].slice(-60);save()}SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
-  shHud();if(score>=65){setTimeout(()=>shNext(),3400)}else{/* 溜走：停住，等你看完解答按繼續 */SH.wait=true;const g=document.getElementById('sh-go');g.disabled=false;g.textContent=SH.hp<=0?'看結果':'繼續';g.classList.add('cont')}}
+  shHud();{/* 不論踩住或溜走都停住，讀完按繼續 */SH.wait=true;const g=document.getElementById('sh-go');g.disabled=false;g.textContent=SH.hp<=0?'看結果':'繼續';g.classList.add('cont')}}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
 function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
   showResult({win,big:'影',title:win?'影踏み成功':'影子都溜走了',sub:`${n} 句踩住 ${SH.ok} 句。`,l1:'踩住',v1:SH.ok,l2:'溜走',v2:n-SH.ok,v3:SH.maxStreak||0,
@@ -1300,7 +1300,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13t';
+const APP_VER='2026.11.13u';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
