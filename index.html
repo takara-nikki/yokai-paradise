@@ -1351,7 +1351,7 @@ const SENT={
 'さがす':[['部屋で鍵を＿。','在房間找鑰匙。'],['もう＿。','不找了。'],['ネットで安いホテルが＿。','網路上能找到便宜的飯店。'],['一緒に猫を＿。','一起找貓吧。']],
 'ならう':[['週に一回ピアノを＿。','每週學一次鋼琴。'],['今年は何も＿。','今年什麼都不學。'],['近くで日本語が＿。','附近能學日文。'],['来年、料理を＿。','明年來學做菜吧。']],
 'てつだう':[['母の料理を＿。','幫媽媽做菜。'],['今日は＿。','今天不幫忙。'],['少しなら＿。','一點點的話可以幫忙。'],['私も＿。','我也來幫忙吧。']]};
-const WLV=[[[0,1]],[[0,.6],[1,.4]],[[0,.3],[1,.3],[4,.4]],[[0,.2],[1,.2],[4,.2],[5,.4]]];
+const WLV=[[[0,1]],[[1,1]],[[4,1]],[[5,1]],[[0,.6],[1,.4]],[[0,.3],[1,.3],[4,.4]],[[0,.2],[1,.2],[4,.2],[5,.4]]];
 function wPickF(){const L=WLV[(META.wlv||1)-1];let r=Math.random();for(const [f,w] of L){if((r-=w)<0)return f}return L[0][0]}
 function wActive(){return (META.wst||1)>1?WF:WLV[(META.wlv||1)-1].map(x=>x[0])}
 function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
@@ -1369,9 +1369,9 @@ function wheelSVG(v,teach,act,hint,ord,lesson){const P=(i,ox,oy)=>`x="${(86*Math
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
   root.querySelectorAll('.wlbs text').forEach(t=>{const c=+t.dataset.i*90+a,x=86*Math.sin(c*Math.PI/180),y=-86*Math.cos(c*Math.PI/180);t.setAttribute('x',(x+(+t.dataset.ox||0)).toFixed(1));t.setAttribute('y',(y+(+t.dataset.oy||0)).toFixed(1))});
   root.querySelectorAll('.wsec').forEach((g,i)=>g.classList.toggle('on',i===idx));return idx}
-function wNeed(){const st=META.wst||1;return st===1?[10,20,40,80][(META.wlv||1)-1]:40}
+function wNeed(){const st=META.wst||1;return st===1?[10,10,10,10,20,40,80][(META.wlv||1)-1]:40}
 function wReset(b){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='再按一次確認重練';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='從第1關重練'}},3000);return}META.wst=1;META.wlv=1;META.wok=0;save();pendClear('v1');toast('轉盤進度歸零，從第1關開始');startVerb(1)}
-function wGain(){const st=META.wst||1,lv=META.wlv||1;META.wok=(META.wok||0)+1;if(META.wok>=wNeed()){META.wok=0;if(st===1&&lv<4){META.wlv=lv+1;toast('加入新的形：'+['','ない形','可能形','意向形'][lv])}else if(st<3){META.wst=st+1;toast(st===1?'解鎖第二階段：這是什麼段？':'解鎖第三階段：句子填空')}}save()}
+function wGain(){const st=META.wst||1,lv=META.wlv||1;META.wok=(META.wok||0)+1;if(META.wok>=wNeed()){META.wok=0;if(st===1&&lv<7){META.wlv=lv+1;toast(['','下一關：ない形','下一關：可能形','下一關：意向形','開始混合：ます形＋ない形','加入可能形一起混','加入意向形，四個一起混'][lv])}else if(st<3){META.wst=st+1;toast(st===1?'解鎖第二階段：這是什麼段？':'解鎖第三階段：句子填空')}}save()}
 const U_OF={};Object.entries(ROW).forEach(([u,r])=>{for(let k=0;k<4;k++)U_OF[r[k]]=u});
 function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice(-2),s2=c.slice(0,-2);
   if(f===2||f===3){if(/っ[てた]$/.test(c))["う","つ","る"].forEach(x=>out.add(c.slice(0,-2)+x));if(/ん[でだ]$/.test(c))["む","ぶ","ぬ"].forEach(x=>out.add(c.slice(0,-2)+x));
@@ -1432,7 +1432,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17r';
+const APP_VER='2026.11.17s';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
