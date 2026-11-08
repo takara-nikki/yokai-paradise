@@ -340,18 +340,10 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tile.stage3 .scene{width:52%;right:-2%;top:-14%}
 .tile.stage3 .wm{color:#9aa4c8;opacity:.22}
 .sh-stage{position:relative;flex:1 1 auto;min-height:220px;margin:6px 0 8px;border-radius:16px;overflow:hidden;background:radial-gradient(70% 45% at 50% 0%,rgba(143,168,224,.22),transparent 70%),linear-gradient(180deg,#0e0e14,#1c1712)}
-.sh-light{position:absolute;left:50%;top:-6%;width:120%;height:70%;transform:translateX(-50%);pointer-events:none;background:radial-gradient(18% 22% at 50% 12%,rgba(255,244,222,.95),rgba(255,214,160,.45) 35%,rgba(255,180,120,.12) 65%,transparent 80%),conic-gradient(from 180deg at 50% 10%,transparent 0 150deg,rgba(255,230,190,.08) 160deg,transparent 170deg,rgba(255,230,190,.07) 180deg,transparent 190deg,rgba(255,230,190,.08) 200deg,transparent 210deg 360deg);mix-blend-mode:screen}
-.sh-road{position:absolute;inset:0;clip-path:polygon(44% 8%,56% 8%,90% 100%,10% 100%);background:linear-gradient(180deg,#3a342e,#2a2420 40%,#1f1a16);}
-.sh-road::after{content:'';position:absolute;left:50%;top:8%;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,rgba(255,236,200,.75) 0 16px,transparent 16px 34px);mask-image:linear-gradient(180deg,transparent,#000 30%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)}
-.sh-curb{position:absolute;inset:0;background:repeating-linear-gradient(180deg,#E5483A 0 14px,#F4EFE3 14px 28px);mask-image:linear-gradient(180deg,transparent 6%,#000 35%)}
-.sh-curb.l{clip-path:polygon(43% 8%,44% 8%,10% 100%,4% 100%)}
-.sh-curb.r{clip-path:polygon(56% 8%,57% 8%,96% 100%,90% 100%)}
-.sh-speed{position:absolute;inset:0;pointer-events:none;opacity:0;background:repeating-conic-gradient(from 0deg at 50% 8%,transparent 0 6deg,rgba(255,240,220,.05) 6deg 7deg);transition:opacity .4s}
-.sh-stage.run .sh-road::after,.sh-stage.run .sh-curb{animation:shRoll .45s linear infinite}
-.sh-stage.run .sh-speed{opacity:1}
-@keyframes shRoll{from{background-position:0 0}to{background-position:0 34px}}
-.sh-stage.run .sh-curb{animation-duration:.4s}
-@media (prefers-reduced-motion:reduce){.sh-stage.run .sh-road::after,.sh-stage.run .sh-curb{animation:none}}
+.sh-light{position:absolute;left:50%;top:-6%;width:120%;height:70%;transform:translateX(-50%);pointer-events:none;z-index:1;background:radial-gradient(16% 20% at 50% 12%,rgba(245,248,255,.95),rgba(200,215,240,.45) 35%,rgba(160,180,215,.12) 65%,transparent 80%),conic-gradient(from 180deg at 50% 10%,transparent 0 150deg,rgba(255,230,190,.08) 160deg,transparent 170deg,rgba(255,230,190,.07) 180deg,transparent 190deg,rgba(255,230,190,.08) 200deg,transparent 210deg 360deg);mix-blend-mode:screen}
+.sh-forest{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sh-fog{position:absolute;left:0;right:0;top:18%;height:34%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(150,160,175,.10) 45%,transparent);filter:blur(6px)}
+.sh-stage{background:radial-gradient(60% 40% at 50% 4%,rgba(190,205,230,.25),transparent 70%),linear-gradient(180deg,#0b0f12,#121510 55%,#0f0d0a)!important}
 .sh-ysh,.sh-psh{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
 .sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.7) 40%,rgba(0,0,0,.92) 90%);border-radius:0;filter:blur(3px)}
 .sh-stage.caught .sh-ysh{background:linear-gradient(0deg,rgba(200,64,47,0) 0%,rgba(120,20,12,.8) 35%,rgba(0,0,0,.95) 85%)}
@@ -471,9 +463,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
   <div class="hud"><span id="sh-count">1 / 5</span><span class="combo" id="sh-score">踏 0</span><button class="ico" data-mute onclick="toggleMute()" aria-label="聲音開關"></button></div>
   <div class="sh-stage" id="sh-stage">
     <div class="sh-light"></div>
-    <div class="sh-road"></div>
-    <div class="sh-curb l"></div><div class="sh-curb r"></div>
-    <div class="sh-speed"></div>
+    <svg class="sh-forest" id="sh-forest" preserveAspectRatio="none"></svg>
+    <div class="sh-fog"></div>
     <div class="sh-ysh" id="sh-ysh"></div>
     <div class="sh-psh" id="sh-psh"></div>
     <img class="sh-yk" id="sh-yk" alt="">
@@ -671,12 +662,26 @@ function shShow(){const w=SH.list[SH.i];SH.run=false;SH.py=0;SH.pu=0;SH.heard=''
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='先「きく」聽一次，再按「影踏み」跟著唸';
   document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
 /* 直的小路：妖怪在前方（上面）往遠處跑，拖著影子；你在後面（下面）往前追，踩到影子就算跟上 */
+/* 森林小路：會左右轉彎（往前方彎），兩側杉樹剪影跟著彎 */
+const SHF={trees:null,phase:0,last:0};
+function shForestInit(){const svg=document.getElementById('sh-forest');let h='<defs><linearGradient id="shRoad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2a2219"/><stop offset=".7" stop-color="#3a3226"/><stop offset="1" stop-color="#6b6a66"/></linearGradient><radialGradient id="shFF"><stop offset="0" stop-color="#f6f0a8"/><stop offset="1" stop-color="#f6f0a8" stop-opacity="0"/></radialGradient></defs><path id="shRoadP" fill="url(#shRoad)"/><path id="shMossL" fill="none" stroke="#2f3a24" stroke-width="3" opacity=".8"/><path id="shMossR" fill="none" stroke="#2f3a24" stroke-width="3" opacity=".8"/><g id="shTrees"></g><g id="shFlies"></g>';svg.innerHTML=h;
+  const tr=[];for(let i=0;i<16;i++){const t=.05+Math.pow(i/15,1.3)*.9,side=i%2?1:-1;tr.push({t,side,off:.08+Math.random()*.18,h:.5+Math.random()*.35})}tr.sort((a,b)=>b.t-a.t);SHF.trees=tr;
+  document.getElementById('shFlies').innerHTML=Array.from({length:9},()=>`<circle r="${2+Math.random()*2}" fill="url(#shFF)" data-x="${Math.random()}" data-y="${.3+Math.random()*.55}" data-p="${Math.random()*6}"/>`).join('')}
+function shForest(W,H,bend){const svg=document.getElementById('sh-forest');if(!SHF.trees)shForestInit();svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const cx=t=>W/2+bend*W*t*t,y=t=>H*(1-t*.92),w=t=>W*(.86*(1-t)+.06*t);let L='',R='';const N=24;
+  for(let i=0;i<=N;i++){const t=i/N;L+=(i?'L':'M')+(cx(t)-w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}for(let i=N;i>=0;i--){const t=i/N;R+='L'+(cx(t)+w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}
+  document.getElementById('shRoadP').setAttribute('d',L+R+'Z');document.getElementById('shMossL').setAttribute('d',L);let r2='';for(let i=0;i<=N;i++){const t=i/N;r2+=(i?'L':'M')+(cx(t)+w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}document.getElementById('shMossR').setAttribute('d',r2);
+  let g='';for(const tr of SHF.trees){const t=tr.t,s=(1-.85*t),x=cx(t)+tr.side*(w(t)/2+W*tr.off*s),yy=y(t),hh=H*tr.h*s,ww=hh*.42,c=t>.6?'#141a17':t>.3?'#0d120f':'#070908';
+    g+=`<path fill="${c}" d="M${x} ${yy-hh} L${x+ww*.28} ${yy-hh*.62} L${x+ww*.16} ${yy-hh*.62} L${x+ww*.42} ${yy-hh*.3} L${x+ww*.24} ${yy-hh*.3} L${x+ww*.5} ${yy-hh*.04} L${x+ww*.06} ${yy-hh*.04} L${x+ww*.06} ${yy} L${x-ww*.06} ${yy} L${x-ww*.06} ${yy-hh*.04} L${x-ww*.5} ${yy-hh*.04} L${x-ww*.24} ${yy-hh*.3} L${x-ww*.42} ${yy-hh*.3} L${x-ww*.16} ${yy-hh*.62} L${x-ww*.28} ${yy-hh*.62} Z"/>`}
+  document.getElementById('shTrees').innerHTML=g;const now=performance.now()/1000;document.querySelectorAll('#shFlies circle').forEach(c=>{const p=+c.dataset.p;c.setAttribute('cx',(W*(+c.dataset.x)+Math.sin(now*.7+p)*10).toFixed(1));c.setAttribute('cy',(H*(+c.dataset.y)+Math.cos(now*.9+p)*8).toFixed(1));c.setAttribute('opacity',(.35+.35*Math.sin(now*2+p)).toFixed(2))});
+  return {cx,y}}
 function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;const B=v=>H*(.05+v*.8),S=v=>1-.55*v;
+  const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const bend=Math.sin(SHF.phase*.55+.8)*.22;const geo=shForest(W,H,bend);const X=v=>geo.cx(B(v)/H/.92*.92);
   const yv=.45+.5*SH.py,tail=Math.max(0,yv-.42),mv=Math.min(.95,.02+.55*SH.pu);
-  const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';
-  const sh=document.getElementById('sh-ysh'),sw=W*.5*S(tail),tw=yw*.55,f=Math.min(1,tw/sw);sh.style.width=sw+'px';sh.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`;sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
-  const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.scale=ms.toFixed(3);
-  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';ps.style.width=(W*.12)+'px';
+  const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';yk.style.left=X(yv)+'px';
+  const sh=document.getElementById('sh-ysh'),sw=W*.5*S(tail),tw=yw*.55,f=Math.min(1,tw/sw);sh.style.left=((X(yv)+X(tail))/2)+'px';sh.style.width=sw+'px';sh.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`;sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
+  const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.left=X(mv)+'px';me.style.scale=ms.toFixed(3);
+  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.left=((X(0)+X(mv))/2)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';ps.style.width=(W*.12)+'px';
   {const units=[...document.querySelectorAll('#sh-text i')];const n=units.reduce((a,u)=>a+(+u.dataset.n||1),0);let k=0;units.forEach(u=>{u.className=k<SH.pu*n?'u':k<SH.py*n?'y':'';k+=(+u.dataset.n||1)})}
   if(SH.started){yk.style.opacity=Math.max(.25,1-SH.pu*.75).toFixed(2);st.classList.toggle('caught',mv>=tail-.03&&SH.pu>.1)}else st.classList.remove('caught')}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
@@ -686,7 +691,7 @@ function shPaintRt(){const on=!!META.shRuby;document.querySelectorAll('#sh-rt .l
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
 /* 唸到哪裡：聽到的字依序對進句子（容許跳 3 個字） */
 function shProg(target,heard){const t=normJa(target),h=normJa(heard);let i=0;for(const c of h){for(let j=i;j<Math.min(t.length,i+4);j++){if(t[j]===c){i=j+1;break}}}return t.length?i/t.length:0}
-function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
+function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');SHF.last=performance.now();document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='妖怪開跑了——慢半拍跟著唸！';
   const useMic=!!SR&&!vc.denied;if(useMic){try{const r=new SR();SH.rec=r;r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
       r.onresult=e=>{let all='';for(let i=0;i<e.results.length;i++)all+=e.results[i][0].transcript;SH.heard=all;const p=shProg(w.ex,all);if(p>SH.pu){SH.pu=p;SH.started=true}};
@@ -1231,7 +1236,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12k';
+const APP_VER='2026.11.12l';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
