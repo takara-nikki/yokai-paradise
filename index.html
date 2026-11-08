@@ -30,6 +30,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
 .focus{padding-bottom:14px;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));flex-direction:column;overflow:hidden}
 .screen.focus.on{display:flex}
+.ios-tab .focus{padding-bottom:calc(14px + 64px)}
 /* 頂部名片 */
 .card-top{display:grid;grid-template-columns:62px 1fr auto;gap:4px 14px;align-items:center;margin-bottom:18px}
 .seal{grid-row:span 2;width:62px;height:62px;border-radius:50%;border:3px double var(--seal);display:grid;place-items:center;transform:rotate(-6deg);font-family:var(--fb);color:var(--seal);font-size:28px;line-height:1}
@@ -106,6 +107,11 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .inkfly{position:fixed;left:0;top:0;z-index:20;pointer-events:none;filter:drop-shadow(0 0 8px rgba(232,205,118,.95)) drop-shadow(0 0 18px rgba(224,106,85,.8))}
 .fu{margin:8px auto 6px;padding:12px 10px;background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 0 0 1.5px rgba(30,26,23,.55),inset 0 0 0 6px var(--paper);display:flex;gap:6px;justify-content:center;align-items:center;width:max-content;max-width:100%;flex:0 0 auto}
 .fu .head,.fu .foot{font-family:var(--fb);color:var(--paperInk);font-size:15px;writing-mode:vertical-rl;line-height:1.05;display:flex;align-items:center;gap:8px}
+/* 符紙放大：字樣改成壓在紙緣的小字，寫字框吃滿寬度 */
+.fu{position:relative;padding:14px}
+.fu .head,.fu .foot{position:absolute;z-index:2;pointer-events:none;font-size:12px;opacity:.75;gap:5px}
+.fu .head{left:3px;top:16px}.fu .foot{right:3px;bottom:12px}
+.fu .foot::after{width:18px;height:18px;font-size:11px}
 .fu .foot::after{content:"封";writing-mode:horizontal-tb;display:grid;place-items:center;width:22px;height:22px;border:1.5px solid var(--shu);border-radius:3px;color:var(--shu);font-size:14px;transform:rotate(-4deg);mix-blend-mode:multiply}
 .box{position:relative;border:1.5px dashed rgba(30,26,23,.3);border-radius:4px;background:rgba(255,255,255,.35);touch-action:none}
 .box canvas{display:block;width:100%;height:100%}
@@ -563,10 +569,10 @@ const YOKAI=[
 
 /* ===== 手寫框 ===== */
 const DPR=Math.min(window.devicePixelRatio||1,3);
-function makeBox(size,ch,onStroke){
-  const box=document.createElement('div');box.className='box';box.style.width=box.style.height=size+'px';
-  const c=document.createElement('canvas');c.width=c.height=Math.round(size*DPR);box.appendChild(c);
-  const g=document.createElement('div');g.className='ghost';g.style.fontSize=(size*.72)+'px';g.textContent=ch;g.hidden=true;box.appendChild(g);
+function makeBox(size,ch,onStroke,hh){const H=hh||size;
+  const box=document.createElement('div');box.className='box';box.style.width=size+'px';box.style.height=H+'px';
+  const c=document.createElement('canvas');c.width=Math.round(size*DPR);c.height=Math.round(H*DPR);box.appendChild(c);
+  const g=document.createElement('div');g.className='ghost';g.style.fontSize=(Math.min(size,H)*.8)+'px';g.textContent=ch;g.hidden=true;box.appendChild(g);
   const x=document.createElement('button');x.className='x';x.textContent='×';x.setAttribute('aria-label','清掉重寫');x.onclick=()=>clearBox(box);box.appendChild(x);
   const ctx=c.getContext('2d');ctx.scale(DPR,DPR);ctx.lineCap=ctx.lineJoin='round';ctx.strokeStyle='#1E1A17';ctx.lineWidth=Math.max(6,size*.045);
   box._strokes=[];box._drawing=false;let cur=null;
@@ -575,7 +581,7 @@ function makeBox(size,ch,onStroke){
   c.addEventListener('pointermove',e=>{if(!cur)return;const p=pos(e);cur.push(p);ctx.lineTo(...p);ctx.stroke()});
   const end=()=>{if(!cur)return;box._drawing=false;let len=0;for(let i=1;i<cur.length;i++)len+=Math.hypot(cur[i][0]-cur[i-1][0],cur[i][1]-cur[i-1][1]);if(len>size*.02||cur.length<4)box._strokes.push(cur);cur=null;box.classList.add('has');box.classList.remove('bad');onStroke&&onStroke()};
   c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
-  box._ctx=ctx;box._size=size;return box;
+  box._ctx=ctx;box._size=Math.max(size,H);return box;
 }
 function clearBox(box){box._strokes=[];box._ctx.clearRect(0,0,box._size,box._size);box.classList.remove('has','bad')}
 /* 寬鬆判定：跟字型字樣比形狀（IoU），加上筆畫數 */
@@ -692,16 +698,24 @@ function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=stud
   else{document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)'}study.raf=requestAnimationFrame(stTick)}
 function endStudy(){cancelAnimationFrame(study.raf);try{speechSynthesis.cancel()}catch(e){}study.onStart()}
 function leaveStudy(){cancelAnimationFrame(study.raf);try{speechSynthesis.cancel()}catch(e){}go('s-home')}
-function beginBattle(list,trace){ac();Object.assign(battle,{list:[...list],trace:!!trace,boxSize:0,failed:new Set(),reTimes:new Map(),okSet:new Set(),i:0,hp:5,combo:0,best:0,sealed:0,fled:[],locked:false,shooting:false});go('s-battle');nextYokai()}
+function beginBattle(list,trace){ac();Object.assign(battle,{list:[...list],trace:!!trace,boxSize:0,boxH:0,failed:new Set(),reTimes:new Map(),okSet:new Set(),i:0,hp:5,combo:0,best:0,sealed:0,fled:[],locked:false,shooting:false});go('s-battle');nextYokai()}
 function renderSlots(bad){const w=battle.word;document.getElementById('slots').innerHTML=[...w.k].map((ch,i)=>`<span class="slot ${i<battle.ci?'done':i===battle.ci?(bad?'cur bad':'cur'):''}">${i<battle.ci?ch:''}</span>`).join('')}
 function updStroke(r){const w=battle.word;if(battle.ci>=w.k.length){document.getElementById('strk').textContent='';return}const ch=w.k[battle.ci];r=r||analyze(battle.box,ch);
   const need=r.total.join('或'),cls=r.n>Math.max(...r.total)?'over':r.total.includes(r.n)?'ok':'';
   document.getElementById('strk').innerHTML=`第 ${battle.ci+1} 字・已寫 <b class="${cls}">${r.n}</b>／${need} 筆${r.mk==='d'?'（含濁點 2 筆）':r.mk==='h'?'（含半濁點 1 筆）':''}`}
-function bigSize(){const W=Math.min(window.innerWidth,520)-32-64;return Math.max(170,Math.min(320,W,window.innerHeight-490))}
+function bigSize(){return Math.max(170,Math.min(360,Math.min(window.innerWidth,520)-32-28))}
 function sayWord(){if(battle.word)say(battle.word.k)}
-function newBox(ch){const holder=document.getElementById('boxes'),scr=document.getElementById('s-battle');let size=battle.boxSize||bigSize(),b;
-  for(let k=0;k<3;k++){holder.innerHTML='';b=makeBox(size,ch,autoCheck);holder.appendChild(b);const over=scr.scrollHeight-scr.clientHeight;if(over<=0||size<=130)break;size=Math.max(130,size-over-8)}
-  battle.boxSize=size;b._onStart=()=>clearTimeout(battle.autoT);battle.box=b;return b}
+/* 符紙盡量撐滿下方空間：寬度吃滿，高度往下長（最多 1.6 倍寬），太擠才縮；畫面排好後再量 */
+function resizeBox(box,w,h){box.style.width=w+'px';box.style.height=h+'px';const c=box.querySelector('canvas');c.width=Math.round(w*DPR);c.height=Math.round(h*DPR);
+  const ctx=c.getContext('2d');ctx.setTransform(DPR,0,0,DPR,0,0);ctx.lineCap=ctx.lineJoin='round';ctx.strokeStyle='#1E1A17';ctx.lineWidth=Math.max(6,w*.045);box._ctx=ctx;box._size=Math.max(w,h);
+  box.querySelector('.ghost').style.fontSize=(Math.min(w,h)*.8)+'px';box._strokes=[];box.classList.remove('has','bad')}
+function fitBox(){const box=battle.box,scr=document.getElementById('s-battle');if(!box||box._strokes.length||!scr.classList.contains('on'))return;let w=battle.boxSize,h=battle.boxH;
+  for(let k=0;k<6;k++){const over=scr.scrollHeight-scr.clientHeight;const fr=scr.getBoundingClientRect(),pb=parseFloat(getComputedStyle(scr).paddingBottom)||0,last=scr.lastElementChild.getBoundingClientRect().bottom,free=Math.round(fr.bottom-pb-last);
+    let nw=w,nh=h;if(over>0||free<-2){const cut=Math.max(over,-free)+6,minH=Math.max(150,Math.round(w*.62));if(h>minH)nh=Math.max(minH,h-cut);else{nw=Math.max(130,w-cut);nh=Math.max(130,Math.min(nh,nw))}}else if(free>8&&h<w*1.6)nh=Math.min(Math.round(w*1.6),h+free);else break;
+    if(nw===w&&nh===h)break;w=nw;h=nh;resizeBox(box,w,h)}
+  battle.boxSize=w;battle.boxH=h}
+function newBox(ch){const holder=document.getElementById('boxes');const size=battle.boxSize||bigSize(),h=battle.boxH||size;
+  holder.innerHTML='';const b=makeBox(size,ch,autoCheck,h);holder.appendChild(b);battle.boxSize=size;battle.boxH=h;requestAnimationFrame(()=>requestAnimationFrame(fitBox));b._onStart=()=>clearTimeout(battle.autoT);battle.box=b;return b}
 function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
   const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?YOKAI[4]:YOKAI[Math.floor(Math.random()*4)];
@@ -792,6 +806,8 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
   function roll(el,to,dur=900,delay=0){if(!el)return;if(typeof to!=='number'||reduce){el.textContent=to;return}el.textContent='0';setTimeout(()=>{const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/dur);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else bump(el)};requestAnimationFrame(f)},delay)}
   function trail(img,ms){if(reduce)return;const id=setInterval(()=>{if(!img.isConnected){clearInterval(id);return}const r=img.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:3,speed:.7,up:0,g:.02,size:5,life:26,kind:0,cols:['#1E1A17','#2b2420','#D4A54A']})},28);setTimeout(()=>clearInterval(id),ms+60)}
   return {burst,at,shake,buzz,flash,stamp,combo,bump,roll,trail,reduce}})();
+/* iPhone Safari 分頁模式：底部浮動工具列會蓋住畫面，專注頁底部多留空間（加到主畫面後不需要） */
+(()=>{const ios=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)document.documentElement.classList.add('ios-tab')})();
 function showResult(o){document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
   document.getElementById('r-l1').textContent=o.l1;document.getElementById('r-v1').textContent=o.v1;document.getElementById('r-l2').textContent=o.l2;document.getElementById('r-v2').textContent=o.v2;document.getElementById('r-v3').textContent=o.v3;
   document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result');
@@ -1015,7 +1031,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10f';
+const APP_VER='2026.11.10k';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
