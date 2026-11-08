@@ -132,6 +132,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
 .blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
+.hp .inf{font-size:26px;line-height:1;font-weight:700;color:#E06A55;letter-spacing:0}
 .blk .jl{display:block;line-height:1.7}.blk rt,#st-list rt{font-size:.48em;font-weight:500;opacity:.75;letter-spacing:0}#st-list .k{line-height:1.8}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
 .blk.sel{box-shadow:0 0 0 3px var(--gold),0 0 22px rgba(212,165,74,.6)}
 .blk.wrong{animation:shake .4s;border-color:var(--sakura)}
@@ -741,7 +742,9 @@ function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practic
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
   const pre='';
   if(voiceStart()){fb.textContent=pre+'唸出日文，方塊就消掉';setTimeout(()=>{if(vc.on)lavaVol(.1)},1400)}else fb.textContent=pre+'唸出日文後點一下方塊'}
-function lvHud(){document.getElementById('l-hp').innerHTML=hearts(lv.hp);document.getElementById('l-count').textContent=`${lv.done} / ${lv.total}`;document.getElementById('l-gems').lastChild.textContent=' '+lv.gems}
+/* 之後要收費時改成 false，就會恢復 5 條命 */
+const LAVA_INFINITE=true;
+function lvHud(){document.getElementById('l-hp').innerHTML=LAVA_INFINITE?'<span class="inf" aria-label="無限命">∞</span>':hearts(lv.hp);document.getElementById('l-count').textContent=`${lv.done} / ${lv.total}`;document.getElementById('l-gems').lastChild.textContent=' '+lv.gems}
 const LANES=['2%','34.5%','67%'];
 function mkBlock(p,type,lane,y,v,uid){const ar=document.getElementById('arena');const el=document.createElement('button');el.className='blk '+type;
   el.innerHTML=`<span class="jl">${META.ruby!==false?rbx(p.j,p.r):p.j}</span><span class="zl">${p.m}</span>`;const b={p,uid,type,lane,y,el,alive:true,v:v||1};
@@ -770,7 +773,7 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
   }
   lv.raf=requestAnimationFrame(lvLoop)}
 function kill(b,cls){b.alive=false;if(lv.sel===b)lv.sel=null;b.el.onclick=null;if(cls){b.el.classList.add(cls);setTimeout(()=>b.el.remove(),520)}else b.el.remove()}
-function burn(b){const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(!lv.practice){lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
+function burn(b){const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r);match(b,null)}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
@@ -932,7 +935,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09s';
+const APP_VER='2026.11.09t';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
