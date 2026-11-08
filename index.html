@@ -491,6 +491,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .vrule2{grid-column:1/-1;text-align:center;margin:0 0 14px}.vrule2 h3{margin:4px 0 2px;font-size:20px;color:var(--ink)}.vrule2 .lead{margin:0 0 4px;font-size:13px;color:var(--dim)}.vrule2 .wwrap .wsvg{width:min(86vw,330px);height:auto}.vrule2 .wfm{fill:var(--dim)}
 .wsvg{overflow:visible}
 .wreset{margin:2px auto 0;display:block;font:inherit;font-size:12px;color:var(--dim);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:30px;cursor:pointer}.wreset[data-arm]{color:#F29AB8;border-color:#F29AB8}
+.inkfly{filter:drop-shadow(0 0 6px rgba(255,80,50,.95)) drop-shadow(0 0 16px rgba(255,60,40,.8))}
+.good canvas{filter:drop-shadow(0 0 6px rgba(255,80,50,.95)) drop-shadow(0 0 14px rgba(255,60,40,.7))}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1075,7 +1077,7 @@ function judge(){clearTimeout(battle.autoT);if(battle.locked||battle.shooting)re
 function hitChar(){if(battle.locked||battle.shooting)return;const w=battle.word,ch=w.k[battle.ci],box=battle.box;battle.shooting=true;
   battle.ci++;battle.charTries=0;const final=battle.ci>=w.k.length;
   box.classList.add('good');SFX.pick();const fb=document.getElementById('fb');fb.className='feedback ok';fb.textContent=`「${ch}」——悪霊退散！`;renderSlots();
-  const r=box.getBoundingClientRect(),cv=box.querySelector('canvas');let url='';try{url=cv.toDataURL()}catch(e){}
+  const r=box.getBoundingClientRect(),cv=box.querySelector('canvas');let url='';try{const x=cv.getContext('2d');x.save();x.globalCompositeOperation='source-in';x.fillStyle='#E0402F';x.fillRect(0,0,cv.width,cv.height);x.restore();url=cv.toDataURL()}catch(e){}
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(()=>{
     const img=document.createElement('img');img.className='inkfly';img.alt='';img.src=url;img.style.width=img.style.height=r.width+'px';document.body.appendChild(img);
@@ -1430,7 +1432,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17q';
+const APP_VER='2026.11.17r';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
