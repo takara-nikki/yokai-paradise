@@ -157,6 +157,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
 #fx{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
+.fx-splat{position:fixed;z-index:61;pointer-events:none;mix-blend-mode:normal}.fx-splat svg{width:100%;height:100%;display:block}
 .fx-flash{position:fixed;inset:0;pointer-events:none;z-index:59}
 .fx-stamp{position:fixed;left:50%;top:38%;z-index:61;pointer-events:none;font-family:"Yuji Syuku",serif;font-size:52px;line-height:1.1;color:#E06A55;border:4px double #E06A55;border-radius:12px;padding:6px 18px 2px;background:rgba(22,19,17,.6);text-shadow:0 2px 0 rgba(0,0,0,.45);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .fx-stamp.combo{color:#E7C47A;border:2px solid rgba(212,165,74,.8);outline:1px solid rgba(212,165,74,.35);outline-offset:3px;font-size:46px}
@@ -844,7 +845,15 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
   function bump(el){if(reduce||!el)return;el.animate([{scale:'1'},{scale:'1.35'},{scale:'1'}],{duration:340,easing:'cubic-bezier(.3,1.6,.5,1)'})}
   function roll(el,to,dur=900,delay=0){if(!el)return;if(typeof to!=='number'||reduce){el.textContent=to;return}el.textContent='0';setTimeout(()=>{const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/dur);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else bump(el)};requestAnimationFrame(f)},delay)}
   function trail(img,ms){if(reduce)return;const id=setInterval(()=>{if(!img.isConnected){clearInterval(id);return}const r=img.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:3,speed:.7,up:0,g:.02,size:5,life:26,kind:0,cols:['#1E1A17','#2b2420','#D4A54A']})},28);setTimeout(()=>clearInterval(id),ms+60)}
-  return {burst,at,shake,buzz,flash,stamp,combo,bump,roll,trail,reduce}})();
+  /* 朱紅水墨潑濺：在目標上蓋一團墨花，再淡出 */
+  function splat(el,o={}){if(reduce||!el)return;const r=el.getBoundingClientRect(),d=document.createElement('div');d.className='fx-splat';const S=Math.min(r.width,r.height)*(o.scale||.9);
+    let blobs='';const n=7+Math.floor(Math.random()*5);for(let i=0;i<n;i++){const a=Math.random()*6.28,dist=Math.random()*38,rr=6+Math.random()*16;blobs+=`<circle cx="${50+Math.cos(a)*dist}" cy="${50+Math.sin(a)*dist}" r="${rr}"/>`}
+    for(let i=0;i<10;i++){const a=Math.random()*6.28,dist=40+Math.random()*12;blobs+=`<circle cx="${50+Math.cos(a)*dist}" cy="${50+Math.sin(a)*dist}" r="${1+Math.random()*3}"/>`}
+    const fid="sp"+Math.random().toString(36).slice(2);d.innerHTML=`<svg viewBox="-10 -10 120 120" overflow="visible"><defs><filter id="${fid}" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="${Math.random()*99|0}"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter></defs><g fill="${o.col||'#C8402F'}" filter="url(#${fid})">${blobs}<circle cx="50" cy="50" r="22"/></g></svg>`;
+    d.style.cssText=`left:${r.left+r.width/2-S/2+(Math.random()-.5)*r.width*.2}px;top:${r.top+r.height*.45-S/2}px;width:${S}px;height:${S}px`;document.body.appendChild(d);
+    d.animate([{transform:'scale(.2) rotate(0deg)',opacity:.95},{transform:'scale(1.05) rotate(20deg)',opacity:.85,offset:.18},{transform:'scale(1.1) rotate(24deg)',opacity:.7,offset:.6},{transform:'scale(1.15) rotate(26deg)',opacity:0}],{duration:o.dur||900,easing:'cubic-bezier(.2,.9,.3,1)'}).onfinish=()=>d.remove();
+    burst(r.left+r.width/2,r.top+r.height*.45,{n:o.n||22,w:r.width*.5,speed:6,up:2,g:.25,size:5,cols:['#C8402F','#E06A55','#8E1F14','#1E1A17','#C8402F']})}
+  return {burst,at,shake,buzz,flash,stamp,combo,bump,roll,trail,splat,reduce}})();
 /* iPhone Safari 分頁模式：底部浮動工具列會蓋住畫面，專注頁底部多留空間（加到主畫面後不需要） */
 (()=>{const ios=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)document.documentElement.classList.add('ios-tab')})();
 function showResult(o){document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
@@ -1070,7 +1079,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11j';
+const APP_VER='2026.11.11l';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1088,11 +1097,11 @@ function startSumo(){ac();if(!SM.open||!SM.deck.length){SM.miss=[...new Set(SM.m
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
   w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
-function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*.065,c=ring*.5;
+function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*(SM.foe&&SM.foe.boss?.045:.065),c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
-function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
+function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;SM.need=y.boss?4:2;SM.lose=y.boss?-2:-3;SM.dur=y.boss?8000:10000;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);if(y.boss&&!FX.reduce){smBossIntro(y);return}cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
 /* 大魔王進場：場內暗下、橫幅「見参」劃過、從天而降水花四濺、重震 */
@@ -1124,12 +1133,12 @@ function smTick(){const el=(performance.now()-SM.t0)/SM.dur;document.getElementB
 function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);document.querySelectorAll('#sm-moves .move').forEach(b=>b.disabled=true);
   const v=SM.verb,full=conj(v.d,v.g,SM.f),e=v.d.slice(-1),m=document.getElementById('sm-msg'),ok=o===SM.ans;
   const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
-  if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.at(document.getElementById('sm-foe'),{n:16,speed:4});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
-  else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('ring'),6);FX.buzz(60);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.splat(document.getElementById('sm-foe-img'),{scale:SM.foe.boss?.6:.75});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
+  else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('s-sumo'),7,220);FX.buzz(80);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
   {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
-    if(SM.pos>=3){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
-    else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
+    if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
+    else if(SM.pos<=SM.lose){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?1300:3200)}
 function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
 function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;document.getElementById('sm-scroll').hidden=true;go('s-vsel')}
