@@ -344,7 +344,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-forest{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .sh-fog{position:absolute;left:0;right:0;top:18%;height:34%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(150,160,175,.10) 45%,transparent);filter:blur(6px)}
 .sh-stage{background:radial-gradient(60% 40% at 50% 4%,rgba(190,205,230,.25),transparent 70%),linear-gradient(180deg,#0b0f12,#121510 55%,#0f0d0a)!important}
-.sh-ysh,.sh-psh{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
+.sh-ysh,.sh-psh{display:none;position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
 .sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.7) 40%,rgba(0,0,0,.92) 90%);border-radius:0;filter:blur(3px)}
 .sh-stage.caught .sh-ysh{background:linear-gradient(0deg,rgba(200,64,47,0) 0%,rgba(120,20,12,.8) 35%,rgba(0,0,0,.95) 85%)}
 .sh-psh{border-radius:0;background:linear-gradient(0deg,rgba(150,40,28,0) 0%,rgba(150,40,28,.45) 45%,rgba(90,20,14,.8) 95%);filter:blur(2.5px)}
@@ -664,28 +664,50 @@ function shShow(){const w=SH.list[SH.i];SH.run=false;SH.py=0;SH.pu=0;SH.heard=''
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='先「きく」聽一次，再按「影踏み」跟著唸';
   document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
 /* 直的小路：妖怪在前方（上面）往遠處跑，拖著影子；你在後面（下面）往前追，踩到影子就算跟上 */
-/* 森林小路：會左右轉彎（往前方彎），兩側杉樹剪影跟著彎 */
-const SHF={trees:null,phase:0,last:0};
-function shForestInit(){const svg=document.getElementById('sh-forest');let h='<defs><linearGradient id="shRoad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2a2219"/><stop offset=".7" stop-color="#3a3226"/><stop offset="1" stop-color="#6b6a66"/></linearGradient><radialGradient id="shFF"><stop offset="0" stop-color="#f6f0a8"/><stop offset="1" stop-color="#f6f0a8" stop-opacity="0"/></radialGradient></defs><path id="shRoadP" fill="url(#shRoad)"/><path id="shMossL" fill="none" stroke="#2f3a24" stroke-width="3" opacity=".8"/><path id="shMossR" fill="none" stroke="#2f3a24" stroke-width="3" opacity=".8"/><g id="shTrees"></g><g id="shFlies"></g>';svg.innerHTML=h;
-  const tr=[];for(let i=0;i<16;i++){const t=.05+Math.pow(i/15,1.3)*.9,side=i%2?1:-1;tr.push({t,side,off:.08+Math.random()*.18,h:.5+Math.random()*.35})}tr.sort((a,b)=>b.t-a.t);SHF.trees=tr;
-  document.getElementById('shFlies').innerHTML=Array.from({length:9},()=>`<circle r="${2+Math.random()*2}" fill="url(#shFF)" data-x="${Math.random()}" data-y="${.3+Math.random()*.55}" data-p="${Math.random()*6}"/>`).join('')}
-function shForest(W,H,bend){const svg=document.getElementById('sh-forest');if(!SHF.trees)shForestInit();svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  const cx=t=>W/2+bend*W*t*t,y=t=>H*(1-t*.92),w=t=>W*(.86*(1-t)+.06*t);let L='',R='';const N=24;
-  for(let i=0;i<=N;i++){const t=i/N;L+=(i?'L':'M')+(cx(t)-w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}for(let i=N;i>=0;i--){const t=i/N;R+='L'+(cx(t)+w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}
-  document.getElementById('shRoadP').setAttribute('d',L+R+'Z');document.getElementById('shMossL').setAttribute('d',L);let r2='';for(let i=0;i<=N;i++){const t=i/N;r2+=(i?'L':'M')+(cx(t)+w(t)/2).toFixed(1)+' '+y(t).toFixed(1)}document.getElementById('shMossR').setAttribute('d',r2);
-  let g='';for(const tr of SHF.trees){const t=tr.t,s=(1-.85*t),x=cx(t)+tr.side*(w(t)/2+W*tr.off*s),yy=y(t),hh=H*tr.h*s,ww=hh*.42,c=t>.6?'#141a17':t>.3?'#0d120f':'#070908';
-    g+=`<path fill="${c}" d="M${x} ${yy-hh} L${x+ww*.28} ${yy-hh*.62} L${x+ww*.16} ${yy-hh*.62} L${x+ww*.42} ${yy-hh*.3} L${x+ww*.24} ${yy-hh*.3} L${x+ww*.5} ${yy-hh*.04} L${x+ww*.06} ${yy-hh*.04} L${x+ww*.06} ${yy} L${x-ww*.06} ${yy} L${x-ww*.06} ${yy-hh*.04} L${x-ww*.5} ${yy-hh*.04} L${x-ww*.24} ${yy-hh*.3} L${x-ww*.42} ${yy-hh*.3} L${x-ww*.16} ${yy-hh*.62} L${x-ww*.28} ${yy-hh*.62} Z"/>`}
-  document.getElementById('shTrees').innerHTML=g;const now=performance.now()/1000;document.querySelectorAll('#shFlies circle').forEach(c=>{const p=+c.dataset.p;c.setAttribute('cx',(W*(+c.dataset.x)+Math.sin(now*.7+p)*10).toFixed(1));c.setAttribute('cy',(H*(+c.dataset.y)+Math.cos(now*.9+p)*8).toFixed(1));c.setAttribute('opacity',(.35+.35*Math.sin(now*2+p)).toFixed(2))});
-  return {cx,y}}
-function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;const B=v=>H*(.05+v*.8),S=v=>1-.55*v;
-  const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const bend=Math.sin(SHF.phase*.55+.8)*.22;const geo=shForest(W,H,bend);const X=v=>geo.cx(B(v)/H/.92*.92);
-  const yv=.45+.5*SH.py,tail=Math.max(0,yv-.52),mv=Math.min(.95,.02+.55*SH.pu);
-  const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';yk.style.left=X(yv)+'px';
-  const sh=document.getElementById('sh-ysh'),sw=W*.5*S(tail),tw=yw*.55,f=Math.min(1,tw/sw);sh.style.left=((X(yv)+X(tail))/2)+'px';sh.style.width=sw+'px';sh.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`;sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
-  const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.left=X(mv)+'px';me.style.scale=ms.toFixed(3);
-  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.left=((X(0)+X(mv))/2)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';{const bw=W*.34,tw=34*ms*.9,f=Math.min(1,tw/bw);ps.style.width=bw+'px';ps.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`}
+/* 森林小路（水墨風）：路會左右轉彎，妖怪和你都沿著彎道走；影子畫在路面上、貼著腳往你這邊拖，越近越寬 */
+const SHF={phase:0,last:0,ready:false,trees:[]};
+const shT={y:(t,H)=>H*(1-t*.9),cx:(t,W,b)=>W/2+b*W*t*t,hw:(t,W)=>W*(.36*(1-t)+.03*t),S:t=>1-.78*t};
+function shForestInit(){const svg=document.getElementById('sh-forest');
+  svg.innerHTML=`<defs>
+    <filter id="shInk" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.5"/></filter>
+    <filter id="shBlur"><feGaussianBlur stdDeviation="3"/></filter><filter id="shBlur2"><feGaussianBlur stdDeviation="7"/></filter>
+    <filter id="shGrain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 0 0 0 .22 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+    <linearGradient id="shGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2621"/><stop offset=".5" stop-color="#121813"/><stop offset="1" stop-color="#0b0e0b"/></linearGradient>
+    <linearGradient id="shRoadG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#211b15"/><stop offset=".5" stop-color="#2f2922"/><stop offset=".85" stop-color="#55575a"/><stop offset="1" stop-color="#9aa0aa"/></linearGradient>
+    <linearGradient id="shMistG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb0c2" stop-opacity="0"/><stop offset=".35" stop-color="#9fb0c2" stop-opacity=".16"/><stop offset=".6" stop-color="#9fb0c2" stop-opacity=".05"/><stop offset="1" stop-color="#9fb0c2" stop-opacity="0"/></linearGradient><radialGradient id="shFF"><stop offset="0" stop-color="#f3efb2"/><stop offset="1" stop-color="#f3efb2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="shYS" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000" stop-opacity=".92"/><stop offset=".55" stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+    <linearGradient id="shYSr" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1a0503" stop-opacity=".95"/><stop offset=".5" stop-color="#7a1a10" stop-opacity=".7"/><stop offset="1" stop-color="#C8402F" stop-opacity="0"/></linearGradient>
+    <linearGradient id="shPS" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#140806" stop-opacity=".85"/><stop offset="1" stop-color="#140806" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect id="shGnd" fill="url(#shGround)"/><path id="shRidge1" fill="#2a343b" opacity=".55"/><path id="shRidge2" fill="#1c252b" opacity=".75"/>
+  <g id="shTreesB"></g><rect id="shMist" fill="url(#shMistG)"/>
+  <path id="shRoadEdge" fill="#0c0f0c" filter="url(#shBlur)"/><path id="shRoad" fill="url(#shRoadG)"/><path id="shRoadGr" fill="#fff" filter="url(#shGrain)"/><path id="shWorn" fill="#d8d2c4" opacity=".07" filter="url(#shBlur)"/>
+  <path id="shYSh" filter="url(#shBlur)"/><path id="shPSh" fill="url(#shPS)" filter="url(#shBlur)"/>
+  <g id="shTreesF"></g><g id="shFlies"></g>`;
+  const cedar='M0 -1 C.03 -.93 .07 -.86 .1 -.8 C.07 -.8 .06 -.79 .05 -.78 C.11 -.68 .16 -.6 .2 -.54 C.15 -.54 .12 -.53 .1 -.52 C.17 -.4 .23 -.32 .29 -.24 C.22 -.23 .15 -.22 .06 -.2 L.04 0 L-.04 0 L-.06 -.2 C-.15 -.22 -.22 -.23 -.29 -.24 C-.23 -.32 -.17 -.4 -.1 -.52 C-.12 -.53 -.15 -.54 -.2 -.54 C-.16 -.6 -.11 -.68 -.05 -.78 C-.06 -.79 -.07 -.8 -.1 -.8 C-.07 -.86 -.03 -.93 0 -1 Z';
+  const mk=(gid,list)=>{const g=document.getElementById(gid);list.forEach(tr=>{const e=document.createElementNS('http://www.w3.org/2000/svg','path');e.setAttribute('d',cedar);e.setAttribute('fill',tr.c);if(tr.o!=null)e.setAttribute('opacity',tr.o);g.appendChild(e);tr.el=e})};
+  const back=[],front=[];for(let i=0;i<28;i++){const t=.1+(i/27)*.86,side=i%2?1:-1,tr={t,side,off:.04+Math.random()*.2,h:.2+Math.random()*.16};tr.c=t>.55?'#26302e':t>.3?'#151c1a':'#0b100e';tr.o=(1-t*.55).toFixed(2);back.push(tr)}
+  for(let i=0;i<2;i++){const side=i%2?1:-1;front.push({t:.01,side,off:.26+Math.random()*.06,h:.62+Math.random()*.12,c:'#060806'})}
+  back.sort((a,b)=>b.t-a.t);mk('shTreesB',back);mk('shTreesF',front);SHF.trees=back.concat(front);
+  document.getElementById('shFlies').innerHTML=Array.from({length:10},()=>`<circle r="${1.6+Math.random()*2.2}" fill="url(#shFF)" data-x="${Math.random()}" data-y="${.35+Math.random()*.55}" data-p="${Math.random()*6}"/>`).join('');SHF.ready=true}
+function shPoly(W,H,b,t0,t1,k0,k1,N=14){const L=[],R=[];for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N,k=k0+(k1-k0)*i/N,x=shT.cx(t,W,b),hw=shT.hw(t,W)*k,y=shT.y(t,H);L.push(`${(x-hw).toFixed(1)} ${y.toFixed(1)}`);R.unshift(`${(x+hw).toFixed(1)} ${y.toFixed(1)}`)}return 'M'+L.join(' L')+' L'+R.join(' L')+' Z'}
+function shForest(W,H,b){const svg=document.getElementById('sh-forest');if(!SHF.ready)shForestInit();svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const g=document.getElementById('shGnd');g.setAttribute('x',0);g.setAttribute('y',H*.12);g.setAttribute('width',W);g.setAttribute('height',H);
+  const hz=shT.y(1,H);{const m=document.getElementById('shMist');m.setAttribute('x',0);m.setAttribute('y',hz-H*.02);m.setAttribute('width',W);m.setAttribute('height',H*.55)}document.getElementById('shRidge1').setAttribute('d',`M0 ${hz+H*.06} Q${W*.2} ${hz-H*.05} ${W*.42} ${hz+H*.02} T${W} ${hz-H*.02} L${W} ${hz+H*.2} L0 ${hz+H*.2}Z`);
+  document.getElementById('shRidge2').setAttribute('d',`M0 ${hz+H*.12} Q${W*.3} ${hz+H*.02} ${W*.6} ${hz+H*.1} T${W} ${hz+H*.06} L${W} ${hz+H*.3} L0 ${hz+H*.3}Z`);
+  const road=shPoly(W,H,b,0,1,1,1,28);document.getElementById('shRoad').setAttribute('d',road);document.getElementById('shRoadGr').setAttribute('d',road);
+  document.getElementById('shRoadEdge').setAttribute('d',shPoly(W,H,b,0,1,1.12,1.25,28));document.getElementById('shWorn').setAttribute('d',shPoly(W,H,b,0,1,.35,.35,28));
+  for(const tr of SHF.trees){const s=shT.S(tr.t),x=shT.cx(tr.t,W,b)+tr.side*(shT.hw(tr.t,W)*1.15+W*tr.off*s),y=shT.y(tr.t,H),sc=H*tr.h*s;tr.el.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(sc*.95).toFixed(1)} ${sc.toFixed(1)})`)}
+  const now=performance.now()/1000;document.querySelectorAll('#shFlies circle').forEach(c=>{const p=+c.dataset.p;c.setAttribute('cx',(W*(+c.dataset.x)+Math.sin(now*.7+p)*10).toFixed(1));c.setAttribute('cy',(H*(+c.dataset.y)+Math.cos(now*.9+p)*8).toFixed(1));c.setAttribute('opacity',(.3+.35*Math.sin(now*2+p)).toFixed(2))})}
+function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;
+  const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const b=Math.sin(SHF.phase*.55+.8)*.2;shForest(W,H,b);
+  const ty=.5+.4*SH.py,tt=Math.max(0,ty-.55),tm=Math.min(.88,.02+.44*SH.pu),caught=SH.started&&SH.pu>.1&&tm>=tt-.02;
+  const yk=document.getElementById('sh-yk'),yw=W*.42*shT.S(ty);yk.style.width=yw+'px';yk.style.bottom=(H-shT.y(ty,H)-yw*.06)+'px';yk.style.left=shT.cx(ty,W,b)+'px';
+  const ys=document.getElementById('shYSh');ys.setAttribute('d',shPoly(W,H,b,ty,tt,.16,.62));const gid=caught?'shYSr':'shYS';const gr=document.getElementById(gid);gr.setAttribute('x1',0);gr.setAttribute('x2',0);gr.setAttribute('y1',shT.y(ty,H));gr.setAttribute('y2',shT.y(tt,H));ys.setAttribute('fill',`url(#${gid})`);
+  const me=document.getElementById('sh-me'),ms=shT.S(tm)*1.25;me.style.bottom=(H-shT.y(tm,H))+'px';me.style.left=shT.cx(tm,W,b)+'px';me.style.scale=ms.toFixed(3);
+  const t2=Math.max(0,tm-.3),pg=document.getElementById('shPS');pg.setAttribute('x1',0);pg.setAttribute('x2',0);pg.setAttribute('y1',shT.y(tm,H));pg.setAttribute('y2',shT.y(t2,H)+H*.05);document.getElementById('shPSh').setAttribute('d',shPoly(W,H,b,tm,t2-.06,.1,.36));
   {const units=[...document.querySelectorAll('#sh-text i')];const n=units.reduce((a,u)=>a+(+u.dataset.n||1),0);let k=0;units.forEach(u=>{u.className=k<SH.pu*n?'u':k<SH.py*n?'y':'';k+=(+u.dataset.n||1)})}
-  if(SH.started){yk.style.opacity=Math.max(.25,1-SH.pu*.75).toFixed(2);st.classList.toggle('caught',mv>=tail-.03&&SH.pu>.1)}else st.classList.remove('caught')}
+  if(SH.started)yk.style.opacity=Math.max(.3,1-SH.pu*.7).toFixed(2);st.classList.toggle('caught',caught)}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
   const h={start:0};u.onstart=()=>{h.start=performance.now()};u.onend=()=>{onend&&onend()};u.onerror=()=>{onend&&onend()};ss.speak(u);return h}
 function shRuby(v){META.shRuby=!!v;save();shPaintRt();if(!SH.run){const w=SH.list[SH.i];if(w&&!document.getElementById('sh-text').classList.contains('rb'))shShow()}}
@@ -1238,7 +1260,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12p';
+const APP_VER='2026.11.12t';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
