@@ -706,7 +706,7 @@ const EX_RUBY={"悪いことをしたら、すぐ謝るべきです。":"<ruby>�
 const exRb=t=>EX_RUBY[t]||t;
 const SH={hp:3,streak:0,win:false,winT:0,list:[],i:0,ok:0,best:0,failed:[],run:false,raf:0,py:0,pu:0,t0:0,est:0,ended:0,rec:null,heard:'',follow:[],started:false};
 function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&normJa(w.ex).length>=8&&normJa(w.ex).length<=26)}
-function startShadow(prev){ac();const pool=shPool();const list=prev&&prev.length?prev:shuffle(pool).slice(0,5);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0,maxStreak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
+function startShadow(prev){ac();const pool=shPool();const len=w=>normJa(w.ex).length;const list=(prev&&prev.length?prev.slice():(()=>{const b=[...pool].sort((x,y)=>len(x)-len(y)),q=b.length,pk=[];for(let k=0;k<5;k++){const lo=Math.floor(q*k/5),hi=Math.floor(q*(k+1)/5);pk.push(b[lo+Math.floor(Math.random()*(hi-lo))])}return pk})()).sort((x,y)=>len(x)-len(y));Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0,maxStreak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
 function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hidden=true};if(!ask){close();return}ac();
   const done=ok=>{close();const fb=document.getElementById('sh-fb');if(ok){fb.className='feedback ok';fb.textContent='麥克風準備好了'}else{vc.denied=true;fb.className='feedback no';fb.textContent=SR?'麥克風沒開：唸完自己判斷有沒有跟上':'這個開啟方式不支援語音辨識：唸完自己判斷有沒有跟上'}};
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(!!SR);return}
@@ -1296,7 +1296,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13o';
+const APP_VER='2026.11.13p';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
