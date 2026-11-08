@@ -1147,7 +1147,7 @@ function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementB
 function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.pend[kind];if(sv){list=de(sv);if(!list.length||list.some(x=>!x))list=null}}catch(e){list=null}
   if(!list)list=build();META.pend=Object.assign({},META.pend,{[kind]:ser(list)});save();return list}
 function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];save()}}
-function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:wSay(w),pun:PUN[w.k]||null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),true),false)}
+function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:wSay(w),pun:PUN[w.k]||null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),!META.traced),false)}
 function startLava(prev){const carry=(prev||[]).slice(0,10);const room=10-carry.length,nP=Math.round(room*.3);const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,nP),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,room-nP)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:META.ruby!==false?rbx(p.j,p.r):p.j,rj:p.j,rr:p.r,kl:p.j.length,sub:p.m,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
 function paintStMode(){const m=study.quiet?'self':'auto';document.querySelectorAll('#st-mode .lb').forEach(b=>b.classList.toggle('on',b.dataset.m===m));const sw=document.getElementById('st-sw');sw.classList.toggle('r',study.quiet);sw.setAttribute('aria-checked',study.quiet)}
 function setStMode(m){META.stMode=m;save();study.quiet=m==='self';paintStMode();cancelAnimationFrame(study.raf);if(study.quiet){speechSynthesis.cancel();document.querySelectorAll('#st-list .gcard.now').forEach(c=>c.classList.remove('now'));study.idx=-1;document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)'}else{study.idx=-1;study.t0=performance.now();stTick()}}
@@ -1233,7 +1233,7 @@ function miss(reason){clearTimeout(battle.autoT);if(battle.locked||battle.shooti
   fb.className='feedback no';fb.innerHTML=`${reason}。${battle.y.n}逃走了，答案是 <span class="ans">${w.k}</span>`;box.querySelector('.ghost').hidden=false;say(w.k);mark(wKey(w),false);if(!battle.fled.includes(w))battle.fled.push(w);requeue(w);setTimeout(advance,2300)}
 function requeue(w){if(battle.trace)return;battle.failed.add(w);const t=battle.reTimes.get(w)||0;if(t>=2||battle.hp<=0)return;battle.reTimes.set(w,t+1);
   const pos=Math.min(battle.list.length,battle.i+3);battle.list.splice(pos,0,w);toast(`「${w.m}」等一下會再出現`)}
-function advance(){battle.i++;if(battle.trace&&battle.i>=1){toast('描字完成，正式封印！');setTimeout(()=>{if(document.getElementById('s-battle').classList.contains('on'))beginBattle(shuffle(battle.list),false)},1200);return}
+function advance(){battle.i++;if(battle.trace&&battle.i>=1){META.traced=1;save();toast('描字完成，正式封印！');setTimeout(()=>{if(document.getElementById('s-battle').classList.contains('on'))beginBattle(shuffle(battle.list),false)},1200);return}
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
 function leaveBattle(){cancelAnimationFrame(battle.raf);clearTimeout(battle.autoT);battle.locked=true;battle.shooting=false;go('s-home')}
 document.addEventListener('click',e=>{const b=e.target.closest('#r-list .say,#g-list .say');if(b){ac();say(b.dataset.say)}});
@@ -1562,7 +1562,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18f';
+const APP_VER='2026.11.18g';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
