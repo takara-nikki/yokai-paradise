@@ -269,11 +269,11 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .sm-verb small{display:block;font-size:14px;font-weight:500;color:var(--dim);margin-top:2px}
 .sm-form{display:inline-block;margin-top:8px;padding:4px 16px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}
 .ring{position:relative;flex:1 1 auto;min-height:190px;margin-top:6px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(22,19,17,.35),rgba(22,19,17,.85)),url(img/bg_matsuri.webp) center 35%/cover}
-.dohyo{position:absolute;left:4%;right:4%;bottom:10%;height:34%;background:linear-gradient(180deg,#a8774a,#7a5232);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);box-shadow:inset 0 6px 0 rgba(255,235,200,.18)}
-.dohyo .lines{position:absolute;left:46%;width:8%;top:6%;height:22%;border-left:3px solid rgba(255,255,255,.75);border-right:3px solid rgba(255,255,255,.75)}
+.dohyo{position:absolute;left:4%;right:4%;bottom:7%;height:17%;background:linear-gradient(180deg,#a8774a,#7a5232);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);box-shadow:inset 0 6px 0 rgba(255,235,200,.18)}
+.dohyo .lines{position:absolute;left:46%;width:8%;top:10%;height:34%;border-left:3px solid rgba(255,255,255,.75);border-right:3px solid rgba(255,255,255,.75)}
 .tawara{position:absolute;top:-6px;width:14px;height:22px;border-radius:7px;background:linear-gradient(180deg,#e8d9a8,#b9a46a);box-shadow:0 2px 4px rgba(0,0,0,.4)}
 .tawara.l{left:7%}.tawara.r{right:7%}
-.fighter{position:absolute;bottom:calc(10% + 30%);width:28%;max-width:130px;aspect-ratio:1/1;transition:left .35s cubic-bezier(.22,1,.36,1)}
+.fighter{position:absolute;bottom:calc(7% + 14%);width:38%;max-width:200px;aspect-ratio:1/1;transition:left .35s cubic-bezier(.22,1,.36,1)}
 .fighter.me{display:grid;place-items:end center}
 .ofuda{width:44%;height:86%;background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:4px;box-shadow:0 8px 16px rgba(0,0,0,.5),inset 0 0 0 1.5px rgba(30,26,23,.5),inset 0 0 0 4px var(--paper);display:grid;place-items:center}
 .ofuda span{width:72%;aspect-ratio:1/1;border:2px solid var(--shu);border-radius:4px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:22px;transform:rotate(-5deg)}
@@ -1031,7 +1031,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10k';
+const APP_VER='2026.11.10m';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1049,7 +1049,7 @@ function startSumo(){ac();if(!SM.open||!SM.deck.length){SM.miss=[...new Set(SM.m
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
   w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
-function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*.09,c=ring*.5;
+function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*.065,c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
