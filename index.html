@@ -218,6 +218,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 #st-list rt{font-size:.42em;letter-spacing:.04em;opacity:.6}
 .gcard.rv{grid-template-columns:1fr auto 40px}.gcard.rv .say{grid-column:3;grid-row:1/span 2}
 .study .pun{grid-column:1/-1;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:14px;color:var(--dim);line-height:1.45}
+.study .pun .pr{display:inline-block}
 .study .pun b{color:var(--gold);font-size:16px}
 .vsel{width:100%;font:inherit;color:inherit;cursor:pointer;min-height:76px}.vsel .due{color:var(--gold);font-family:var(--fs)}
 .study .exl{font-size:13.5px;color:var(--dim)}
@@ -333,7 +334,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>最高連擊 <b id="st-combo">0</b></span>
   </div>
   <div class="tiles">
-    <button class="tile stage1" onclick="startBattle()"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>妖怪往鳥居衝過來。聽發音、手寫平假名，寫對的字直接打上去。</p></button>
+    <button class="tile stage1" onclick="startBattle()"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
     <button class="tile stage2" onclick="startLava()"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>片語和單字一直掉，唸出來就消掉、中文意思浮上來。掉進岩漿就溶了。</p></button>
     <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞分三類練變身，6 秒內變出指定的形。</p></button>
     <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
@@ -698,7 +699,7 @@ function toggleRuby(){setRuby(META.ruby===false)}
 function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet),lockQuiet:!!(opts&&opts.quiet)});const canMode=!timed&&!study.lockQuiet;document.getElementById('st-mode').hidden=!canMode;document.getElementById('st-set').hidden=!canMode&&!(opts&&opts.ruby);document.getElementById('st-opt').querySelector('.sep').hidden=!canMode;document.getElementById('st-tag').hidden=!timed;document.querySelector('#s-study .timer').classList.toggle('thin',!timed);if(canMode)study.quiet=META.stMode==='self';paintStMode();
   document.querySelector('#s-study .tag').textContent=opts&&opts.tag?opts.tag:timed?'時間到就開戰。點喇叭可以再聽一次。':(opts&&opts.ruby?'不限時。背好了再按開始。':'不限時。背好了再按開始，接著先描字練習。');
   document.getElementById('st-title').textContent=title;
-  document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard${(w.kl||w.k.length)>6||w.ex||w.pun?' wide':''}" id="st-${i}"><span class="k"${(w.kl||w.k.length)>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
+  document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard${(w.kl||w.k.length)>5||w.ex||w.pun?' wide':''}" id="st-${i}"><span class="k"${(w.kl||w.k.length)>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　<span class="pr">${w.pun[1]}</span></span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
   document.querySelectorAll('#st-list .say').forEach(b=>b.onclick=()=>say(b.dataset.say));
   if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('#st-list > *').forEach((c,i)=>c.animate([{transform:'translateY(26px)',opacity:0},{transform:'none',opacity:1}],{duration:480,delay:Math.min(i,12)*55,easing:'cubic-bezier(0.22,1,0.36,1)',fill:'backwards'}));
   go('s-study');document.getElementById('st-list').scrollTop=0;study.t0=performance.now();cancelAnimationFrame(study.raf);
@@ -993,7 +994,7 @@ function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","な
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
-  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);return {k:`${v.d} → ${c}`,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g],quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 /* 四種玩法輪流：狸の變身 → 河童相撲 → 誰是冒牌妖怪 → 雪女の逆呪文 */
 const VMODES=[
@@ -1049,7 +1050,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10v';
+const APP_VER='2026.11.10x';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
