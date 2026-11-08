@@ -347,7 +347,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-ysh,.sh-psh{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
 .sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.7) 40%,rgba(0,0,0,.92) 90%);border-radius:0;filter:blur(3px)}
 .sh-stage.caught .sh-ysh{background:linear-gradient(0deg,rgba(200,64,47,0) 0%,rgba(120,20,12,.8) 35%,rgba(0,0,0,.95) 85%)}
-.sh-psh{background:linear-gradient(0deg,rgba(224,106,85,0),rgba(224,106,85,.55));filter:blur(4px);mix-blend-mode:screen}
+.sh-psh{border-radius:0;background:linear-gradient(0deg,rgba(150,40,28,0) 0%,rgba(150,40,28,.45) 45%,rgba(90,20,14,.8) 95%);filter:blur(2.5px)}
 .sh-yk{position:absolute;left:50%;aspect-ratio:1;object-fit:contain;transform:translate(-50%,0);transition:opacity .3s;filter:brightness(.42) contrast(1.15) drop-shadow(0 0 2px rgba(255,236,205,.95)) drop-shadow(0 0 12px rgba(255,214,160,.55))}
 .sh-me{position:absolute;left:50%;width:34px;height:52px;transform:translateX(-50%);background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:3px;box-shadow:0 6px 12px rgba(0,0,0,.6);display:grid;place-items:center;transition:box-shadow .2s}
 .sh-me span{width:24px;height:24px;border:1.5px solid var(--shu);border-radius:3px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:14px;transform:rotate(-5deg)}
@@ -677,11 +677,11 @@ function shForest(W,H,bend){const svg=document.getElementById('sh-forest');if(!S
   return {cx,y}}
 function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;const B=v=>H*(.05+v*.8),S=v=>1-.55*v;
   const now=performance.now();if(SH.run)SHF.phase+=(now-(SHF.last||now))/1000;SHF.last=now;const bend=Math.sin(SHF.phase*.55+.8)*.22;const geo=shForest(W,H,bend);const X=v=>geo.cx(B(v)/H/.92*.92);
-  const yv=.45+.5*SH.py,tail=Math.max(0,yv-.42),mv=Math.min(.95,.02+.55*SH.pu);
+  const yv=.45+.5*SH.py,tail=Math.max(0,yv-.52),mv=Math.min(.95,.02+.55*SH.pu);
   const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';yk.style.left=X(yv)+'px';
   const sh=document.getElementById('sh-ysh'),sw=W*.5*S(tail),tw=yw*.55,f=Math.min(1,tw/sw);sh.style.left=((X(yv)+X(tail))/2)+'px';sh.style.width=sw+'px';sh.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`;sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
   const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.left=X(mv)+'px';me.style.scale=ms.toFixed(3);
-  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.left=((X(0)+X(mv))/2)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';ps.style.width=(W*.12)+'px';
+  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.left=((X(0)+X(mv))/2)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';{const bw=W*.34,tw=34*ms*.9,f=Math.min(1,tw/bw);ps.style.width=bw+'px';ps.style.clipPath=`polygon(${(1-f)/2*100}% 0,${(1+f)/2*100}% 0,100% 100%,0 100%)`}
   {const units=[...document.querySelectorAll('#sh-text i')];const n=units.reduce((a,u)=>a+(+u.dataset.n||1),0);let k=0;units.forEach(u=>{u.className=k<SH.pu*n?'u':k<SH.py*n?'y':'';k+=(+u.dataset.n||1)})}
   if(SH.started){yk.style.opacity=Math.max(.25,1-SH.pu*.75).toFixed(2);st.classList.toggle('caught',mv>=tail-.03&&SH.pu>.1)}else st.classList.remove('caught')}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
@@ -1236,7 +1236,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12l';
+const APP_VER='2026.11.12m';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
