@@ -841,8 +841,8 @@ const GAP=[0,1,3,7,14,30];
 let SRS={},META={best:0,sealed:0,gems:0,mute:false};
 function load(){try{SRS=JSON.parse(localStorage.getItem('fu_srs')||'{}');META=Object.assign(META,JSON.parse(localStorage.getItem('fu_meta')||'{}'))}catch(e){}}
 function save(){try{achCheck()}catch(e){}try{localStorage.setItem('fu_srs',JSON.stringify(SRS));localStorage.setItem('fu_meta',JSON.stringify(META))}catch(e){}}
-const today=()=>new Date().toISOString().slice(0,10);
-function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+const today=()=>new Date().toLocaleDateString('sv');
+function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('sv')}
 function mark(key,ok){const r=SRS[key]||{lv:0,seen:0,wrong:0};r.seen++;if(ok){r.lv=Math.min(r.lv+1,GAP.length-1);r.due=addDays(GAP[r.lv])}else{r.lv=0;r.wrong++;r.due=addDays(1)}SRS[key]=r;save()}
 const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
 const k2hR=t=>t.replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));
@@ -1232,7 +1232,7 @@ function miss(reason){clearTimeout(battle.autoT);if(battle.locked||battle.shooti
     setTimeout(()=>{clearBox(box);updStroke()},650);if(battle.hp<=0){battle.locked=true;cancelAnimationFrame(battle.raf);mark(wKey(w),false);if(!battle.fled.includes(w))battle.fled.push(w);battle.failed.add(w);setTimeout(advance,1200)}return}
   battle.locked=true;cancelAnimationFrame(battle.raf);battle.hp--;document.getElementById('hp').innerHTML=hearts(battle.hp);SFX.back();cry(battle.y);
   fb.className='feedback no';fb.innerHTML=`${reason}。${battle.y.n}逃走了，答案是 <span class="ans">${w.k}</span>`;box.querySelector('.ghost').hidden=false;say(w.k);mark(wKey(w),false);if(!battle.fled.includes(w))battle.fled.push(w);requeue(w);setTimeout(advance,2300)}
-function requeue(w){if(battle.trace)return;battle.failed.add(w);const t=battle.reTimes.get(w)||0;if(t>=2||battle.hp<=0)return;battle.reTimes.set(w,t+1);
+function requeue(w){if(battle.trace)return;battle.failed.add(w);const t=battle.reTimes.get(w)||0;if(t>=1||battle.hp<=0)return;battle.reTimes.set(w,t+1);
   const pos=Math.min(battle.list.length,battle.i+3);battle.list.splice(pos,0,w);toast(`「${w.m}」等一下會再出現`)}
 function advance(){battle.i++;if(battle.trace&&battle.i>=1){META.traced=1;save();toast('描字完成，正式封印！');setTimeout(()=>{if(document.getElementById('s-battle').classList.contains('on'))beginBattle(shuffle(battle.list),false)},1200);return}
   if(battle.hp<=0||battle.i>=battle.list.length){endBattle();return}nextYokai()}
@@ -1446,7 +1446,7 @@ const VERB_RULES={
 function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","ない","て","た","られる","よう"][f]}`;if(v.g===3)return v.d.endsWith("する")?"する 整個背":"来る 整個背";
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
-function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
+function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{const T=today(),isDue=v=>SRS['v:'+v.d]&&SRS['v:'+v.d].due<=T;let vs=[...shuffle(pool.filter(isDue)),...shuffle(pool.filter(v=>!isDue(v)))];while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
   if(g===1){const easy=(META.wst||1)===1,ok=VERBS.filter(x=>x.g===1&&!x.d.endsWith('る')&&!x.d.endsWith('う')),used=new Set(q.filter(Boolean).map(x=>x.v.d));
     q.forEach(it=>{if(!it)return;if(easy)it.f=wPickF();else if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];if(easy&&(it.v.d.endsWith('る')||it.v.d.endsWith('う'))){const c=shuffle(ok.filter(x=>!used.has(x.d)))[0]||ok[0];used.add(c.d);it.v=c}})}
   openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく",m:"寫"},false,wActive(),false,null,true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
@@ -1514,7 +1514,7 @@ function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice
   out.delete(v.d);let arr=shuffle([...out].filter(x=>x&&x.length>1));
   if(arr.length<3)arr=arr.concat(shuffle(VERBS.filter(x=>x.d!==v.d&&x.g===v.g).map(x=>x.d)));return [...new Set(arr)].slice(0,3)}
 function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;cancelAnimationFrame(vb.wraf);if(isW){if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];const st=META.wst||1;it.st=st===1||Math.random()<.7?st:1+Math.floor(Math.random()*(st-1));if(it.st===3&&!SENT[it.v.d]){const ks=Object.keys(SENT),kk=ks[Math.floor(Math.random()*ks.length)];it.v=VERBS.find(x=>x.d===kk)}}const {v,f}=it,M=isW?WHEEL:VMODES[vb.i%4];vb.done=false;vb.mode=M;
-  document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
+  document.getElementById('v-count').textContent=`${vb.i+1} / ${vb.q.length}`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
   document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;document.getElementById('v-verb').classList.remove('sent');document.getElementById('s-verb').classList.remove('wnov','wst3');{const nb=document.getElementById('v-next');nb.textContent='次へ（下一題）';nb.onclick=verbNext}
   const vEl=document.getElementById('v-verb'),kEl=document.getElementById('v-k'),fEl=document.getElementById('v-form'),box=document.getElementById('v-opts');let opts,cur;
   if(M.id==='yuki'){const c=conj(v.d,v.g,f);vEl.textContent=c;kEl.textContent='這是哪個動詞的變化？';fEl.textContent=FORMS[f];
@@ -1549,7 +1549,7 @@ function explainFor(v,f){const right=conj(v.d,v.g,f);const gname=["","第一類�
 function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);document.getElementById('w-stop')?.setAttribute('disabled','');cancelAnimationFrame(vb.raf);const {v,f}=vb.q[vb.i],M=vb.mode,cur=vb.cur;
   document.querySelectorAll('#v-opts .opt').forEach(b=>{if(b.dataset.o===cur.ans)b.classList.add(M.id==='fake'?'wrong':'right');else if(b===btn)b.classList.add(M.id==='fake'?'right':'wrong')});
   if(M.id==='fake'&&btn&&ans!==cur.ans)btn.classList.add('wrong');
-  const exp=document.getElementById('v-exp'),ok=ans===cur.ans;if(M.id==='wheel'){if(ok)wGain();const it=vb.q[vb.i];if(it.st===3)document.getElementById('v-verb').innerHTML=SENT[v.d][WF.indexOf(f)][0].replace('＿',`<b class="wfill">${wLabel(v,f)}</b>`);say(conj(v.d,1,f))}
+  const exp=document.getElementById('v-exp'),ok=ans===cur.ans;{const it0=vb.q[vb.i];mark('v:'+it0.v.d,ok);if(!ok&&!it0.rq){const cp={...it0,rq:1};it0.rq=1;vb.q.splice(Math.min(vb.q.length,vb.i+3),0,cp)}}if(M.id==='wheel'){if(ok)wGain();const it=vb.q[vb.i];if(it.st===3)document.getElementById('v-verb').innerHTML=SENT[v.d][WF.indexOf(f)][0].replace('＿',`<b class="wfill">${wLabel(v,f)}</b>`);say(conj(v.d,1,f))}
   let detail;if(M.id==='fake'){const ff=cur.badForm;detail=`冒牌的是「${cur.wrong}」，${FORMS[ff]}應該是 <b>${conj(v.d,v.g,ff)}</b>。 `+explainFor(v,ff)}
   else if(M.id==='yuki')detail=`「${conj(v.d,v.g,f)}」是 ${v.k}（${v.m}）的${FORMS[f]}，原形是 <b>${v.d}</b>。 `+explainFor(v,f);
   else detail=explainFor(v,f);
@@ -1563,7 +1563,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18h';
+const APP_VER='2026.11.18i';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
