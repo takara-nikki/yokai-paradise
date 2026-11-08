@@ -132,7 +132,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
 .blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
-.blk .jl{display:block}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
+.blk .jl{display:block;line-height:1.7}.blk rt,#st-list rt{font-size:.48em;font-weight:500;opacity:.75;letter-spacing:0}#st-list .k{line-height:1.8}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
 .blk.sel{box-shadow:0 0 0 3px var(--gold),0 0 22px rgba(212,165,74,.6)}
 .blk.wrong{animation:shake .4s;border-color:var(--sakura)}
 .blk.burn{transition:opacity .5s,filter .5s;opacity:0;filter:brightness(2) saturate(3) blur(2px)}
@@ -448,6 +448,10 @@ const today=()=>new Date().toISOString().slice(0,10);
 function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function mark(key,ok){const r=SRS[key]||{lv:0,seen:0,wrong:0};r.seen++;if(ok){r.lv=Math.min(r.lv+1,GAP.length-1);r.due=addDays(GAP[r.lv])}else{r.lv=0;r.wrong++;r.due=addDays(1)}SRS[key]=r;save()}
 const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
+const k2hR=t=>t.replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));
+function rbx(k,r){if(!r||!/[㐀-鿿々]/.test(k))return k;const segs=k.match(/[㐀-鿿々〆ヶ]+|[^㐀-鿿々〆ヶ]+/g);const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const rr=k2hR(r).replace(/[\s　、。・〜～]/g,'');const re=new RegExp('^'+segs.map(g=>/[㐀-鿿々〆ヶ]/.test(g[0])?'(.+?)':'('+[...k2hR(g)].map(c=>/[ぁ-ゖー]/.test(c)?esc(c):'').join('')+')').join('')+'$');const m=rr.match(re);
+  if(!m)return `<ruby>${k}<rt>${r}</rt></ruby>`;return segs.map((g,i)=>/[㐀-鿿々〆ヶ]/.test(g[0])?`<ruby>${g}<rt>${m[i+1]}</rt></ruby>`:g).join('')}
 function pick(list,keyOf,n){const T=today();const due=list.filter(x=>SRS[keyOf(x)]&&SRS[keyOf(x)].due<=T);const fresh=shuffle(list.filter(x=>!SRS[keyOf(x)]));const old=shuffle(list.filter(x=>SRS[keyOf(x)]&&SRS[keyOf(x)].due>T));return [...shuffle(due),...fresh,...old].slice(0,n)}
 const wKey=w=>'w:'+w.k+'|'+w.j, pKey=p=>'p:'+p.j;
 function dueCount(){const T=today();return Object.values(SRS).filter(r=>r.wrong>0&&r.due<=T).length}
@@ -631,7 +635,7 @@ function toggleRuby(){META.ruby=META.ruby===false;save();paintRuby()}
 function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet)});
   document.querySelector('#s-study .tag').textContent=opts&&opts.tag?opts.tag:timed?'時間到就開戰。點喇叭可以再聽一次。':(opts&&opts.ruby?'不限時，會一直輪流唸。背好了再按開始。':'不限時，會一直輪流唸。背好了再按開始，接著先描字練習。');
   document.getElementById('st-title').textContent=title;
-  document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard" id="st-${i}"><span class="k"${w.k.length>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
+  document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard" id="st-${i}"><span class="k"${(w.kl||w.k.length)>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
   document.querySelectorAll('#st-list .say').forEach(b=>b.onclick=()=>say(b.dataset.say));
   go('s-study');document.getElementById('st-list').scrollTop=0;study.t0=performance.now();cancelAnimationFrame(study.raf);
   if(study.quiet){document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)';return}stTick()}
@@ -639,7 +643,7 @@ function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.p
   if(!list)list=build();META.pend=Object.assign({},META.pend,{[kind]:ser(list)});save();return list}
 function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];save()}}
 function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:w.k,pun:w.orig?PUN[w.k]:null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),true),false)}
-function startLava(prev){const carry=prev||[];const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,3),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,7)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:p.j,sub:`${p.r}　${p.m}`,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
+function startLava(prev){const carry=prev||[];const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,3),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,7)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:META.ruby!==false?rbx(p.j,p.r):p.j,kl:p.j.length,sub:p.m,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
 function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=study.timed?Math.min(n-1,Math.floor(el/study.PER)):Math.floor(el/study.PER)%n;
   if(i!==study.idx){if(study.idx>=0)document.getElementById('st-'+study.idx)?.classList.remove('now');study.idx=i;const c=document.getElementById('st-'+i);c.classList.add('now');try{c.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}if(!study.quiet)say(study.list[i].say)}
   if(study.timed){document.getElementById('st-left').textContent=Math.max(0,Math.ceil((study.dur-el)/1000))+' 秒';document.getElementById('stbar').style.transform=`scaleX(${Math.max(0,1-el/study.dur)})`;if(el>=study.dur){endStudy();return}}
@@ -738,7 +742,7 @@ function beginLava(list,practice){ac();pendClear('p');Object.assign(lv,{list,pra
 function lvHud(){document.getElementById('l-hp').innerHTML=hearts(lv.hp);document.getElementById('l-count').textContent=`${lv.done} / ${lv.total}`;document.getElementById('l-gems').lastChild.textContent=' '+lv.gems}
 const LANES=['2%','34.5%','67%'];
 function mkBlock(p,type,lane,y,v,uid){const ar=document.getElementById('arena');const el=document.createElement('button');el.className='blk '+type;
-  el.innerHTML=`<span class="jl">${p.j}</span>${META.ruby!==false?`<span class="rl">${p.r}</span>`:''}<span class="zl">${p.m}</span>`;const b={p,uid,type,lane,y,el,alive:true,v:v||1};
+  el.innerHTML=`<span class="jl">${META.ruby!==false?rbx(p.j,p.r):p.j}</span><span class="zl">${p.m}</span>`;const b={p,uid,type,lane,y,el,alive:true,v:v||1};
   el.style.left=LANES[lane];el.style.transform=`translateY(${y}px)`;el.onclick=()=>tapBlock(b);ar.appendChild(el);lv.blocks.push(b);return b}
 /* 同一組的中文和日文接著掉、速度一樣，所以會在附近；組跟組之間的速度不同 */
 function refillBag(){const n=Math.min(3,lv.queue.length);for(let i=0;i<n;i++){const {p,uid}=lv.queue.shift(),v=.65+Math.random()*.85,pair=[{p,uid,type:'ja',v}];lv.bag.push(...pair)}}
@@ -918,7 +922,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09j';
+const APP_VER='2026.11.09k';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
