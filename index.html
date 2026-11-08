@@ -31,6 +31,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .focus{padding-bottom:14px;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));flex-direction:column;overflow:hidden}
 .screen.focus.on{display:flex}
 .ios-tab .focus{padding-bottom:calc(14px + 64px)}
+.ios-tab .screen:not(.focus){padding-bottom:calc(60px + 80px)}
 /* 頂部名片 */
 .card-top{display:grid;grid-template-columns:62px 1fr auto;gap:4px 14px;align-items:center;margin-bottom:18px}
 .seal{grid-row:span 2;width:62px;height:62px;border-radius:50%;border:3px double var(--seal);display:grid;place-items:center;transform:rotate(-6deg);font-family:var(--fb);color:var(--seal);font-size:28px;line-height:1}
@@ -1291,7 +1292,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13h';
+const APP_VER='2026.11.13i';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
