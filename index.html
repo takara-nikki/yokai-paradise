@@ -615,7 +615,9 @@ function dueCount(){const T=today();return Object.values(SRS).filter(r=>r.wrong>
 /* ===== 聲音：妖怪叫聲（合成）＋日文發音 ===== */
 let AC=null;
 function ac(){if(META.mute)return null;try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){AC=null}return AC}
-function env(a,g,t,peak,att,dec){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec)}
+/* 全部音效總音量（1 = 原本） */
+const SFXVOL=.4;
+function env(a,g,t,peak,att,dec){peak=Math.max(.0002,peak*SFXVOL);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec)}
 function tone(type,f0,f1,dur,peak,filt){const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);env(a,g,t,peak,.02,dur);let n=o;if(filt){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=filt;f.Q.value=5;o.connect(f);n=f}n.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.05);return o}
 function noise(dur,freq,type,peak){const a=ac();if(!a)return;const t=a.currentTime,b=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type=type||'bandpass';f.frequency.value=freq;const g=a.createGain();env(a,g,t,peak||.3,.01,dur);s.connect(f);f.connect(g);g.connect(a.destination);s.start(t)}
 function cry(y){const a=ac();if(!a)return;const t=a.currentTime;const o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter(),l=a.createOscillator(),lg=a.createGain();
@@ -624,7 +626,7 @@ function cry(y){const a=ac();if(!a)return;const t=a.currentTime;const o=a.create
   o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);l.start(t);o.stop(t+y.len+.1);l.stop(t+y.len+.1)}
 const SAMPLE={tap:null,ok:null,ng:null,chime:null,rin:null};let sampleLoading=false;
 function loadSamples(a){if(sampleLoading||!a)return;sampleLoading=true;Object.keys(SAMPLE).forEach(n=>{fetch('sfx/'+n+'.mp3').then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(b=>new Promise((res,rej)=>a.decodeAudioData(b,res,rej))).then(buf=>SAMPLE[n]=buf).catch(()=>{})})}
-function playS(n,vol){const a=ac();if(!a)return true;loadSamples(a);const b=SAMPLE[n];if(!b)return false;const s=a.createBufferSource(),g=a.createGain();g.gain.value=vol??.8;s.buffer=b;s.connect(g);g.connect(a.destination);s.start();return true}
+function playS(n,vol){const a=ac();if(!a)return true;loadSamples(a);const b=SAMPLE[n];if(!b)return false;const s=a.createBufferSource(),g=a.createGain();g.gain.value=(vol??.8)*SFXVOL;s.buffer=b;s.connect(g);g.connect(a.destination);s.start();return true}
 const SFX={
   hit(){if(playS('ok',.7))return;noise(.12,1600,'bandpass',.35);tone('square',520,140,.16,.12,1800)},
   seal(){if(playS('rin',.85))return;tone('sine',1320,1310,1.2,.16);setTimeout(()=>tone('sine',1980,1975,.9,.08),60);tone('sawtooth',260,50,.9,.12,900)},
@@ -741,7 +743,7 @@ function lavaStart(){const a=ac();if(!a||lavaAmb)return;const len=a.sampleRate*4
   const l=a.createOscillator(),lg=a.createGain();l.frequency.value=.23;lg.gain.value=170;l.connect(lg);lg.connect(f.frequency);src.connect(f);f.connect(g);g.connect(a.destination);src.start();l.start();
   lavaAmb={src,l,g,t:0};const pop=()=>{if(!lavaAmb)return;if(!lv.paused){blub();if(Math.random()<.35)setTimeout(blub,70+Math.random()*90)}lavaAmb.t=setTimeout(pop,220+Math.random()*850)};pop()}
 function lavaStop(){if(!lavaAmb||!AC)return;const t=AC.currentTime;clearTimeout(lavaAmb.t);try{lavaAmb.g.gain.cancelScheduledValues(t);lavaAmb.g.gain.setValueAtTime(lavaAmb.g.gain.value,t);lavaAmb.g.gain.linearRampToValueAtTime(0,t+.4);lavaAmb.src.stop(t+.45);lavaAmb.l.stop(t+.45)}catch(e){}lavaAmb=null}
-function lavaVol(v){if(lavaAmb&&AC){const t=AC.currentTime;lavaAmb.g.gain.cancelScheduledValues(t);lavaAmb.g.gain.linearRampToValueAtTime(v,t+.3)}}
+function lavaVol(v){if(lavaAmb&&AC){const t=AC.currentTime;lavaAmb.g.gain.cancelScheduledValues(t);lavaAmb.g.gain.linearRampToValueAtTime(v*SFXVOL,t+.3)}}
 function toggleMute(){META.mute=!META.mute;save();paintMute();const onLava=document.getElementById('s-lava').classList.contains('on');
   if(META.mute){try{speechSynthesis.cancel()}catch(e){}lavaStop();toast('靜音中（しずかに）')}else{toast('聲音開啟（おと ON）');say('こんにちは');if(onLava&&!lv.over)lavaStart()}}
 function paintMute(){document.querySelectorAll('#muteHome,[data-mute]').forEach(b=>b.innerHTML=`<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><use href="#${META.mute?'i-mute':'i-snd'}"/></svg>`)}
@@ -1236,7 +1238,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12m';
+const APP_VER='2026.11.12o';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
