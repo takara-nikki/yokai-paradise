@@ -18,7 +18,7 @@
 }
 html,body{height:100%}
 html{background:#120c0a}
-body::before{content:'';position:fixed;left:0;right:0;top:0;bottom:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent 78%,#120c0a 96%),radial-gradient(90% 55% at 100% 0%,rgba(232,120,79,.42),transparent 70%),radial-gradient(80% 40% at 0% 72%,rgba(200,64,47,.28),transparent 70%),linear-gradient(160deg,#3a1a10 0%,#1d110c 45%,#120c0a 100%)}
+body::before{content:'';position:fixed;left:0;right:0;top:0;bottom:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent 66%,#120c0a 88%),radial-gradient(90% 55% at 100% 0%,rgba(232,120,79,.42),transparent 70%),radial-gradient(80% 40% at 0% 72%,rgba(200,64,47,.28),transparent 70%),linear-gradient(160deg,#3a1a10 0%,#1d110c 45%,#120c0a 100%)}
 body{margin:0;background:transparent;
   color:var(--ink);font-family:var(--fs);font-size:18px;line-height:1.45;overflow-x:hidden;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
@@ -451,7 +451,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wt .wc{border:1px solid #d9cdb2;background:rgba(255,255,255,.6);color:#1E1A17}.wt .wc b{color:#B8291E}.wt .wc-c{background:#F4EFE3}
 .wg .wc.opt{min-height:64px;font-size:19px}
 .wg .wc.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 22px rgba(212,165,74,.55);transform:scale(1.04);background:rgba(212,165,74,.16)}
-.wg .wc.on.wrong{border-color:#D83A2C;box-shadow:0 0 0 2px #D83A2C,0 0 18px rgba(216,58,44,.45);background:rgba(216,58,44,.18)}
+.wg .wc.on.wrong-old{border-color:#D83A2C;box-shadow:0 0 0 2px #D83A2C,0 0 18px rgba(216,58,44,.45);background:rgba(216,58,44,.18)}
 .wg .wc.right{transform:scale(1.04)}
 .wg .wc-c{color:var(--ink);border-color:var(--seal);font-family:var(--fs);font-size:17px}
 .wstop{grid-column:1/-1;min-height:54px;font-size:22px}
@@ -465,8 +465,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wsec{cursor:pointer}.wsec path{fill:#241d18;stroke:#5a4632;stroke-width:1.2;transition:fill .12s}
 .wsec:nth-child(2n) path{fill:#2c231c}
 .wsec.on path{fill:#5a4520;stroke:#F3C766;stroke-width:2.5;filter:url(#wglow)}
-.wsec.right path{fill:rgba(79,163,122,.6);stroke:var(--ok)}
-.wsec.wrong path{fill:rgba(216,58,44,.55);stroke:#D83A2C}
+.wsec.right path{fill:#5a4520;stroke:#F3C766;stroke-width:2.5;filter:url(#wglow)}
+.wsec.wrong path,.wsec.on.wrong path{fill:rgba(226,110,150,.42);stroke:#F29AB8;stroke-width:2.5;filter:none}
 .wlb .wst{font-size:1em}.wlb{fill:var(--ink);font-weight:700;text-anchor:middle;pointer-events:none}.wlb .wch{fill:#F08A72}
 .wcen{fill:#1a1512;stroke:var(--seal);stroke-width:2.5}.wcent{fill:var(--ink);font-weight:700;text-anchor:middle;font-family:var(--fs)}
 .wptr{display:none;fill:var(--gold);stroke:#1a1512;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
@@ -1349,7 +1349,7 @@ function wPickF(){const L=WLV[(META.wlv||1)-1];let r=Math.random();for(const [f,
 function wActive(){return (META.wst||1)>1?WF:WLV[(META.wlv||1)-1].map(x=>x[0])}
 function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
 function wSector(c){const r=118,ri=53,rad=x=>(x-90)*Math.PI/180,P=(R,x)=>`${(R*Math.cos(rad(x))).toFixed(2)} ${(R*Math.sin(rad(x))).toFixed(2)}`;return `M${P(ri,c-45)} L${P(r,c-45)} A${r} ${r} 0 0 1 ${P(r,c+45)} L${P(ri,c+45)} A${ri} ${ri} 0 0 0 ${P(ri,c-45)}Z`}
-function wheelSVG(v,teach,act,hint,ord){const O=ord||WF;const stem0=v.k.length-1,wFs=Math.min(20,...O.map(f=>66/wLabel(v,f).length)).toFixed(1);const L=O.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(86*Math.sin(c*Math.PI/180)).toFixed(1),y=(-86*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
+function wheelSVG(v,teach,act,hint,ord){const O=ord||WF;const stem0=v.k.length-1,wFs=Math.min(20,...O.map(f=>62/wLabel(v,f).length)).toFixed(1);const L=O.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(86*Math.sin(c*Math.PI/180)).toFixed(1),y=(-86*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
   return `<text class="wlb${act&&!act.includes(f)?' dim':''}" data-i="${i}" x="${x}" y="${teach?(+y-4):(+y+6)}" font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}${teach?`<tspan class="wfm" x="${x}" dy="17">${FORMS[f]}</tspan>`:''}</text>`}).join('')+(hint?O.map((f,i)=>`<text class="wdn" data-i="${i}" font-size="10">${WDAN[f]}</text>`).join(''):'');
  return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-121 -121 242 242"><defs><filter id="wglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feFlood flood-color="#E8B04A" flood-opacity=".9"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g class="wrot">${O.map((f,i)=>`<g class="opt wsec${act&&!act.includes(f)?' dim':''}" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="50"/>${teach?`<text class="wcent" y="8" font-size="${Math.min(26,84/v.k.length).toFixed(1)}">${v.k}</text>`:`<svg class="wsnd" x="-8" y="-41" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg><text class="wcent" y="8" font-size="${Math.min(24,80/v.k.length).toFixed(1)}">${v.k}</text><text class="wczh" y="29" font-size="${Math.min(13,78/((v.m||"").split(/[（、(]/)[0].length||1)).toFixed(1)}">${(v.m||"").split(/[（、(]/)[0]}</text>`}</g><path class="wptr" d="M-11 -131 L11 -131 L0 -111Z"/></svg></div>`}
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
@@ -1407,7 +1407,7 @@ function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin)
   else if(M.id==='yuki')detail=`「${conj(v.d,v.g,f)}」是 ${v.k}（${v.m}）的${FORMS[f]}，原形是 <b>${v.d}</b>。 `+explainFor(v,f);
   else detail=explainFor(v,f);
   const praise={wheel:'轉盤停對格了！',tanuki:'ドロン！變身成功。',kappa:'河童被推出土俵了！',fake:'抓到冒牌貨！',yuki:'雪女的咒語破解了！'}[M.id],
-        boo={wheel:'停錯格了，亮綠色的才是正解。',tanuki:`變成四不像了，${v.k}都認不出自己。`,kappa:'被河童推出土俵了。',fake:'冒牌妖怪逃走了。',yuki:'被雪女冰凍了。'}[M.id];
+        boo={wheel:'停錯格了，發黃光的才是正解。',tanuki:`變成四不像了，${v.k}都認不出自己。`,kappa:'被河童推出土俵了。',fake:'冒牌妖怪逃走了。',yuki:'被雪女冰凍了。'}[M.id];
   if(ok){vb.combo++;FX.combo(vb.combo);if(btn)FX.at(btn,{n:18,speed:4});FX.buzz(18);vb.best=Math.max(vb.best,vb.combo);vb.score+=100+Math.round(Math.max(0,1-(performance.now()-vb.t0)/vb.dur)*50)+vb.combo*10;if(vb.combo>META.best){META.best=vb.combo;save()}SFX.gem();exp.innerHTML=(vb.combo>=3?`連擊 ×${vb.combo}！`:praise)+' '+detail}
   else{vb.combo=0;SFX.wrong();FX.flash();if(btn)FX.shake(btn,6);FX.buzz(60);exp.innerHTML=(ans===null?'時間到！':boo)+' '+detail}
   say(M.id==='yuki'?v.d:M.id==='fake'?conj(v.d,v.g,cur.badForm):conj(v.d,v.g,f));
@@ -1416,7 +1416,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17g';
+const APP_VER='2026.11.17h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
