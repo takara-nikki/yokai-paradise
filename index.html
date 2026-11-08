@@ -708,9 +708,9 @@ const SH={hp:3,streak:0,win:false,winT:0,list:[],i:0,ok:0,best:0,failed:[],run:f
 function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&normJa(w.ex).length>=8&&normJa(w.ex).length<=26)}
 function startShadow(prev){ac();const pool=shPool();const list=prev&&prev.length?prev:shuffle(pool).slice(0,5);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0,maxStreak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
 function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hidden=true};if(!ask){close();return}ac();
-  const done=ok=>{close();const fb=document.getElementById('sh-fb');if(ok){fb.className='feedback ok';fb.textContent='麥克風準備好了'}else{vc.denied=true;fb.className='feedback no';fb.textContent='麥克風沒開：唸完自己判斷有沒有跟上'}};
-  if(!SR||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(false);return}
-  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;done(true)}).catch(()=>done(false))}
+  const done=ok=>{close();const fb=document.getElementById('sh-fb');if(ok){fb.className='feedback ok';fb.textContent='麥克風準備好了'}else{vc.denied=true;fb.className='feedback no';fb.textContent=SR?'麥克風沒開：唸完自己判斷有沒有跟上':'這個開啟方式不支援語音辨識：唸完自己判斷有沒有跟上'}};
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(!!SR);return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;done(!!SR)}).catch(()=>done(false))}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
   const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
@@ -1298,7 +1298,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13m';
+const APP_VER='2026.11.13n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
