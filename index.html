@@ -429,6 +429,9 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 @media (prefers-reduced-motion:reduce){.sh-wave i,.sh-mic{animation:none!important}}
 
 #s-result.on{display:flex;flex-direction:column;justify-content:center;min-height:100svh;padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+
+#sakura{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.screen{position:relative;z-index:1}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1307,7 +1310,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13v';
+const APP_VER='2026.11.14a';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1383,5 +1386,60 @@ window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').class
 /* ===== 啟動 ===== */
 load();paintMute();refreshHome();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(document.getElementById('s-lava').classList.contains('on')&&!lv.paused&&!lv.over)pauseLava()}});
+
+// ── 背景櫻花飄落（沿用タカラ勇者試煉）──
+(()=>{const c=document.getElementById("sakura")||(()=>{const e=document.createElement("canvas");e.id="sakura";e.setAttribute("aria-hidden","true");document.body.prepend(e);return e})();if(!c||!c.getContext)return;const g=c.getContext("2d");let W=0,H=0,dpr=1,P=[],raf=0,last=0;
+  const N=()=>Math.round(Math.min(26,Math.max(12,innerWidth/40)));
+  function size(){dpr=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0)}
+  function mk(top){const r=6+Math.random()*7;return{x:Math.random()*W,y:top?-20-Math.random()*H*0.3:Math.random()*H,r,vy:.25+Math.random()*.45,vx:.15+Math.random()*.35,a:Math.random()*6.28,va:(Math.random()-.5)*.02,s:Math.random()*6.28,vs:.01+Math.random()*.015,o:[.18,.3,.45,.6,.8,.95][Math.random()*6|0]*(.85+Math.random()*.3),v:Math.random()*6|0}}
+  // 水彩花瓣：事先畫好幾張貼圖（暈染、邊緣積色、紙紋、留白），飄落時直接貼
+  const SPR=(()=>{const out=[],S=112;
+    const bz=(p0,p1,p2,p3,t)=>{const u=1-t;return[u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]]};
+    const R=(a,b)=>a+Math.random()*(b-a);
+    const hues=[["#F7B9C8","#E8819D","#C9587A"],["#F9C7D3","#EE94AC","#D46A8A"],["#F4A9BE","#E07090","#BF4A6E"],["#FAD0DA","#F0A0B5","#D97796"],["#F5B3C4","#E57B98","#C65676"],["#F8C0CE","#EB8AA4","#CE6283"]];
+    for(let v=0;v<6;v++){const cv=document.createElement("canvas");cv.width=cv.height=S;const x=cv.getContext("2d"),r=S*.36,[l,m,d]=hues[v];
+      // 每片形狀都不同：寬度、缺口深度、左右不對稱
+      const wR=R(.8,1.05),wL=R(.8,1.05),notch=R(.6,.8),tip=R(.18,.3),lean=R(-.12,.12);
+      const right=[[0,r],[r*.95*wR,r*.4],[r*.85*wR,-r*.75],[r*tip,-r]],left=[[-r*tip,-r],[-r*.85*wL,-r*.75],[-r*.95*wL,r*.4],[0,r]];
+      const pts=[];for(let i=0;i<=40;i++)pts.push(bz(...right,i/40));pts.push([0,-r*notch]);for(let i=0;i<=40;i++)pts.push(bz(...left,i/40));
+      pts.forEach(p=>{p[0]+=R(-.6,.6)+p[1]*lean*.15;p[1]+=R(-.6,.6)});
+      const path=()=>{x.beginPath();x.moveTo(...pts[0]);pts.forEach(p=>x.lineTo(...p));x.closePath()};
+      x.translate(S/2,S/2);x.rotate(R(-.25,.25));
+      // 1. 底色：中間也要有顏色（不留白）
+      const g1=x.createLinearGradient(R(-6,6),-r,R(-6,6),r);g1.addColorStop(0,m);g1.addColorStop(R(.35,.55),l);g1.addColorStop(1,d);
+      x.filter="blur(.8px)";x.globalAlpha=.92;x.fillStyle=g1;path();x.fill();
+      // 2. 不規則疊色（水彩不均）
+      x.save();path();x.clip();x.filter="blur(5px)";
+      for(let i=0;i<4;i++){x.globalAlpha=R(.15,.35);x.fillStyle=[m,d,l][i%3];x.beginPath();x.ellipse(R(-r*.5,r*.5),R(-r*.6,r*.6),R(r*.25,r*.55),R(r*.2,r*.5),R(0,3),0,6.28);x.fill()}
+      // 3. 花瓣裡的筆觸：從根部往外刷的細線（每片數量、方向不同）
+      x.filter="none";const nv=R(5,11)|0;
+      for(let i=0;i<nv;i++){const ang=R(-1.1,1.1),len=R(.5,.95)*r;x.globalAlpha=R(.12,.3);x.strokeStyle=d;x.lineWidth=R(.5,1.4);x.lineCap="round";
+        x.beginPath();x.moveTo(R(-2,2),r*.85);x.quadraticCurveTo(Math.sin(ang)*len*.5+R(-3,3),r*.85-len*.55,Math.sin(ang)*len,r*.85-len);x.stroke()}
+      x.restore();
+      // 4. 外緣筆刷：沿著輪廓刷好幾道斷斷續續的乾筆（飛白），每道粗細、透明度不同
+      x.filter="blur(.3px)";const passes=R(3,6)|0;
+      for(let k=0;k<passes;k++){const inset=R(0,3.2),w=R(.6,2.4),seg=R(4,12)|0;x.strokeStyle=k%2?d:m;x.lineCap="round";
+        for(let i=0;i<pts.length-1;i++){if(Math.random()<.22)continue;const a1=pts[i],a2=pts[i+1];
+          const k1=Math.hypot(a1[0],a1[1])||1,k2=Math.hypot(a2[0],a2[1])||1;
+          x.globalAlpha=R(.25,.75);x.lineWidth=w*R(.6,1.3);x.beginPath();
+          x.moveTo(a1[0]-a1[0]/k1*inset,a1[1]-a1[1]/k1*inset);x.lineTo(a2[0]-a2[0]/k2*inset,a2[1]-a2[1]/k2*inset);x.stroke()}}
+      // 5. 毛刷尾巴：輪廓外偶爾拖出的小筆鋒
+      for(let i=0;i<R(3,7);i++){const p=pts[(Math.random()*pts.length)|0],k=Math.hypot(p[0],p[1])||1;x.globalAlpha=R(.2,.5);x.lineWidth=R(.4,1);x.strokeStyle=d;
+        x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(p[0]+p[0]/k*R(2,6)+R(-2,2),p[1]+p[1]/k*R(2,6)+R(-2,2));x.stroke()}
+      // 6. 紙紋（很輕）
+      x.filter="none";x.globalCompositeOperation="destination-out";for(let i=0;i<90;i++){x.globalAlpha=Math.random()*.1;x.fillRect(R(-S/2,S/2),R(-S/2,S/2),1.1,1.1)}
+      x.globalCompositeOperation="source-over";out.push(cv)}
+    return out})();
+  function petal(p){g.save();g.translate(p.x,p.y);g.rotate(p.a);const k=Math.cos(p.s);g.scale(1,.55+.45*Math.abs(k));g.globalAlpha=p.o;
+    const im=SPR[p.v||0],sz=p.r*2.6;g.drawImage(im,-sz/2,-sz/2,sz,sz);g.restore()}
+  function frame(t){const dt=Math.min(3,(t-(last||t))/16.7);last=t;g.clearRect(0,0,W,H);
+    for(const p of P){p.y+=p.vy*dt;p.x+=(p.vx+Math.sin(p.s)*.35)*dt;p.a+=p.va*dt;p.s+=p.vs*dt;if(p.y>H+20||p.x>W+20)Object.assign(p,mk(true),{x:Math.random()*W*1.1-W*.1});petal(p)}
+    raf=requestAnimationFrame(frame)}
+  function start(){cancelAnimationFrame(raf);size();while(P.length<N())P.push(mk(false));P.length=N();
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches){g.clearRect(0,0,W,H);P.forEach(petal);return}last=0;raf=requestAnimationFrame(frame)}
+  addEventListener("resize",()=>{clearTimeout(c._t);c._t=setTimeout(start,200)});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelAnimationFrame(raf);else start()});
+  start()})();
+
 </script>
 </body></html>
