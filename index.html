@@ -643,7 +643,7 @@ function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.p
   if(!list)list=build();META.pend=Object.assign({},META.pend,{[kind]:ser(list)});save();return list}
 function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];save()}}
 function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:w.k,pun:w.orig?PUN[w.k]:null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),true),false)}
-function startLava(prev){const carry=prev||[];const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,3),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,7)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:META.ruby!==false?rbx(p.j,p.r):p.j,kl:p.j.length,sub:p.m,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
+function startLava(prev){const carry=(prev||[]).slice(0,10);const room=10-carry.length,nP=Math.round(room*.3);const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,nP),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,room-nP)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:META.ruby!==false?rbx(p.j,p.r):p.j,kl:p.j.length,sub:p.m,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
 function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=study.timed?Math.min(n-1,Math.floor(el/study.PER)):Math.floor(el/study.PER)%n;
   if(i!==study.idx){if(study.idx>=0)document.getElementById('st-'+study.idx)?.classList.remove('now');study.idx=i;const c=document.getElementById('st-'+i);c.classList.add('now');try{c.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}if(!study.quiet)say(study.list[i].say)}
   if(study.timed){document.getElementById('st-left').textContent=Math.max(0,Math.ceil((study.dur-el)/1000))+' 秒';document.getElementById('stbar').style.transform=`scaleX(${Math.max(0,1-el/study.dur)})`;if(el>=study.dur){endStudy();return}}
@@ -836,7 +836,7 @@ function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.ra
 function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');save();const dead=lv.hp<=0;
   showResult({big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
-    ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組（新 10＋錯 ${left.length}＝${10+left.length} 題）`:'下一組 10 題'}})(),
+    ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
     list:lv.missed.map(p=>`<div class="gcard"><span class="k">${p.j}</span><span class="due now">明天再掉</span><span class="m">${p.r}　${p.m}</span></div>`).join(''),})}
 
 /* ===== 妖怪帳 ===== */
@@ -927,7 +927,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09o';
+const APP_VER='2026.11.09p';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
