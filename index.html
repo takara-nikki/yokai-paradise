@@ -499,6 +499,36 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .nk-bob{animation:nkRun .38s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes nkRun{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-7px) rotate(2deg)}}
 @media (prefers-reduced-motion:reduce){.nk-bob{animation:none}}
+#splash{position:fixed;inset:0;z-index:9999;background:#0E0C0A;display:grid;place-items:center;overflow:hidden;pointer-events:none}
+#splash.out{animation:spOut .7s cubic-bezier(.22,1,.36,1) forwards}
+#splash .spOni{width:min(72vw,380px);opacity:0;transform:scale(.86);animation:spOni 1.3s cubic-bezier(.22,1,.36,1) .15s forwards}
+@keyframes spOut{to{opacity:0;transform:scale(1.06)}}@keyframes spOni{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#splash *{animation-duration:.01s!important;animation-delay:0s!important}}
+.ytabs{position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:50;max-width:492px;margin:0 auto;display:none;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px;border-radius:30px;background:linear-gradient(rgba(255,255,255,.04),rgba(0,0,0,0) 60%),rgba(40,35,31,.42);box-shadow:0 10px 34px rgba(0,0,0,.45),0 2px 6px rgba(26,23,20,.08),inset 0 0 0 .5px rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px) saturate(1.9) brightness(1.04);backdrop-filter:blur(10px) saturate(1.9) brightness(1.04)}
+body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-set"] .ytabs{display:grid}
+.ytabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:7px 2px;border:none;border-radius:24px;background:transparent;color:var(--dim);font:inherit;font-weight:700;line-height:1.2;cursor:pointer}
+.ytabs button i{font-style:normal;line-height:1;display:grid;place-items:center}
+.ytabs button span{display:flex;flex-direction:column;align-items:center;font-size:14px}
+.ytabs button small{font-size:11.5px;font-weight:500;opacity:.75}
+.ytabs button.on{background:rgba(255,255,255,.14);color:var(--accent);box-shadow:0 2px 10px rgba(200,64,47,.12)}
+#s-home,#s-box,#s-set{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+.achGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.achB{display:grid;justify-items:center;text-align:center;gap:4px;padding:12px 6px 10px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.02);opacity:.42;filter:grayscale(1)}
+.achB .achIc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:1px dashed currentColor;color:var(--dim)}
+.achB b{font-size:13px;line-height:1.25}.achB small{font-size:11px;color:var(--dim);line-height:1.35}.achB .achD{font-family:var(--fm);font-size:10px;opacity:.7}
+.achB.got{opacity:1;filter:none;border-color:color-mix(in srgb,var(--gold) 45%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 10%,transparent),transparent)}
+.achB.got .achIc{border:1.5px solid var(--gold);color:var(--gold);box-shadow:inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 0 4px color-mix(in srgb,var(--gold) 35%,transparent)}
+.achPop{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));z-index:10050;display:flex;gap:12px;align-items:center;min-width:260px;max-width:calc(100vw - 32px);padding:12px 18px 12px 12px;border-radius:18px;background:rgba(24,18,15,.92);border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);box-shadow:0 14px 40px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transform:translate(-50%,-140%);opacity:0;transition:transform .55s cubic-bezier(.2,.9,.25,1.15),opacity .4s}
+.achPop.on{transform:translate(-50%,0);opacity:1}
+.achPop .achIc{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:var(--gold);border:1.5px solid var(--gold);box-shadow:inset 0 0 0 3px rgba(0,0,0,.3),inset 0 0 0 4px color-mix(in srgb,var(--gold) 40%,transparent)}
+.achPop small{display:block;font-size:11px;letter-spacing:.08em;color:var(--gold)}.achPop b{display:block;font-size:17px;color:var(--ink)}.achPop span{display:block;font-size:12px;color:var(--dim)}
+.setList{display:grid;gap:10px;margin-top:14px}
+.setRow{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--panel);background-image:var(--grain),var(--fiber);color:var(--ink);font:inherit;cursor:pointer}
+.setRow span{display:grid;gap:2px}.setRow b{font-size:16px}.setRow small{font-size:12.5px;color:var(--dim)}
+.setRow .sw{position:relative;flex:none;width:46px;height:26px;border-radius:999px;background:#2a2420;border:1px solid var(--line);transition:background .2s}
+.setRow .sw i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#8a7c6c;transition:transform .25s cubic-bezier(.3,1.4,.5,1),background .2s}
+.setRow .sw.r{background:rgba(224,106,85,.35);border-color:rgba(224,106,85,.6)}.setRow .sw.r i{transform:translateX(20px);background:radial-gradient(circle at 35% 30%,#F08A72,#C8402F)}
+.setRow.danger em{font-style:normal;color:var(--dim);font-size:22px}.setRow[data-arm]{border-color:#F29AB8}.setRow[data-arm] b{color:#F29AB8}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -680,6 +710,28 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
   </div>
 </section>
 
+<div id="splash" aria-hidden="true"><img class="spOni" src="img/kappa.webp" alt="" decoding="async"></div>
+<nav class="ytabs" aria-label="主要分頁">
+  <button id="tabHome" onclick="tabGo('s-home')"><i aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5c3 .8 6 1.2 9.5 1.2s6.5-.4 9.5-1.2"/><path d="M4.5 10.5h15"/><path d="M7 7.5v13M17 7.5v13"/><path d="M12 7.7v2.8"/></svg></i><span>てんごく<small>天國</small></span></button>
+  <button id="tabBox" onclick="tabGo('s-box')"><i aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M12 12v3"/></svg></i><span>たからばこ<small>寶箱 <b id="achN">0</b></small></span></button>
+  <button id="tabSet" onclick="tabGo('s-set')"><i aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg></i><span>せってい<small>設定</small></span></button>
+</nav>
+
+<!-- 藏寶箱（成就） -->
+<section class="screen" id="s-box">
+  <h1 style="margin-top:8px">たからばこ</h1>
+  <p class="tag">完成挑戰就會拿到寶物。已收集 <b id="achSum">0</b></p>
+  <div class="achGrid" id="achGrid"></div>
+</section>
+
+<!-- 設定 -->
+<section class="screen" id="s-set">
+  <h1 style="margin-top:8px">せってい</h1>
+  <p class="tag">設定</p>
+  <div class="setList" id="setList"></div>
+  <p class="note" id="setVer"></p>
+</section>
+
 <!-- 妖怪帳 -->
 <section class="screen" id="s-grave">
   <button class="back" onclick="go('s-home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>帰る（回去）</button>
@@ -777,7 +829,7 @@ function strokesOf(ch){const n=ch.normalize('NFD');let s=STROKES[n[0]]??3;if(n.i
 const GAP=[0,1,3,7,14,30];
 let SRS={},META={best:0,sealed:0,gems:0,mute:false};
 function load(){try{SRS=JSON.parse(localStorage.getItem('fu_srs')||'{}');META=Object.assign(META,JSON.parse(localStorage.getItem('fu_meta')||'{}'))}catch(e){}}
-function save(){try{localStorage.setItem('fu_srs',JSON.stringify(SRS));localStorage.setItem('fu_meta',JSON.stringify(META))}catch(e){}}
+function save(){try{achCheck()}catch(e){}try{localStorage.setItem('fu_srs',JSON.stringify(SRS));localStorage.setItem('fu_meta',JSON.stringify(META))}catch(e){}}
 const today=()=>new Date().toISOString().slice(0,10);
 function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function mark(key,ok){const r=SRS[key]||{lv:0,seen:0,wrong:0};r.seen++;if(ok){r.lv=Math.min(r.lv+1,GAP.length-1);r.due=addDays(GAP[r.lv])}else{r.lv=0;r.wrong++;r.due=addDays(1)}SRS[key]=r;save()}
@@ -795,7 +847,7 @@ let AC=null;
 function ac(){if(META.mute)return null;try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){AC=null}return AC}
 /* 全部音效總音量（1 = 原本） */
 const SFXVOL=.4;
-function env(a,g,t,peak,att,dec){peak=Math.max(.0002,peak*SFXVOL);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec)}
+function env(a,g,t,peak,att,dec){peak=Math.max(.0002,peak*(META.sfxOff?0:SFXVOL));g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec)}
 function tone(type,f0,f1,dur,peak,filt){const a=ac();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);env(a,g,t,peak,.02,dur);let n=o;if(filt){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=filt;f.Q.value=5;o.connect(f);n=f}n.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.05);return o}
 function noise(dur,freq,type,peak){const a=ac();if(!a)return;const t=a.currentTime,b=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type=type||'bandpass';f.frequency.value=freq;const g=a.createGain();env(a,g,t,peak||.3,.01,dur);s.connect(f);f.connect(g);g.connect(a.destination);s.start(t)}
 function cry(y){const a=ac();if(!a)return;const t=a.currentTime;const o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter(),l=a.createOscillator(),lg=a.createGain();
@@ -804,7 +856,7 @@ function cry(y){const a=ac();if(!a)return;const t=a.currentTime;const o=a.create
   o.connect(f);f.connect(g);g.connect(a.destination);o.start(t);l.start(t);o.stop(t+y.len+.1);l.stop(t+y.len+.1)}
 const SAMPLE={tap:null,ok:null,ng:null,chime:null,rin:null};let sampleLoading=false;
 function loadSamples(a){if(sampleLoading||!a)return;sampleLoading=true;Object.keys(SAMPLE).forEach(n=>{fetch('sfx/'+n+'.mp3').then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(b=>new Promise((res,rej)=>a.decodeAudioData(b,res,rej))).then(buf=>SAMPLE[n]=buf).catch(()=>{})})}
-function playS(n,vol){const a=ac();if(!a)return true;loadSamples(a);const b=SAMPLE[n];if(!b)return false;const s=a.createBufferSource(),g=a.createGain();g.gain.value=(vol??.8)*SFXVOL;s.buffer=b;s.connect(g);g.connect(a.destination);s.start();return true}
+function playS(n,vol){const a=ac();if(!a)return true;loadSamples(a);const b=SAMPLE[n];if(!b)return false;const s=a.createBufferSource(),g=a.createGain();g.gain.value=(vol??.8)*(META.sfxOff?0:SFXVOL);s.buffer=b;s.connect(g);g.connect(a.destination);s.start();return true}
 const SFX={
   hit(){if(playS('ok',.7))return;noise(.12,1600,'bandpass',.35);tone('square',520,140,.16,.12,1800)},
   seal(){if(playS('rin',.85))return;tone('sine',1320,1310,1.2,.16);setTimeout(()=>tone('sine',1980,1975,.9,.08),60);tone('sawtooth',260,50,.9,.12,900)},
@@ -908,7 +960,7 @@ function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.len
   else{SH.failed.push(w);if(!(META.shMiss||[]).includes(w.ex)){META.shMiss=[...(META.shMiss||[]),w.ex].slice(-60);save()}SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
   shHud();{/* 不論踩住或溜走都停住，讀完按繼續 */SH.wait=true;const g=document.getElementById('sh-go');g.disabled=false;g.textContent=SH.hp<=0?'看結果':'繼續';g.classList.add('cont')}}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
-function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
+function shEnd(){cancelAnimationFrame(SH.raf);META.shBest=Math.max(META.shBest||0,SH.maxStreak||0);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
   showResult({win,big:'影',title:win?'影踏み成功':'影子都溜走了',sub:`${n} 句踩住 ${SH.ok} 句。`,l1:'踩住',v1:SH.ok,l2:'溜走',v2:n-SH.ok,v3:SH.maxStreak||0,
     list:SH.failed.map(w=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${w.ex}"><svg><use href="#i-snd"/></svg></button><span class="k sh-rk" style="font-size:17px">${exRb(w.ex)}</span><span class="m">${w.tr||''}</span></div>`).join(''),
     again:()=>startShadow(),againLabel:'下一組 5 句'})}
@@ -947,7 +999,7 @@ function toggleMute(){META.mute=!META.mute;save();paintMute();const onLava=docum
 function paintMute(){document.querySelectorAll('#muteHome,[data-mute]').forEach(b=>b.innerHTML=`<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><use href="#${META.mute?'i-mute':'i-snd'}"/></svg>`)}
 
 /* ===== 畫面 ===== */
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo({top:0,behavior:'instant'});if(id==='s-home')refreshHome()}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.body.dataset.scr=id;['s-home','s-box','s-set'].forEach((k,i)=>{const b=document.getElementById(['tabHome','tabBox','tabSet'][i]);if(b)b.classList.toggle('on',k===id)});window.scrollTo({top:0,behavior:'instant'});if(id==='s-home')refreshHome()}
 function refreshHome(){document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;document.getElementById('st-due').textContent=dueCount();document.getElementById('st-combo').textContent=META.best;
   const g=Object.values(SRS).filter(r=>r.wrong>0).length;document.getElementById('grave-sub').textContent=g?`帳上記著 ${g} 隻，${dueCount()} 隻今天復活。`:'封印失敗的妖怪會記在這裡。'}
 let toastT;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1600)}
@@ -1343,7 +1395,7 @@ function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=docume
 function pauseLava(){if(lv.over)return;lv.paused=!lv.paused;document.getElementById('l-pause').textContent=lv.paused?'再開（繼續）':'待って（暫停）';document.getElementById('arena').style.filter=lv.paused?'blur(6px)':'';lavaVol(lv.paused?.05:(vc.on?.1:.22));if(lv.paused){try{vc.rec&&vc.rec.abort()}catch(e){}}else{lv.last=performance.now();if(vc.on)listen()}}
 function leaveLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();document.getElementById('arena').style.filter='';go('s-home')}
 function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.raf);voiceStop();toast('練習完成，正式開始！');setTimeout(()=>{if(document.getElementById('s-lava').classList.contains('on'))beginLava(shuffle(lv.list),false)},1300);return}endLava()}
-function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');save();const dead=lv.hp<=0;
+function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');const dead=lv.hp<=0;if(!dead)META.lavaWin=(META.lavaWin||0)+1;save();
   showResult({win:!dead,big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
@@ -1497,7 +1549,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17y';
+const APP_VER='2026.11.18';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1563,7 +1615,7 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
   {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
     if(SM.foe.boss&&!SM.rallied&&SM.pos===SM.need-1){smRally();return}
-    if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{SFX.boutWin();document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
+    if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{SFX.boutWin();document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;if(SM.foe&&SM.foe.boss){META.kappaWin=1;save()}setTimeout(smBoutEnd,1900)}
     else if(SM.pos<=SM.lose){document.getElementById('sm-me').classList.add('out');cry(SM.foe);SFX.boutLose();smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?2400:3600)}
 function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({win:SM.wins>=2,big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
@@ -1642,5 +1694,40 @@ function gIntro(fn){ac();const g=GINTRO[fn];let el=document.getElementById('g-in
  el.querySelector('#gi-go').onclick=()=>{const run=()=>{close();window[fn]()};
   if(!g.mic||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){run();return}
   navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;run()}).catch(()=>{vc.denied=true;run()})}}
+
+/* ===== 底部分頁、藏寶箱（成就）、設定 ===== */
+const ACH=[
+ ["seal1","初封印","封印第 1 隻妖怪",m=>(m.sealed||0)>=1,"M4 20h16M6 20V9l6-5 6 5v11"],
+ ["seal50","封印師","累積封印 50 隻",m=>(m.sealed||0)>=50,"M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"],
+ ["seal200","大陰陽師","累積封印 200 隻",m=>(m.sealed||0)>=200,"M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"],
+ ["combo5","五連擊","連續答對 5 題",m=>(m.best||0)>=5,"M3 12h4l3-8 4 16 3-8h4"],
+ ["combo10","十連擊","連續答對 10 題",m=>(m.best||0)>=10,"M13 2L4 14h7l-1 8 9-12h-7z"],
+ ["gem10","寶物收集家","拿到 10 個寶物",m=>(m.gems||0)>=10,"M6 4h12l3.5 5L12 20.5 2.5 9zM2.5 9h19"],
+ ["lava1","岩漿生還","溶岩の試煉 通關 1 次",m=>(m.lavaWin||0)>=1,"M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-3 2-4.5 2-7 1.2 1 2 2 3 2.5"],
+ ["lava10","火山常客","溶岩の試煉 通關 10 次",m=>(m.lavaWin||0)>=10,"M3 20l6-10 4 6 2-3 6 7z"],
+ ["shadow5","影子剋星","影踏み 連續踩住 5 個",m=>(m.shBest||0)>=5,"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"],
+ ["kappa","河童大關退治","在河童相撲打贏大關",m=>!!m.kappaWin,"M5 19L19 5M15 5h4v4M8 12l4 4M4 20l3-1-2-2z"],
+ ["wheel2","轉盤畢業","轉轉盤 解鎖第二階段",m=>(m.wst||1)>=2,"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18"],
+ ["wheel3","轉盤達人","轉轉盤 解鎖第三階段",m=>(m.wst||1)>=3,"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"]];
+const achQ=[];let achBusy=false;
+function achIcon(d,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`}
+function achCheck(){META.ach=META.ach||{};let n=0;for(const a of ACH){if(!META.ach[a[0]]&&a[3](META)){META.ach[a[0]]=new Date().toLocaleDateString('sv');achQ.push(a);n++}}if(n)achShow();const e=document.getElementById('achN');if(e)e.textContent=Object.keys(META.ach).length}
+function achShow(){if(achBusy||!achQ.length)return;achBusy=true;const a=achQ.shift();const d=document.createElement('div');d.className='achPop';d.innerHTML=`<div class="achIc">${achIcon(a[4],26)}</div><div><small>寶物入手</small><b>${a[1]}</b><span>${a[2]}</span></div>`;document.body.appendChild(d);try{SFX.gem()}catch(e){}
+  requestAnimationFrame(()=>d.classList.add('on'));setTimeout(()=>{d.classList.remove('on');setTimeout(()=>{d.remove();achBusy=false;achShow()},600)},2600)}
+function renderBox(){META.ach=META.ach||{};const got=ACH.filter(a=>META.ach[a[0]]).length;document.getElementById('achSum').textContent=`${got} / ${ACH.length}`;
+  document.getElementById('achGrid').innerHTML=ACH.map(a=>{const d=META.ach[a[0]];return `<div class="achB${d?' got':''}"><div class="achIc">${achIcon(a[4],22)}</div><b>${a[1]}</b><small>${a[2]}</small>${d?`<small class="achD">${d}</small>`:''}</div>`}).join('')}
+function setRow(lb,sub,on,fn){return `<button class="setRow" onclick="${fn}"><span><b>${lb}</b><small>${sub}</small></span><i class="sw${on?' r':''}"><i></i></i></button>`}
+function setBtn(lb,sub,fn,id){return `<button class="setRow danger" id="${id}" onclick="${fn}"><span><b>${lb}</b><small>${sub}</small></span><em>›</em></button>`}
+function renderSet(){document.getElementById('setList').innerHTML=
+  setRow('聲音','語音朗讀和所有音效',!META.mute,'toggleMute();renderSet()')+
+  setRow('按鍵與特效音效','只關掉音效，保留日文語音',!META.sfxOff,'META.sfxOff=!META.sfxOff;save();renderSet()')+
+  setRow('漢字讀音','預設在漢字上方顯示讀音',META.ruby!==false,"META.ruby=!(META.ruby!==false);META.shRuby=META.ruby;save();renderSet()")+
+  setBtn('轉轉盤從第1關重練','只清轉盤進度，其他紀錄保留',"setArm(this,()=>{META.wst=1;META.wlv=1;META.wok=0;pendClear('v1');save();toast('轉盤進度歸零')})",'setWheel')+
+  setBtn('清除全部紀錄','封印、寶物、進度全部歸零，無法復原',"setArm(this,()=>{try{localStorage.removeItem('fu_srs');localStorage.removeItem('fu_meta')}catch(e){}location.reload()})",'setAll');
+  document.getElementById('setVer').textContent='版本 '+APP_VER}
+function setArm(b,fn){if(!b.dataset.arm){b.dataset.arm=1;const t=b.querySelector('b'),o=t.textContent;t.textContent='再按一次確認';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;t.textContent=o}},3000);return}delete b.dataset.arm;fn();renderSet()}
+function tabGo(id){ac();if(id==='s-box')renderBox();if(id==='s-set')renderSet();go(id)}
+document.body.dataset.scr='s-home';document.getElementById('tabHome').classList.add('on');try{achCheck()}catch(e){}
+(()=>{const sp=document.getElementById('splash');if(!sp)return;setTimeout(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),760)},2000)})();
 </script>
 </body></html>
