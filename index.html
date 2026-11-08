@@ -266,6 +266,13 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .sumo-card{border-color:#5a3a22;background:linear-gradient(90deg,#2a1d12,#1F1B18)}
 .sm-sign{margin:8px auto 0;padding:10px 18px 12px;text-align:center;background:linear-gradient(180deg,#3a2a1a,#2a1d12);border:1px solid #6a4a2a;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.4);flex:0 0 auto;min-width:220px}
 .sm-verb{font-size:34px;font-weight:700;line-height:1.1}
+.sm-x{position:relative;display:inline-block;color:var(--dim)}
+.sm-x::after{content:'';position:absolute;left:-4px;right:-4px;top:52%;height:3px;border-radius:2px;background:#E5483A;transform:rotate(-12deg) scaleX(0);transform-origin:left;animation:smStrike .28s cubic-bezier(.22,1,.36,1) .05s forwards}
+@keyframes smStrike{to{transform:rotate(-12deg) scaleX(1)}}
+.sm-fix{display:inline-block;margin-left:4px;color:#F08A72;animation:smFix .45s cubic-bezier(.3,1.5,.5,1) .3s both}
+.sm-fix.no{color:#F08A72}
+@keyframes smFix{from{opacity:0;transform:translateY(-10px) scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sm-x::after{animation:none;transform:rotate(-12deg)}.sm-fix{animation:none}}
 .sm-verb small{display:block;font-size:14px;font-weight:500;color:var(--dim);margin-top:2px}
 .sm-form{display:inline-block;margin-top:8px;padding:4px 16px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}
 .ring{position:relative;flex:1 1 auto;min-height:190px;margin-top:6px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(22,19,17,.35),rgba(22,19,17,.85)),url(img/bg_matsuri.webp) center 35%/cover}
@@ -1031,7 +1038,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10n';
+const APP_VER='2026.11.10p';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1070,10 +1077,11 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
   const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
   if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.at(document.getElementById('sm-foe'),{n:16,speed:4});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
   else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('ring'),6);FX.buzz(60);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
     if(SM.pos>=3){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
     else if(SM.pos<=-3){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
-    else smNext()},ok?900:1500)}
+    else smNext()},ok?1300:1800)}
 function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
 function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;document.getElementById('sm-scroll').hidden=true;go('s-vsel')}
 window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').classList.contains('on'))smPlace()});
