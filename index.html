@@ -132,9 +132,12 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
 .blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
-.seg{display:flex;justify-content:center;gap:0;margin:0 auto 10px;width:max-content;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel)}
-.seg button{min-height:36px;padding:0 18px;border-radius:999px;border:0;background:transparent;color:var(--dim);font:inherit;font-size:15px}
-.seg button.on{background:var(--seal);color:#fff;font-weight:700}
+.tgl{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 10px}
+.tgl .lb{background:none;border:0;padding:6px 2px;min-height:40px;font:inherit;font-size:15px;color:var(--dim);transition:color .25s}
+.tgl .lb.on{color:var(--ink);font-weight:700}
+.tgl .sw{position:relative;width:58px;height:32px;min-height:32px;padding:0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg,#2a231e,#1c1815);box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
+.tgl .sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F08A72,#C8402F);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .28s cubic-bezier(.3,1.4,.5,1)}
+.tgl .sw.r i{transform:translateX(26px);background:radial-gradient(circle at 35% 30%,#E7C47A,#B8862F)}
 .hp .inf{font-size:26px;line-height:1;font-weight:700;color:#E06A55;letter-spacing:0}
 .blk .jl{display:block;line-height:1.7}.blk rt,#st-list rt{font-size:.48em;font-weight:500;opacity:.75;letter-spacing:0}#st-list .k{line-height:1.8}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
 .blk.sel{box-shadow:0 0 0 3px var(--gold),0 0 22px rgba(212,165,74,.6)}
@@ -314,7 +317,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
   <div class="hud"><span id="st-title">第一關・先背起來</span><span class="combo" id="st-left">40 秒</span></div>
   <div class="timer"><i id="stbar"></i></div>
   <p class="tag" style="text-align:center;margin:0 0 8px">時間到就開戰。點喇叭可以再聽一次。</p>
-  <div class="seg" id="st-mode" hidden><button data-m="auto" onclick="setStMode('auto')">輪播</button><button data-m="self" onclick="setStMode('self')">自己閱讀</button></div>
+  <div class="tgl" id="st-mode" hidden><button class="lb" data-m="auto" onclick="setStMode('auto')">輪播</button><button class="sw" id="st-sw" role="switch" aria-label="輪播／自己閱讀" onclick="setStMode(study.quiet?'auto':'self')"><i></i></button><button class="lb" data-m="self" onclick="setStMode('self')">自己閱讀</button></div>
   <div style="display:flex;justify-content:center;margin:0 0 10px" id="st-opt" hidden><button class="pill" id="st-ruby" onclick="toggleRuby()" style="min-height:40px;font-size:15px"></button></div>
   <div class="list study" id="st-list"></div>
   <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="leaveStudy()">帰る（回去）</button><button class="btn main" onclick="endStudy()">覚えた！（開始）</button></div>
@@ -650,7 +653,7 @@ function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.p
 function pendClear(kind){if(META.pend&&META.pend[kind]){delete META.pend[kind];save()}}
 function startBattle(prev){const list=pendGet('w',()=>prev&&prev.length?prev:pick(VOCAB,wKey,5),l=>l.map(w=>w.k+'|'+w.j),a=>a.map(id=>VOCAB.find(w=>w.k+'|'+w.j===id)));openStudy('第一關・認識新字',list.map(w=>({k:w.k,sub:`${w.j}　${w.m}`,say:w.k,pun:w.orig?PUN[w.k]:null,ex:w.ex?`${w.ex}<br>${w.tr}`:''})),4000,()=>beginBattle(shuffle(list),true),false)}
 function startLava(prev){const carry=(prev||[]).slice(0,10);const room=10-carry.length,nP=Math.round(room*.3);const list=pendGet('p',()=>shuffle([...carry,...pick(PHRASES.filter(x=>!x.w&&!carry.includes(x)),pKey,nP),...pick(PHRASES.filter(x=>x.w&&!carry.includes(x)),pKey,room-nP)]),l=>l.map(p=>p.j),a=>a.map(j=>PHRASES.find(p=>p.j===j)));openStudy('第二關・認識片語',list.map(p=>({k:META.ruby!==false?rbx(p.j,p.r):p.j,kl:p.j.length,sub:p.m,say:p.r})),4000,()=>beginLava(list,false),false,{ruby:true})}
-function paintStMode(){document.querySelectorAll('#st-mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===(study.quiet?'self':'auto')))}
+function paintStMode(){const m=study.quiet?'self':'auto';document.querySelectorAll('#st-mode .lb').forEach(b=>b.classList.toggle('on',b.dataset.m===m));const sw=document.getElementById('st-sw');sw.classList.toggle('r',study.quiet);sw.setAttribute('aria-checked',study.quiet)}
 function setStMode(m){META.stMode=m;save();study.quiet=m==='self';paintStMode();cancelAnimationFrame(study.raf);if(study.quiet){speechSynthesis.cancel();document.querySelectorAll('#st-list .gcard.now').forEach(c=>c.classList.remove('now'));study.idx=-1;document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)'}else{study.idx=-1;study.t0=performance.now();stTick()}}
 function stTick(){const el=performance.now()-study.t0,n=study.list.length,i=study.timed?Math.min(n-1,Math.floor(el/study.PER)):Math.floor(el/study.PER)%n;
   if(i!==study.idx){if(study.idx>=0)document.getElementById('st-'+study.idx)?.classList.remove('now');study.idx=i;const c=document.getElementById('st-'+i);c.classList.add('now');try{c.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}if(!study.quiet)say(study.list[i].say)}
@@ -941,7 +944,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09u';
+const APP_VER='2026.11.09v';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
