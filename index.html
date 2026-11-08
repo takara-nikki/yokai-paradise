@@ -1349,9 +1349,9 @@ function wPickF(){const L=WLV[(META.wlv||1)-1];let r=Math.random();for(const [f,
 function wActive(){return (META.wst||1)>1?WF:WLV[(META.wlv||1)-1].map(x=>x[0])}
 function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
 function wSector(c){const r=110,ri=46,rad=x=>(x-90)*Math.PI/180,P=(R,x)=>`${(R*Math.cos(rad(x))).toFixed(2)} ${(R*Math.sin(rad(x))).toFixed(2)}`;return `M${P(ri,c-45)} L${P(r,c-45)} A${r} ${r} 0 0 1 ${P(r,c+45)} L${P(ri,c+45)} A${ri} ${ri} 0 0 0 ${P(ri,c-45)}Z`}
-function wheelSVG(v,teach,act,hint){const stem0=v.k.length-1,wFs=Math.min(19,...WF.map(f=>64/wLabel(v,f).length)).toFixed(1);const L=WF.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(79*Math.sin(c*Math.PI/180)).toFixed(1),y=(-79*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
-  return `<text class="wlb${act&&!act.includes(f)?' dim':''}" data-i="${i}" x="${x}" y="${teach?(+y-4):(+y+6)}" font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}${teach?`<tspan class="wfm" x="${x}" dy="17">${FORMS[f]}</tspan>`:''}</text>`}).join('')+(hint?WF.map((f,i)=>`<text class="wdn" data-i="${i}" font-size="10">${WDAN[f]}</text>`).join(''):'');
- return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-118 -132 236 248"><g class="wrot">${WF.map((f,i)=>`<g class="opt wsec${act&&!act.includes(f)?' dim':''}" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="43"/>${teach?`<text class="wcent" y="8" font-size="${Math.min(24,70/v.k.length).toFixed(1)}">${v.k}</text>`:`<svg class="wsnd" x="-8" y="-36" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg><text class="wcent" y="6" font-size="${Math.min(21,66/v.k.length).toFixed(1)}">${v.k}</text><text class="wczh" y="25" font-size="${Math.min(12,64/((v.m||"").split(/[（、(]/)[0].length||1)).toFixed(1)}">${(v.m||"").split(/[（、(]/)[0]}</text>`}</g><path class="wptr" d="M-11 -131 L11 -131 L0 -111Z"/></svg></div>`}
+function wheelSVG(v,teach,act,hint,ord){const O=ord||WF;const stem0=v.k.length-1,wFs=Math.min(19,...O.map(f=>64/wLabel(v,f).length)).toFixed(1);const L=O.map((f,i)=>{const t=wLabel(v,f),c=i*90,fs=wFs,x=(79*Math.sin(c*Math.PI/180)).toFixed(1),y=(-79*Math.cos(c*Math.PI/180)).toFixed(1),stem=v.k.length-1;
+  return `<text class="wlb${act&&!act.includes(f)?' dim':''}" data-i="${i}" x="${x}" y="${teach?(+y-4):(+y+6)}" font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}${teach?`<tspan class="wfm" x="${x}" dy="17">${FORMS[f]}</tspan>`:''}</text>`}).join('')+(hint?O.map((f,i)=>`<text class="wdn" data-i="${i}" font-size="10">${WDAN[f]}</text>`).join(''):'');
+ return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-118 -132 236 248"><g class="wrot">${O.map((f,i)=>`<g class="opt wsec${act&&!act.includes(f)?' dim':''}" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="43"/>${teach?`<text class="wcent" y="8" font-size="${Math.min(24,70/v.k.length).toFixed(1)}">${v.k}</text>`:`<svg class="wsnd" x="-8" y="-36" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg><text class="wcent" y="6" font-size="${Math.min(21,66/v.k.length).toFixed(1)}">${v.k}</text><text class="wczh" y="25" font-size="${Math.min(12,64/((v.m||"").split(/[（、(]/)[0].length||1)).toFixed(1)}">${(v.m||"").split(/[（、(]/)[0]}</text>`}</g><path class="wptr" d="M-11 -131 L11 -131 L0 -111Z"/></svg></div>`}
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
   root.querySelectorAll('.wlb,.wdn').forEach(t=>{const c=+t.dataset.i*90+a,x=79*Math.sin(c*Math.PI/180),y=-79*Math.cos(c*Math.PI/180),dn=t.classList.contains('wdn');t.setAttribute('x',x.toFixed(1));t.setAttribute('y',(y+(dn?-14:6)).toFixed(1))});
   root.querySelectorAll('.wsec').forEach((g,i)=>g.classList.toggle('on',i===idx));return idx}
@@ -1380,7 +1380,7 @@ function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;canc
     if(st===3){const [sj,sz]=SENT[v.d][WF.indexOf(f)];vEl.innerHTML=sj.replace('＿','<span class="wblank">　　　</span>');kEl.textContent=sz;fEl.textContent='空格要填哪一個？'}
     else if(st===2){vEl.textContent=v.k;kEl.textContent=`${v.d}（${m}）`;fEl.textContent=`停在「${WDAN[f]}」`+(f===1&&v.d.endsWith('う')?'（う→わ）':'')}
     else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=`${FORMS[f]}・${WZH[f]}`}
-    box.innerHTML=wheelSVG(v,false,null,st===1);vb.cur=cur;
+    box.innerHTML=wheelSVG(v,false,null,st===1,shuffle([...WF]));vb.cur=cur;
     const root=box.querySelector('.wwrap'),secs=root.querySelectorAll('.wsec');wSet(root,0);let k=Math.floor(Math.random()*4);
     const hop=()=>{secs.forEach((g,n)=>g.classList.toggle('on',n===k));vb.wk=k;try{SFX.click()}catch(e){}k=(k+1)%4};hop();
     vb.spin=setInterval(hop,Math.max(320,780-vb.combo*35-(st-1)*40));
@@ -1416,7 +1416,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17e';
+const APP_VER='2026.11.17f';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
