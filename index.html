@@ -747,7 +747,7 @@ const lv={queue:[],total:15,blocks:[],hp:3,gems:0,done:0,missed:[],sel:null,raf:
 const GEM_SVG=`<svg viewBox="0 0 24 24"><path d="M6 4h12l4 6-10 11L2 10z" fill="#E8CD76" stroke="#B8862A" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 10h20M9 4l3 6 3-6M12 10v11" stroke="#B8862A" stroke-width="1.2" fill="none"/></svg>`;
 const REPEAT=3;
 function buildQueue(list){let q=[],uid=0;for(let r=0;r<REPEAT;r++){let part=shuffle(list);if(q.length&&part[0]===q[q.length-1].p&&part.length>1)part.push(part.shift());part.forEach(p=>q.push({p,uid:uid++}))}return q}
-function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
+function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,ease:1,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
   go('s-lava');const ar=document.getElementById('arena');ar.querySelectorAll('.blk').forEach(b=>b.remove());
   lavaStart();requestAnimationFrame(()=>{lv.H=ar.clientHeight;lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
@@ -771,11 +771,15 @@ function spawnOne(){if(lv.bag.length<3&&lv.queue.length)refillBag();const h=lv.b
   const lane=free[Math.floor(Math.random()*free.length)];mkBlock(h.p,h.type,lane,-70,h.v,h.uid);return true}
 function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
   if(!lv.paused&&!lv.over){
-    lv.spawnAcc+=dt;const gap=Math.max(.55,60/lv.speed);const alive=lv.blocks.filter(b=>b.alive).length;
+    lv.spawnAcc+=dt;const alive=lv.blocks.filter(b=>b.alive).length;
+    /* 卡關偵測：方塊堆太多或快碰到岩漿 → 上面出得慢、掉得慢 */
+    const deep=lv.blocks.reduce((m,b)=>b.alive?Math.max(m,(b.y+b.el.offsetHeight)/lv.lavaY):m,0);const stuck=Math.min(1,Math.max(0,(alive-3)/3,(deep-.55)/.3));
+    lv.ease=(lv.ease??1)+((1-.55*stuck)-(lv.ease??1))*Math.min(1,dt*2);
+    const gap=Math.max(.55,60/lv.speed)*(1+2*stuck);
     const mateWaiting=lv.bag.length&&lv.blocks.some(b=>b.alive&&b.uid===lv.bag[0].uid);
-    if((lv.bag.length||lv.queue.length)&&(lv.spawnAcc>=gap||alive<2||(mateWaiting&&lv.spawnAcc>=.35))){if(spawnOne())lv.spawnAcc=0}
+    if((lv.bag.length||lv.queue.length)&&alive<7&&(lv.spawnAcc>=gap||alive<2||(mateWaiting&&lv.spawnAcc>=.35))){if(spawnOne())lv.spawnAcc=0}
     const order=lv.blocks.filter(b=>b.alive).sort((p,q)=>q.y-p.y);
-    for(const b of order){if(!b.alive)continue;let ny=b.y+lv.speed*b.v*dt;
+    for(const b of order){if(!b.alive)continue;let ny=b.y+lv.speed*b.v*dt*(lv.ease??1);
       const below=order.filter(x=>x.alive&&x!==b&&x.lane===b.lane&&x.y>b.y);if(below.length){const nb=below.reduce((m,x)=>x.y<m.y?x:m);const lim=nb.y-b.el.offsetHeight-8;if(ny>lim)ny=Math.max(b.y,lim)}
       b.y=ny;b.el.style.transform=`translateY(${b.y}px)`;if(b.y+b.el.offsetHeight>=lv.lavaY)burn(b)}
     lv.blocks=lv.blocks.filter(b=>b.alive);
@@ -784,7 +788,7 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
   }
   lv.raf=requestAnimationFrame(lvLoop)}
 function kill(b,cls){b.alive=false;if(lv.sel===b)lv.sel=null;b.el.onclick=null;if(cls){b.el.classList.add(cls);setTimeout(()=>b.el.remove(),520)}else b.el.remove()}
-function burn(b){const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
+function burn(b){const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r);match(b,null)}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
@@ -946,7 +950,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.09y';
+const APP_VER='2026.11.09z';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
