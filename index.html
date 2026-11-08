@@ -406,7 +406,9 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-card .sh-text{text-align:left;color:var(--ink);text-wrap:balance}
 .sh-top .sh-rt{justify-self:center}
 .sh-card .sh-tr{text-align:left}
-#s-shadow .feedback{min-height:1.3em;margin:2px 0;font-size:14px}
+#s-shadow .feedback{min-height:0;margin:6px 0 0;font-size:14px;line-height:1.3}#s-shadow .feedback:empty{display:none}
+#s-shadow .actions{margin-top:10px}
+#s-shadow .sh-card{margin-bottom:0}
 .sh-micw{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 0 8px}
 .sh-mic{width:60px;height:60px;min-height:60px;border-radius:50%;padding:0;display:grid;place-items:center;border:2px solid #F2C46A;background:radial-gradient(circle at 50% 40%,#2a2318,#141016);box-shadow:0 0 0 6px rgba(242,196,106,.12),0 0 24px rgba(242,196,106,.35)}
 .sh-mic svg{width:28px;height:28px;stroke:#F6E2B8;fill:none;stroke-width:1.8;stroke-linecap:round}
@@ -519,14 +521,13 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
       <div class="sh-kanji">影</div>
       <p>妖怪在前方現身，<br>拖著長長的影子奔向黑暗。</p>
       <p>趁影子消失之前，答對試煉，<br>緊緊跟上牠的腳步！</p>
-      <ol><li>按句子旁的喇叭先聽一次</li><li>按麥克風，慢半拍跟著唸</li></ol>
+      <ol><li>按「きく」先聽一次</li><li>按「影踏み」，慢半拍跟著唸</li></ol>
       <button class="btn main" onclick="shIntroGo()">追上去（開始）</button>
     </div>
   </div>
   <div class="sh-card"><button class="say" onclick="shListen()" aria-label="聽一次"><svg><use href="#i-snd"/></svg></button><div class="sh-cw"><div class="sh-text" id="sh-text"></div><div class="sh-tr" id="sh-tr"></div></div></div>
   <div class="feedback" id="sh-fb">　</div>
   <div class="sh-self" id="sh-self" hidden><button class="btn" onclick="shSelf(1)">跟上了</button><button class="btn" onclick="shSelf(.4)">沒跟上</button></div>
-  <div class="sh-micw"><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button class="sh-mic" id="sh-mic" onclick="shGo()" aria-label="開始跟讀"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg></button><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
   <div class="actions"><button class="btn sm" onclick="leaveShadow()">にげる（逃跑）</button><button class="btn sm" id="sh-listen" onclick="shListen()">きく</button><button class="btn main" id="sh-go" onclick="shGo()">影踏み</button></div>
   <span id="sh-count" hidden></span>
 </section>
@@ -704,10 +705,10 @@ function shIntroGo(){document.getElementById('sh-intro').hidden=true}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
   const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
-  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{tx.style.whiteSpace='nowrap';let fs=21;tx.style.fontSize=fs+'px';while(tx.scrollWidth>tx.clientWidth&&fs>13){fs--;tx.style.fontSize=fs+'px'}});document.getElementById('sh-tr').textContent=w.tr||'';
+  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{tx.style.whiteSpace='nowrap';let fs=21;tx.style.fontSize=fs+'px';while(tx.scrollWidth>tx.clientWidth&&fs>10){fs--;tx.style.fontSize=fs+'px'}});document.getElementById('sh-tr').textContent=w.tr||'';
   document.getElementById('sh-stage').classList.remove('caught');document.getElementById('sh-self').hidden=true;document.getElementById('sh-pct').textContent='';
-  const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='按喇叭先聽，再按麥克風跟著唸';
-  document.getElementById('sh-go').disabled=false;document.getElementById('sh-mic').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
+  const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='';
+  document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
 /* 直的小路：妖怪在前方（上面）往遠處跑，拖著影子；你在後面（下面）往前追，踩到影子就算跟上 */
 /* 參道（背景借用）：直線透視；影子是一段段往你這邊指的箭頭，貼著妖怪腳下 */
 const SHF={phase:0,last:0};
@@ -743,7 +744,7 @@ function shPaintRt(){const on=!!META.shRuby;document.querySelectorAll('#sh-rt .l
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
 /* 唸到哪裡：聽到的字依序對進句子（容許跳 3 個字） */
 function shProg(target,heard){const t=normJa(target),h=normJa(heard);let i=0;for(const c of h){for(let j=i;j<Math.min(t.length,i+4);j++){if(t[j]===c){i=j+1;break}}}return t.length?i/t.length:0}
-function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');SHF.last=performance.now();document.getElementById('sh-go').disabled=true;document.getElementById('sh-mic').disabled=true;document.getElementById('sh-listen').disabled=true;
+function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');SHF.last=performance.now();document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='妖怪開跑了——慢半拍跟著唸！';
   const useMic=!!SR&&!vc.denied;if(useMic){try{const r=new SR();SH.rec=r;r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
       r.onresult=e=>{let all='';for(let i=0;i<e.results.length;i++)all+=e.results[i][0].transcript;SH.heard=all;const p=shProg(w.ex,all);if(p>SH.pu){SH.pu=p;SH.started=true}};
@@ -1288,7 +1289,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13e';
+const APP_VER='2026.11.13g';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
