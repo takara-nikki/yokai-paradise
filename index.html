@@ -560,8 +560,20 @@ const SFX={
   wrong(){if(playS('ng',.7))return;tone('square',200,150,.18,.1,900)},
   gem(){if(playS('chime',.7))return;[988,1319,1568].forEach((f,i)=>setTimeout(()=>tone('triangle',f,f,.25,.14),i*70))},
   sizzle(){noise(.7,3000,'highpass',.12);tone('sine',140,60,.5,.07)},
-  pick(){if(playS('tap',.6))return;tone('triangle',660,700,.07,.08)}
+  pick(){if(playS('tap',.6))return;tone('triangle',660,700,.07,.08)},
+  /* 以下沒有素材檔，用合成音做 */
+  click(){noise(.035,2600,'bandpass',.22);tone('triangle',1150,880,.045,.06)},
+  toggle(on){tone('square',on?520:420,on?780:300,.06,.05,2400);setTimeout(()=>noise(.03,3200,'bandpass',.15),40)},
+  taiko(v=.5){tone('sine',120,48,.55,v);noise(.09,380,'lowpass',v*.7)},
+  scroll(){noise(.55,1800,'bandpass',.12);setTimeout(()=>noise(.35,900,'bandpass',.08),220);tone('sine',300,520,.5,.03)},
+  win(){this.taiko(.55);setTimeout(()=>this.taiko(.6),180);const sc=[587,659,784,880,988,1175,1319];sc.forEach((f,i)=>setTimeout(()=>tone('triangle',f,f,.32,.12),380+i*85));
+    setTimeout(()=>{if(!playS('rin',.9)){tone('sine',1568,1560,1.4,.14);tone('sine',2352,2350,1,.06)}tone('sine',392,392,1.2,.07)},380+7*85+60)},
+  lose(){tone('sawtooth',330,110,1.1,.12,900);setTimeout(()=>tone('sawtooth',262,82,1.2,.1,700),260);setTimeout(()=>{tone('sine',98,70,1.8,.22);noise(1.2,180,'lowpass',.18)},520)},
+  boutWin(){this.taiko(.6);setTimeout(()=>this.taiko(.45),140);setTimeout(()=>[784,988,1175].forEach((f,i)=>setTimeout(()=>tone('triangle',f,f,.25,.11),i*70)),300)},
+  boutLose(){tone('sine',180,60,.6,.25);noise(.4,260,'lowpass',.3);setTimeout(()=>tone('triangle',392,294,.5,.08),250)}
 };
+/* 全部按鍵都有按壓音（招式鍵、已有專屬音效的除外） */
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.tile,.gcard,.te-row,.ans-it');if(!b||b.disabled||b.closest('#sm-moves,.blk')||b.dataset.nosfx!==undefined)return;if(b.classList.contains('sw')||b.closest('.tgl'))SFX.toggle(!b.classList.contains('r'));else SFX.click()},{capture:true,passive:true});
 let JA_VOICE=null;
 function findVoice(){try{const vs=speechSynthesis.getVoices();JA_VOICE=vs.find(v=>/ja[-_]JP/i.test(v.lang))||vs.find(v=>/^ja/i.test(v.lang))||null}catch(e){}}
 try{findVoice();speechSynthesis.onvoiceschanged=findVoice}catch(e){}
@@ -856,7 +868,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
   return {burst,at,shake,buzz,flash,stamp,combo,bump,roll,trail,splat,reduce}})();
 /* iPhone Safari 分頁模式：底部浮動工具列會蓋住畫面，專注頁底部多留空間（加到主畫面後不需要） */
 (()=>{const ios=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)document.documentElement.classList.add('ios-tab')})();
-function showResult(o){document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
+function showResult(o){setTimeout(()=>o.win===false?SFX.lose():SFX.win(),250);document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
   document.getElementById('r-l1').textContent=o.l1;document.getElementById('r-v1').textContent=o.v1;document.getElementById('r-l2').textContent=o.l2;document.getElementById('r-v2').textContent=o.v2;document.getElementById('r-v3').textContent=o.v3;
   document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result');
   if(!FX.reduce){const bg=document.getElementById('r-big');bg.animate([{transform:'scale(2.8) rotate(-16deg)',opacity:0},{transform:'scale(.92) rotate(-4deg)',opacity:1,offset:.6},{transform:'scale(1) rotate(-4deg)',opacity:1}],{duration:520,easing:'cubic-bezier(.2,.9,.3,1)',fill:'both'});setTimeout(()=>{SFX.seal();FX.buzz(30);FX.at(bg,{n:26,cols:['#E06A55','#C8402F','#F4EFE3','#D4A54A'],speed:5})},320);
@@ -864,7 +876,7 @@ function showResult(o){document.getElementById('r-big').textContent=o.big;docume
     ['r-v1','r-v2','r-v3'].forEach((id,i)=>FX.roll(document.getElementById(id),typeof [o.v1,o.v2,o.v3][i]==='number'?[o.v1,o.v2,o.v3][i]:[o.v1,o.v2,o.v3][i],800,600+i*160));
     document.querySelectorAll('#r-list .gcard').forEach((c,i)=>c.animate([{transform:'translateX(-20px)',opacity:0},{transform:'none',opacity:1}],{duration:320,delay:1000+i*70,fill:'both'}))}}
 function endBattle(){cancelAnimationFrame(battle.raf);if(!battle.trace)pendClear('w');save();const dead=battle.hp<=0;
-  showResult({big:dead?'敗':'封',title:dead?'鳥居被攻破了':'お疲れさま（辛苦了）',sub:dead?'妖怪太多，去妖怪帳複習一下再來。':battle.fled.length?'逃走的妖怪明天會復活。':'全部封印，一隻都沒跑掉。',
+  showResult({win:!dead,big:dead?'敗':'封',title:dead?'鳥居被攻破了':'お疲れさま（辛苦了）',sub:dead?'妖怪太多，去妖怪帳複習一下再來。':battle.fled.length?'逃走的妖怪明天會復活。':'全部封印，一隻都沒跑掉。',
     l1:'封印',v1:battle.sealed,l2:'逃走',v2:battle.fled.length,v3:battle.best,
     ...(()=>{const left=[...new Set(battle.list)].filter(w=>!battle.okSet.has(w)||battle.failed.has(w));return {again:()=>{pendClear('w');startBattle(left)},againLabel:left.length?`もう一回（錯的 ${left.length} 題）`:'新的 5 個字'}})(),
     list:battle.fled.map(w=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${w.k}"><svg><use href="#i-snd"/></svg></button><span class="k">${w.k}</span><span class="due now">明天復活</span><span class="m">${w.j}　${w.m}</span></div>`).join(''),})}
@@ -986,7 +998,7 @@ function pauseLava(){if(lv.over)return;lv.paused=!lv.paused;document.getElementB
 function leaveLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();document.getElementById('arena').style.filter='';go('s-home')}
 function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.raf);voiceStop();toast('練習完成，正式開始！');setTimeout(()=>{if(document.getElementById('s-lava').classList.contains('on'))beginLava(shuffle(lv.list),false)},1300);return}endLava()}
 function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');save();const dead=lv.hp<=0;
-  showResult({big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
+  showResult({win:!dead,big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
     list:lv.missed.map(p=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${p.r}"><svg><use href="#i-snd"/></svg></button><span class="k">${p.j}</span><span class="due now">明天再掉</span><span class="m">${p.r}　${p.m}</span></div>`).join(''),})}
@@ -1079,7 +1091,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11o';
+const APP_VER='2026.11.11q';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1095,7 +1107,7 @@ const TE_SET={2:["って","んで","いて","いで","して"],3:["った","ん�
 function smEnding(v,f){const c=conj(v.d,v.g,f),stem=v.d.slice(0,-1);return c.slice(stem.length)}
 function startSumo(){ac();if(!SM.open||!SM.deck.length){SM.miss=[...new Set(SM.missNext)];smDeal()}else smPaintAns();SM.open=true;Object.assign(SM,{bout:0,wins:0,lock:true});go('s-sumo');document.getElementById('sm-moves').innerHTML='';document.getElementById('sm-msg').textContent='　';
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
-  w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
+  w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.scroll()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
 function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*(SM.foe&&SM.foe.boss?.032:.05),c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
@@ -1137,10 +1149,10 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
   else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('s-sumo'),7,220);FX.buzz(80);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
   {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
   say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
-    if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
-    else if(SM.pos<=SM.lose){document.getElementById('sm-me').classList.add('out');cry(SM.foe);smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
+    if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{SFX.boutWin();document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;setTimeout(smBoutEnd,1900)}
+    else if(SM.pos<=SM.lose){document.getElementById('sm-me').classList.add('out');cry(SM.foe);SFX.boutLose();smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
     else smNext()},ok?1300:3200)}
-function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
+function smBoutEnd(){SM.bout++;if(SM.bout>=SUMO_FOES.length){SM.open=false;showResult({win:SM.wins>=2,big:'勝',title:SM.wins===3?'全勝優勝！':'千秋楽',sub:`三場贏了 ${SM.wins} 場。`,l1:'勝',v1:SM.wins,l2:'負',v2:3-SM.wins,v3:'-',again:startSumo,againLabel:'再比一場'});return}smBout()}
 function leaveSumo(){cancelAnimationFrame(SM.raf);SM.lock=true;document.getElementById('sm-scroll').hidden=true;go('s-vsel')}
 window.addEventListener('resize',()=>{if(document.getElementById('s-sumo').classList.contains('on'))smPlace()});
 
