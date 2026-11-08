@@ -459,9 +459,9 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 #s-vsel .list{flex:1;display:flex;flex-direction:column}
 #s-vsel .vsel{flex:1;position:relative;overflow:hidden;min-height:96px}
 #s-vsel .vsel .wm{position:absolute;right:-6px;bottom:-22px;font-family:var(--fb);font-size:120px;line-height:1;color:var(--accent);opacity:.09;pointer-events:none}
-#v-opts:has(.wwrap){margin-top:4px;gap:8px}#s-verb:has(.wwrap) .explain{margin-top:8px;padding:8px 12px;font-size:14px;flex:1 1 auto;min-height:3.2em}
+#v-opts:has(.wwrap){margin-top:4px;flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center}#s-verb:has(.wwrap) .explain{margin-top:8px;padding:8px 12px;font-size:14px;flex:0 0 auto;min-height:0;height:4.9em}
 .wwrap{grid-column:1/-1;display:grid;place-items:center;margin:0}
-.wsvg{width:min(88vw,39svh,340px);height:auto;overflow:visible}
+.wwrap:not(.wteach){height:100%;width:100%}.wwrap:not(.wteach) .wsvg{height:100%;max-height:100%;width:auto;max-width:min(92vw,370px)}.wteach .wsvg{width:min(78vw,300px);height:auto;overflow:visible}
 .wsec{cursor:pointer}.wsec path{fill:#241d18;stroke:#5a4632;stroke-width:1.2;transition:fill .12s}
 .wsec:nth-child(2n) path{fill:#2c231c}
 .wsec.on path{fill:#5a4520;stroke:var(--gold);stroke-width:2}
@@ -1306,7 +1306,8 @@ function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","な
   const e=v.d.slice(-1),ex=v.d==="いく"&&(f===2||f===3)?"（行く是例外）":"";let r=[`「${e}」改成い段＋ます`,`「${e}」改成あ段＋ない`+(e==="う"?"（う→わ）":""),`${e} 結尾→「${ROW[e][4]}」${ex}`,`${e} 結尾→「${ROW[e][5]}」${ex}`,`「${e}」改成え段＋る`,`「${e}」改成お段＋う`][f];
   if(v.d.endsWith("る"))r+="・陷阱字";return r}
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{let vs=shuffle(pool);while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
-  if(g===1)q.forEach(it=>{if(it&&!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)]});
+  if(g===1){const easy=(META.wst||1)===1,ok=VERBS.filter(x=>x.g===1&&!x.d.endsWith('る')&&!x.d.endsWith('う')),used=new Set(q.filter(Boolean).map(x=>x.v.d));
+    q.forEach(it=>{if(!it)return;if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];if(easy&&(it.v.d.endsWith('る')||it.v.d.endsWith('う'))){const c=shuffle(ok.filter(x=>!used.has(x.d)))[0]||ok[0];used.add(c.d);it.v=c}})}
   openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく"},true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 /* 四種玩法輪流：狸の變身 → 河童相撲 → 誰是冒牌妖怪 → 雪女の逆呪文 */
@@ -1409,7 +1410,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.16i';
+const APP_VER='2026.11.17';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
