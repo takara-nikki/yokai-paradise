@@ -753,8 +753,8 @@ const SFX={
   sizzle(){noise(.7,3000,'highpass',.12);tone('sine',140,60,.5,.07)},
   pick(){if(playS('tap',.6))return;tone('triangle',660,700,.07,.08)},
   /* 以下沒有素材檔，用合成音做 */
-  wtick(){tone('triangle',1320,1240,.07,.2);noise(.03,3800,'highpass',.16)},
-  click(){noise(.035,2600,'bandpass',.22);tone('triangle',1150,880,.045,.06)},
+  wtick(){tone('sine',392,330,.11,.32);tone('sine',196,170,.13,.18);noise(.04,700,'lowpass',.12)},
+  click(){tone('sine',300,220,.09,.22);tone('sine',150,120,.1,.12);noise(.03,600,'lowpass',.1)},
   toggle(on){tone('square',on?520:420,on?780:300,.06,.05,2400);setTimeout(()=>noise(.03,3200,'bandpass',.15),40)},
   taiko(v=.5){tone('sine',120,48,.55,v);noise(.09,380,'lowpass',v*.7)},
   scroll(){noise(.55,1800,'bandpass',.12);setTimeout(()=>noise(.35,900,'bandpass',.08),220);tone('sine',300,520,.5,.03)},
@@ -1436,7 +1436,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17w';
+const APP_VER='2026.11.17x';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
