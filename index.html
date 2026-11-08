@@ -1087,9 +1087,10 @@ function glyphSkel(ch,mode=0){const key=ch+mode;if(skelCache[key])return skelCac
 function strokesCanvas(strokes,size){const W=288,k=W/(size*2),o=size*.5;const c=document.createElement('canvas');c.width=c.height=W;const x=c.getContext('2d');x.lineWidth=W*.0175;x.lineCap=x.lineJoin='round';x.strokeStyle='#000';const P=p=>[(p[0]+o)*k,(p[1]+o)*k];strokes.forEach(s=>{x.beginPath();x.moveTo(...P(s[0]));s.forEach(p=>x.lineTo(...P(p)));if(s.length===1){const q=P(s[0]);x.lineTo(q[0]+.5,q[1])}x.stroke()});return c}
 function strokesSkel(strokes,size,mode=0){return skelFromCanvas(strokesCanvas(strokes,size),mode)}
 /* 判定：兩種比對方式取較高分；要比同筆畫數的其他假名都像 */
-function shapeCheck(strokes,size,base){const c=strokesCanvas(strokes,size),U=[skelFromCanvas(c,0),skelFromCanvas(c,1)];if(!U[0])return {ok:false,f:0,rank:99};
+const SMALL2BIG={'ゃ':'や','ゅ':'ゆ','ょ':'よ','っ':'つ','ぁ':'あ','ぃ':'い','ぅ':'う','ぇ':'え','ぉ':'お','ゎ':'わ'};
+function shapeCheck(strokes,size,base){base=SMALL2BIG[base]||base;const c=strokesCanvas(strokes,size),U=[skelFromCanvas(c,0),skelFromCanvas(c,1)];if(!U[0])return {ok:false,f:0,rank:99};
   const score=k=>Math.max(fscore(U[0],glyphSkel(k,0)),fscore(U[1],glyphSkel(k,1)));const f=score(base);
-  let better=0,top=f;for(const k of KANA){if(k===base)continue;if(typeof STROKES!=='undefined'&&STROKES[k]!==STROKES[base])continue;const g=score(k);if(g>f+0.02)better++;if(g>top)top=g}
+  let better=0,top=f;for(const k of KANA){if(k===base||SMALL2BIG[k]===base)continue;if(typeof STROKES!=='undefined'&&STROKES[k]!==STROKES[base])continue;const g=score(k);if(g>f+0.02)better++;if(g>top)top=g}
   return {ok:f>=SHAPE_MIN&&(better<RANK_OK||f>=top-TOP_GAP),f,rank:better+1}}
 let RANK_OK=1;
 let SHAPE_MIN=0.5,FR=2,TOP_GAP=0.08;
@@ -1562,7 +1563,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18g';
+const APP_VER='2026.11.18h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
