@@ -339,17 +339,20 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tile.stage3{grid-column:span 2;aspect-ratio:auto;min-height:124px;background:linear-gradient(180deg,#14161c 30%,#1d1a2a);border-color:#3a3550}
 .tile.stage3 .scene{width:52%;right:-2%;top:-14%}
 .tile.stage3 .wm{color:#9aa4c8;opacity:.22}
-.sh-stage{position:relative;flex:1 1 auto;min-height:170px;max-height:300px;margin:6px 0 8px;border-radius:16px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,rgba(143,168,224,.14),transparent 60%),linear-gradient(180deg,#14131a,#1c1712)}
-.sh-path{position:absolute;left:4%;right:4%;bottom:22%;height:2px;background:repeating-linear-gradient(90deg,rgba(242,236,228,.25) 0 10px,transparent 10px 18px)}
-.sh-ysh,.sh-psh{position:absolute;left:4%;bottom:calc(22% - 9px);height:18px;width:0;border-radius:50%/40%;transition:width .12s linear}
-.sh-ysh{background:linear-gradient(90deg,rgba(0,0,0,.15),rgba(0,0,0,.85));filter:blur(2px)}
-.sh-psh{bottom:calc(22% - 6px);height:12px;background:linear-gradient(90deg,rgba(200,64,47,.15),rgba(224,106,85,.85));filter:blur(1.5px);mix-blend-mode:screen}
-.sh-yk{position:absolute;bottom:calc(22% + 4px);width:30%;max-width:150px;aspect-ratio:1;object-fit:contain;left:4%;transform:translateX(-30%);transition:left .12s linear,opacity .3s;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
-.sh-me{position:absolute;bottom:calc(22% + 4px);left:4%;width:30px;height:46px;transform:translateX(-50%);transition:left .12s linear;background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:3px;box-shadow:0 4px 10px rgba(0,0,0,.5);display:grid;place-items:center}
-.sh-me span{width:22px;height:22px;border:1.5px solid var(--shu);border-radius:3px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:13px;transform:rotate(-5deg)}
+.sh-stage{position:relative;flex:1 1 auto;min-height:220px;margin:6px 0 8px;border-radius:16px;overflow:hidden;background:radial-gradient(70% 45% at 50% 0%,rgba(143,168,224,.22),transparent 70%),linear-gradient(180deg,#0e0e14,#1c1712)}
+.sh-road{position:absolute;inset:0;clip-path:polygon(43% 4%,57% 4%,96% 100%,4% 100%);background:linear-gradient(180deg,rgba(242,236,228,.02),rgba(242,236,228,.09));}
+.sh-road::after{content:'';position:absolute;left:50%;top:4%;bottom:0;width:2px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,rgba(242,236,228,.28) 0 10px,transparent 10px 20px);mask-image:linear-gradient(180deg,transparent,#000 40%)}
+.sh-ysh,.sh-psh{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;pointer-events:none}
+.sh-ysh{background:linear-gradient(0deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.75) 35%,rgba(0,0,0,.95) 85%);border-radius:45% 45% 50% 50%/20% 20% 80% 80%;filter:blur(2.5px)}
+.sh-stage.caught .sh-ysh{background:linear-gradient(0deg,rgba(200,64,47,0) 0%,rgba(120,20,12,.8) 35%,rgba(0,0,0,.95) 85%)}
+.sh-psh{background:linear-gradient(0deg,rgba(224,106,85,0),rgba(224,106,85,.55));filter:blur(4px);mix-blend-mode:screen}
+.sh-yk{position:absolute;left:50%;aspect-ratio:1;object-fit:contain;transform:translate(-50%,0);transition:opacity .3s;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.sh-me{position:absolute;left:50%;width:34px;height:52px;transform:translateX(-50%);background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:3px;box-shadow:0 6px 12px rgba(0,0,0,.6);display:grid;place-items:center;transition:box-shadow .2s}
+.sh-me span{width:24px;height:24px;border:1.5px solid var(--shu);border-radius:3px;display:grid;place-items:center;color:var(--shu);font-family:var(--fb);font-size:14px;transform:rotate(-5deg)}
+.sh-stage.caught .sh-me{box-shadow:0 0 0 2px rgba(224,106,85,.8),0 0 22px rgba(224,106,85,.8)}
 .sh-pct{position:absolute;left:0;right:0;top:10px;text-align:center;font-family:var(--fm);font-size:13px;color:var(--dim)}
 .sh-stage.caught .sh-yk{filter:drop-shadow(0 0 14px rgba(224,106,85,.8)) brightness(1.3)}
-.sh-sp{flex:1 1 0}
+.sh-sp{flex:0 0 0}
 .sh-card{flex:0 0 auto;text-align:center;padding:4px 6px 2px}
 .sh-text{text-wrap:balance;font-size:21px;line-height:1.6;font-weight:600;color:var(--dim)}
 .sh-text i{font-style:normal;transition:color .15s,text-shadow .15s}
@@ -454,7 +457,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 <section class="screen focus" id="s-shadow">
   <div class="hud"><span id="sh-count">1 / 5</span><span class="combo" id="sh-score">踏 0</span><button class="ico" data-mute onclick="toggleMute()" aria-label="聲音開關"></button></div>
   <div class="sh-stage" id="sh-stage">
-    <div class="sh-path"></div>
+    <div class="sh-road"></div>
     <div class="sh-ysh" id="sh-ysh"></div>
     <div class="sh-psh" id="sh-psh"></div>
     <img class="sh-yk" id="sh-yk" alt="">
@@ -642,17 +645,21 @@ function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&nor
 function startShadow(prev){ac();const pool=shPool();const list=prev&&prev.length?prev:shuffle(pool).slice(0,5);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[]});go('s-shadow');shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
 function shIntroGo(){document.getElementById('sh-intro').hidden=true}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
-  const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
+  const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;document.getElementById('sh-score').textContent=`踏 ${SH.ok}`;
   const t=w.ex;const tx=document.getElementById('sh-text');tx.innerHTML=[...t].map(c=>`<i>${c}</i>`).join('');tx.style.fontSize='';requestAnimationFrame(()=>{const W=tx.clientWidth,n=t.length;const fs=Math.floor(W/n);tx.style.fontSize=(fs>=16?Math.min(22,fs):21)+'px'});document.getElementById('sh-tr').textContent=w.tr||'';
   document.getElementById('sh-stage').classList.remove('caught');document.getElementById('sh-self').hidden=true;document.getElementById('sh-pct').textContent='';
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='先「きく」聽一次，再按「影踏み」跟著唸';
   document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
-function shDraw(){const st=document.getElementById('sh-stage'),W=st.clientWidth*.92,x0=st.clientWidth*.04;
-  document.getElementById('sh-ysh').style.width=(SH.py*W)+'px';document.getElementById('sh-psh').style.width=(SH.pu*W)+'px';
-  document.getElementById('sh-yk').style.left=(x0+SH.py*W)+'px';document.getElementById('sh-me').style.left=(x0+SH.pu*W)+'px';
+/* 直的小路：妖怪在前方（上面）往遠處跑，拖著影子；你在後面（下面）往前追，踩到影子就算跟上 */
+function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight,W=st.clientWidth;const B=v=>H*(.05+v*.8),S=v=>1-.55*v;
+  const yv=.45+.5*SH.py,tail=Math.max(0,yv-.42),mv=Math.min(.95,.02+.55*SH.pu);
+  const yk=document.getElementById('sh-yk'),yw=W*.34*S(yv);yk.style.width=yw+'px';yk.style.bottom=B(yv)+'px';
+  const sh=document.getElementById('sh-ysh'),sw=W*.3*S((yv+tail)/2);sh.style.width=sw+'px';sh.style.bottom=B(tail)+'px';sh.style.height=Math.max(0,B(yv)-B(tail)+yw*.15)+'px';
+  const me=document.getElementById('sh-me'),ms=S(mv)*1.15;me.style.bottom=B(mv)+'px';me.style.scale=ms.toFixed(3);
+  const ps=document.getElementById('sh-psh');ps.style.bottom=B(0)+'px';ps.style.height=Math.max(0,B(mv)-B(0))+'px';ps.style.width=(W*.12)+'px';
   const chars=document.querySelectorAll('#sh-text i'),n=chars.length;chars.forEach((c,k)=>{c.className=k<SH.pu*n?'u':k<SH.py*n?'y':''});
-  if(SH.started){const gap=Math.max(0,SH.py-SH.pu);document.getElementById('sh-yk').style.opacity=Math.max(.25,1-SH.pu*.75).toFixed(2);st.classList.toggle('caught',gap<.12&&SH.pu>.15)}}
+  if(SH.started){yk.style.opacity=Math.max(.25,1-SH.pu*.75).toFixed(2);st.classList.toggle('caught',mv>=tail-.03&&SH.pu>.1)}else st.classList.remove('caught')}
 function shUtter(text,rate,onend){if(META.mute){onend&&setTimeout(onend,text.length*170);return {start:performance.now()}}const ss=speechSynthesis;try{ss.cancel()}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=rate;if(!JA_VOICE)findVoice();if(JA_VOICE)u.voice=JA_VOICE;
   const h={start:0};u.onstart=()=>{h.start=performance.now()};u.onend=()=>{onend&&onend()};u.onerror=()=>{onend&&onend()};ss.speak(u);return h}
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
@@ -673,7 +680,7 @@ function shFinish(mic){try{SH.rec&&SH.rec.stop()}catch(e){}SH.rec=null;if(!mic){
 function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.length?SH.follow.reduce((a,b)=>a+b,0)/SH.follow.length:0,score=Math.round(100*(.7*acc+.3*fol));SH.best=Math.max(SH.best,score);
   const fb=document.getElementById('sh-fb'),yk=document.getElementById('sh-yk');document.getElementById('sh-pct').textContent=`影踏み ${score} 點`;
   if(score>=65){SH.ok++;fb.className='feedback ok';fb.innerHTML=`踩住了！<span class="ans">${w.ex}</span>`;FX.splat(yk,{scale:.8});SFX.hit();FX.buzz(30);setTimeout(()=>{yk.style.opacity=0;FX.stamp('影踏み',{top:'30%'})},250)}
-  else{SH.failed.push(w);fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'60px -10px',opacity:0}],{duration:600,fill:'forwards'})}
+  else{SH.failed.push(w);fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'})}
   document.getElementById('sh-score').textContent=`踏 ${SH.ok}`;setTimeout(shNext,score>=65?1800:3000)}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
 function shEnd(){cancelAnimationFrame(SH.raf);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
@@ -1202,7 +1209,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.12e';
+const APP_VER='2026.11.12h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
