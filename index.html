@@ -8,8 +8,8 @@
   --accent:#E06A55;--seal:#E06A55;--soft:#3A231E;--navy:#8FA8E0;--ok:#4FA37A;--sakura:#D9738C;--gold:#D4A54A;
   --paper:#F4EFE3;--paper2:#E6DDC8;--paperInk:#1E1A17;--shu:#C8402F;--lava:#FF6A2B;--lava2:#B3200F;
   --grad:linear-gradient(120deg,#E8784F 0%,#DD5A45 45%,#C8402F 100%);
-  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .94 0 0 0 0 .86 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --fiber:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.05 .22' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .82 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .94 0 0 0 0 .86 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --fiber:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.05 .22' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .82 0 0 0 .025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
   --fs:"IBM Plex Sans JP","Noto Sans TC",system-ui,sans-serif;
   --fm:"IBM Plex Mono",ui-monospace,monospace;
   --fb:"Yuji Syuku","Noto Sans TC",serif;
@@ -149,7 +149,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .tgl .sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F08A72,#C8402F);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .28s cubic-bezier(.3,1.4,.5,1)}
 .tgl .sw.r i{transform:translateX(26px);background:radial-gradient(circle at 35% 30%,#FBF6EC,#D9CDB5);box-shadow:0 0 0 1px rgba(212,165,74,.8),0 2px 6px rgba(0,0,0,.5)}
 .hp .inf{font-size:26px;line-height:1;font-weight:700;color:#E06A55;letter-spacing:0}
-.blk .jl{display:block;line-height:1.7}.blk rt,#st-list rt{font-size:.48em;font-weight:500;opacity:.75;letter-spacing:0}#st-list .k{line-height:1.8}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
+.blk .jl{display:block;line-height:1.7}.blk rt,#st-list rt{font-size:.42em;font-weight:500;opacity:.75;letter-spacing:0}#st-list .k{line-height:1.8}.blk .rl{display:block;font-size:11px;font-weight:500;opacity:.65;margin-top:1px}.blk .zl{display:block;margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,241,214,.18);font-size:14px;font-weight:600;color:#BFD0FF}
 .blk.sel{box-shadow:0 0 0 1.5px var(--gold),0 0 14px rgba(212,165,74,.3)}
 .blk.wrong{animation:shake .4s;border-color:var(--sakura)}
 .blk.burn{transition:opacity .5s,filter .5s;opacity:0;filter:brightness(2) saturate(3) blur(2px)}
@@ -192,6 +192,21 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .study .gcard .k{font-size:24px}
 .study .say{grid-row:span 2}
 .gcard{background-image:var(--grain),var(--fiber);box-shadow:inset 0 1px 0 rgba(255,241,214,.06),inset 0 -1px 0 rgba(0,0,0,.25)}
+
+/* 練習頁：卷物目錄版（設定收成一條膠囊、無框條列＋淡金編號） */
+.st-set{display:flex;justify-content:center;align-items:center;gap:18px;width:max-content;max-width:100%;margin:0 auto 10px;padding:2px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,241,214,.025)}
+.st-set[hidden],.st-optw[hidden]{display:none}.st-optw{display:flex;align-items:center;gap:18px}.st-set .sep{width:1px;height:18px;background:var(--line)}
+.st-set .tgl{margin:0;gap:7px}.st-set .tgl .lb{font-size:15px;min-height:44px;padding:0}.st-set .tgl .sw{width:42px;height:24px;min-height:24px;position:relative}.st-set .tgl .sw::after{content:'';position:absolute;inset:-10px -4px}.st-set .tgl .sw i{width:18px;height:18px}.st-set .tgl .sw.r i{transform:translateX(18px)}
+#s-study .timer.thin{height:2px;margin:6px 0 10px;opacity:.5}
+#st-list{counter-reset:n}
+#st-list .gcard:not(.rules){counter-increment:n;background:none;border:0;border-bottom:1px solid rgba(255,241,214,.07);border-radius:0;box-shadow:none;padding:14px 4px 14px 44px;position:relative;transition:transform .12s,background .3s}
+#st-list .gcard:not(.rules):active{transform:scale(.97)}
+#st-list .gcard:not(.rules)::before{content:counter(n,decimal-leading-zero);position:absolute;left:4px;top:30px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:13px;letter-spacing:.1em;color:rgba(212,165,74,.55)}
+#st-list .gcard.now{background:linear-gradient(90deg,rgba(212,165,74,.09),transparent 70%);border-bottom-color:rgba(212,165,74,.35)}
+#st-list .gcard.now::before{color:var(--seal)}
+#st-list .gcard .k{font-size:22px}#st-list .gcard .m{font-size:15px}
+#st-list .say{width:36px;height:36px;min-height:36px;border-color:transparent;background:rgba(255,241,214,.05);position:relative}#st-list .say::after{content:'';position:absolute;inset:-6px}
+#st-list rt{font-size:.42em;letter-spacing:.04em;opacity:.6}
 .gcard.rv{grid-template-columns:1fr auto 40px}.gcard.rv .say{grid-column:3;grid-row:1/span 2}
 .study .pun{grid-column:1/-1;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:14px;color:var(--dim);line-height:1.45}
 .study .pun b{color:var(--gold);font-size:16px}
@@ -328,9 +343,8 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 <section class="screen focus" id="s-study">
   <div class="hud"><span id="st-title">第一關・先背起來</span><span class="combo" id="st-left">40 秒</span></div>
   <div class="timer"><i id="stbar"></i></div>
-  <p class="tag" style="text-align:center;margin:0 0 8px">時間到就開戰。點喇叭可以再聽一次。</p>
-  <div class="tgl" id="st-mode" hidden><button class="lb" data-m="auto" onclick="setStMode('auto')">輪播</button><button class="sw" id="st-sw" role="switch" aria-label="輪播／自己閱讀" onclick="setStMode(study.quiet?'auto':'self')"><i></i></button><button class="lb" data-m="self" onclick="setStMode('self')">自己閱讀</button></div>
-  <div style="display:flex;justify-content:center;margin:0 0 10px" id="st-opt" hidden><div class="tgl" id="st-ruby"><button class="lb" data-m="on" onclick="setRuby(true)">有讀音</button><button class="sw" id="rb-sw" role="switch" aria-label="讀音開關" onclick="setRuby(META.ruby===false)"><i></i></button><button class="lb" data-m="off" onclick="setRuby(false)">無讀音</button></div></div>
+  <p class="tag" id="st-tag" style="text-align:center;margin:0 0 8px">時間到就開戰。點喇叭可以再聽一次。</p>
+  <div class="st-set" id="st-set"><div class="tgl" id="st-mode" hidden><button class="lb" data-m="auto" onclick="setStMode('auto')">輪播</button><button class="sw" id="st-sw" role="switch" aria-label="輪播／自己閱讀" onclick="setStMode(study.quiet?'auto':'self')"><i></i></button><button class="lb" data-m="self" onclick="setStMode('self')">自讀</button></div><span class="st-optw" id="st-opt" hidden><i class="sep"></i><span class="tgl" id="st-ruby"><button class="lb" data-m="on" onclick="setRuby(true)">讀音</button><button class="sw" id="rb-sw" role="switch" aria-label="讀音開關" onclick="setRuby(META.ruby===false)"><i></i></button><button class="lb" data-m="off" onclick="setRuby(false)">隱藏</button></span></span></div>
   <div class="list study" id="st-list"></div>
   <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="leaveStudy()">帰る（回去）</button><button class="btn main" onclick="endStudy()">覚えた！（開始）</button></div>
 </section>
@@ -654,11 +668,12 @@ const study={list:[],t0:0,dur:0,raf:0,idx:-1,PER:5000};
 function paintRuby(){const off=META.ruby===false;document.querySelectorAll('#st-ruby .lb').forEach(b=>b.classList.toggle('on',b.dataset.m===(off?'off':'on')));const sw=document.getElementById('rb-sw');sw.classList.toggle('r',off);sw.setAttribute('aria-checked',!off)}
 function setRuby(v){META.ruby=v;save();paintRuby();(study.list||[]).forEach((w,i)=>{if(w.rj){const el=document.querySelector('#st-'+i+' .k');if(el)el.innerHTML=v?rbx(w.rj,w.rr):w.rj}})}
 function toggleRuby(){setRuby(META.ruby===false)}
-function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet),lockQuiet:!!(opts&&opts.quiet)});const canMode=!timed&&!study.lockQuiet;document.getElementById('st-mode').hidden=!canMode;if(canMode)study.quiet=META.stMode==='self';paintStMode();
+function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet),lockQuiet:!!(opts&&opts.quiet)});const canMode=!timed&&!study.lockQuiet;document.getElementById('st-mode').hidden=!canMode;document.getElementById('st-set').hidden=!canMode&&!(opts&&opts.ruby);document.getElementById('st-opt').querySelector('.sep').hidden=!canMode;document.getElementById('st-tag').hidden=!timed;document.querySelector('#s-study .timer').classList.toggle('thin',!timed);if(canMode)study.quiet=META.stMode==='self';paintStMode();
   document.querySelector('#s-study .tag').textContent=opts&&opts.tag?opts.tag:timed?'時間到就開戰。點喇叭可以再聽一次。':(opts&&opts.ruby?'不限時。背好了再按開始。':'不限時。背好了再按開始，接著先描字練習。');
   document.getElementById('st-title').textContent=title;
   document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard" id="st-${i}"><span class="k"${(w.kl||w.k.length)>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　${w.pun[1]}</span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
   document.querySelectorAll('#st-list .say').forEach(b=>b.onclick=()=>say(b.dataset.say));
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('#st-list > *').forEach((c,i)=>c.animate([{transform:'translateY(26px)',opacity:0},{transform:'none',opacity:1}],{duration:480,delay:Math.min(i,12)*55,easing:'cubic-bezier(0.22,1,0.36,1)',fill:'backwards'}));
   go('s-study');document.getElementById('st-list').scrollTop=0;study.t0=performance.now();cancelAnimationFrame(study.raf);
   if(study.quiet){document.getElementById('st-left').textContent='不限時';document.getElementById('stbar').style.transform='scaleX(1)';return}stTick()}
 function pendGet(kind,build,ser,de){let list=null;try{const sv=META.pend&&META.pend[kind];if(sv){list=de(sv);if(!list.length||list.some(x=>!x))list=null}}catch(e){list=null}
@@ -997,7 +1012,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.10d';
+const APP_VER='2026.11.10e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
