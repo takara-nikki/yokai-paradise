@@ -4,10 +4,10 @@
 <style>
 /* 版型：單欄手機優先；勇者試煉夜版；符紙黃＋朱紅印泥為亮色，溶岩橘只在第二關 */
 :root{
-  --bg:#0d1418;--panel:#132026;--panel2:#18282f;--ink:#EAF2F3;--dim:#9DB3B8;--line:#24363d;
-  --accent:#3FB7C4;--seal:#F07A3A;--soft:#173238;--navy:#7FD4DE;--ok:#4FA37A;--sakura:#D9738C;--gold:#D4A54A;
+  --bg:#161311;--panel:#1F1B18;--panel2:#262119;--ink:#F2ECE4;--dim:#B3A797;--line:#3A322B;
+  --accent:#E06A55;--seal:#E06A55;--soft:#3A231E;--navy:#8FA8E0;--ok:#4FA37A;--sakura:#D9738C;--gold:#D4A54A;
   --paper:#F4EFE3;--paper2:#E6DDC8;--paperInk:#1E1A17;--shu:#C8402F;--lava:#FF6A2B;--lava2:#B3200F;
-  --grad:linear-gradient(120deg,#46C3CF 0%,#2B97A8 50%,#1E6F84 100%);--org:#F09A4A;
+  --grad:linear-gradient(120deg,#E8784F 0%,#DD5A45 45%,#C8402F 100%);
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .94 0 0 0 0 .86 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --fiber:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.05 .22' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .82 0 0 0 .025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
   --fs:"IBM Plex Sans JP","Noto Sans TC",system-ui,sans-serif;
@@ -17,7 +17,7 @@
   color-scheme:dark;
 }
 html,body{height:100%}
-body{margin:0;background:radial-gradient(90% 55% at 100% 0%,rgba(63,183,196,.32),transparent 70%) fixed,radial-gradient(70% 45% at 0% 100%,rgba(240,130,60,.16),transparent 70%) fixed,linear-gradient(160deg,#0f2a33 0%,#0c171c 45%,#080d10 100%) fixed,var(--bg);
+body{margin:0;background:radial-gradient(90% 55% at 100% 0%,rgba(232,120,79,.42),transparent 70%) fixed,radial-gradient(80% 50% at 0% 100%,rgba(200,64,47,.30),transparent 70%) fixed,linear-gradient(160deg,#3a1a10 0%,#1d110c 45%,#120c0a 100%) fixed,var(--bg);
   color:var(--ink);font-family:var(--fs);font-size:18px;line-height:1.45;overflow-x:hidden;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
 *{box-sizing:border-box}
@@ -58,9 +58,9 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tile h2{margin:0;font-size:20px}
 .tile p{margin:0;color:var(--dim);font-size:14px;line-height:1.35}
 .tile.stage1,.tile.stage2{grid-column:span 2;aspect-ratio:auto;min-height:124px}
-.tile.stage1{background:#10222a;border-color:#24414b}
+.tile.stage1{background:#241611;border-color:#4a2a22}
 .tile.stage1 .wm{color:var(--accent);opacity:.28}
-.tile.stage2{background:linear-gradient(180deg,#10202a 40%,#3a1a0c);border-color:#4a3020}
+.tile.stage2{background:linear-gradient(180deg,#1f1512 40%,#3a1609);border-color:#5a2a14}
 .tile.stage2 .wm{color:var(--lava);opacity:.3}
 .note{color:var(--dim);font-size:14px;margin:18px 4px 0}
 /* HUD */
@@ -140,11 +140,11 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .actions{display:flex;gap:10px;margin-top:auto;flex:0 0 auto}
 .btn{padding:0 16px;border:1px solid var(--line);background:var(--panel);font-size:16px;white-space:nowrap}
 .btn.sm{flex:0 0 auto;color:var(--dim)}
-.btn.main{flex:1;background:var(--grad);color:#fff;font-weight:700;font-size:18px;border:0;box-shadow:0 6px 18px rgba(30,140,160,.3)}
+.btn.main{flex:1;background:var(--grad);color:#fff;font-weight:700;font-size:18px;border:0;box-shadow:0 6px 18px rgba(221,90,69,.3)}
 .btn.main:disabled{opacity:.5}
 /* 材質：和紙纖維＋細顆粒；主按鈕是朱漆，帶上緣高光與下緣陰影 */
 .btn,.pill{background-image:var(--grain),var(--fiber);box-shadow:inset 0 1px 0 rgba(255,241,214,.06),inset 0 -1px 0 rgba(0,0,0,.25)}
-.btn.main{background-image:linear-gradient(180deg,rgba(220,250,255,.2),rgba(220,250,255,0) 46%,rgba(0,0,0,0) 60%,rgba(0,30,40,.18)),var(--grain),var(--grad);box-shadow:inset 0 1px 0 rgba(220,250,255,.45),inset 0 -2px 0 rgba(8,40,50,.4),0 0 0 1px rgba(240,154,74,.45),0 6px 18px rgba(30,140,160,.28)}
+.btn.main{background-image:linear-gradient(180deg,rgba(255,236,214,.22),rgba(255,236,214,0) 46%,rgba(0,0,0,0) 60%,rgba(60,10,0,.18)),var(--grain),var(--grad);box-shadow:inset 0 1px 0 rgba(255,236,214,.45),inset 0 -2px 0 rgba(80,16,6,.35),0 0 0 1px rgba(212,165,74,.35),0 6px 18px rgba(221,90,69,.28)}
 /* 第二關 溶岩 */
 .arena{position:relative;flex:1 1 auto;margin:6px 0 0;border-radius:18px 18px 0 0;overflow:hidden;background:linear-gradient(180deg,rgba(22,19,17,.55),rgba(22,19,17,.25) 40%,rgba(255,106,43,.12)),url(img/bg_cave.webp) center 30%/cover no-repeat;border:1px solid var(--line);border-bottom:0}
 .lava{position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(180deg,var(--lava) 0%,var(--lava2) 70%);box-shadow:0 -10px 40px rgba(255,106,43,.55)}
@@ -166,7 +166,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tgl .lb{background:none;border:0;padding:6px 2px;min-height:40px;font:inherit;font-size:15px;color:var(--dim);transition:color .25s}
 .tgl .lb.on{color:var(--ink);font-weight:700}
 .tgl .sw{position:relative;width:58px;height:32px;min-height:32px;padding:0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg,#2a231e,#1c1815);box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
-.tgl .sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7FE0EA,#2B97A8);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .28s cubic-bezier(.3,1.4,.5,1)}
+.tgl .sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F08A72,#C8402F);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .28s cubic-bezier(.3,1.4,.5,1)}
 .tgl .sw.r i{transform:translateX(26px);background:radial-gradient(circle at 35% 30%,#FBF6EC,#D9CDB5);box-shadow:0 0 0 1px rgba(212,165,74,.8),0 2px 6px rgba(0,0,0,.5)}
 .hp .inf{font-size:26px;line-height:1;font-weight:700;color:#E06A55;letter-spacing:0}
 .blk.hint{animation:blkHint .6s ease-out}@keyframes blkHint{0%{box-shadow:0 0 0 0 rgba(143,168,224,.8)}100%{box-shadow:0 0 0 14px rgba(143,168,224,0)}}
@@ -432,10 +432,6 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 
 #sakura{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .screen{position:relative;z-index:1}
-/* 青藍主色・橘點綴 */
-.tile .no{color:var(--org)}.pill svg{stroke:var(--org)}
-.sh-card,.sh-title,.sh-streak{border-color:rgba(240,154,74,.55)}.sh-card .say{border-color:rgba(240,154,74,.6);color:#F6B26B}
-.sh-text i.u,.sh-text rt{color:#F6A35A}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1314,7 +1310,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.15';
+const APP_VER='2026.11.15b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
