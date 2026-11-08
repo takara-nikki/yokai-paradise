@@ -376,6 +376,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-in ol{margin:4px auto 20px;padding:10px 14px;list-style:none;font-size:14px;color:var(--dim);border-top:1px solid var(--line);border-bottom:1px solid var(--line);counter-reset:o;text-align:left;width:max-content;max-width:100%}
 .sh-in li{counter-increment:o;padding:2px 0}.sh-in li::before{content:counter(o);display:inline-grid;place-items:center;width:18px;height:18px;margin-right:8px;border:1px solid rgba(224,106,85,.6);border-radius:4px;font-size:11px;color:var(--seal)}
 .sh-in .btn.main{width:100%;min-height:52px}
+.sh-micnote{font-size:13px!important;color:var(--dim)!important;margin:-6px 0 12px!important}
 #s-shadow{position:relative}
 .sh-self{display:flex;gap:10px;justify-content:center;margin:0 0 8px}.sh-self[hidden]{display:none}
 
@@ -525,7 +526,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
       <p>妖怪在前方現身，<br>拖著長長的影子奔向黑暗。</p>
       <p>趁影子消失之前，答對試煉，<br>緊緊跟上牠的腳步！</p>
       <ol><li>按「きく」先聽一次</li><li>按「影踏み」，慢半拍跟著唸</li></ol>
-      <button class="btn main" onclick="shIntroGo()">追上去（開始）</button>
+      <p class="sh-micnote">要用麥克風聽你唸，跳出詢問時請按「允許」</p>
+      <button class="btn main" onclick="shIntroGo(true)">打開麥克風，追上去</button>
     </div>
   </div>
   <div class="sh-card"><button class="say" onclick="shListen()" aria-label="聽一次"><svg><use href="#i-snd"/></svg></button><div class="sh-cw"><div class="sh-text" id="sh-text"></div><div class="sh-tr" id="sh-tr"></div></div></div>
@@ -704,7 +706,10 @@ const exRb=t=>EX_RUBY[t]||t;
 const SH={hp:3,streak:0,win:false,winT:0,list:[],i:0,ok:0,best:0,failed:[],run:false,raf:0,py:0,pu:0,t0:0,est:0,ended:0,rec:null,heard:'',follow:[],started:false};
 function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&normJa(w.ex).length>=8&&normJa(w.ex).length<=26)}
 function startShadow(prev){ac();const pool=shPool();const list=prev&&prev.length?prev:shuffle(pool).slice(0,5);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
-function shIntroGo(){document.getElementById('sh-intro').hidden=true}
+function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hidden=true};if(!ask){close();return}ac();
+  const done=ok=>{close();const fb=document.getElementById('sh-fb');if(ok){fb.className='feedback ok';fb.textContent='麥克風準備好了'}else{vc.denied=true;fb.className='feedback no';fb.textContent='麥克風沒開：唸完自己判斷有沒有跟上'}};
+  if(!SR||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(false);return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;done(true)}).catch(()=>done(false))}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
   const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
@@ -1292,7 +1297,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13i';
+const APP_VER='2026.11.13j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
