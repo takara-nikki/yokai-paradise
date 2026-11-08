@@ -250,7 +250,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .paper .inner{flex:0 0 auto;width:calc(min(100vw - 20px,440px) - 36px);box-sizing:border-box;padding:18px 16px 16px;overflow:auto;max-height:calc(100dvh - 60px);animation:inkin .6s .6s both}
 @keyframes inkin{from{opacity:0}to{opacity:1}}
 .paper .inner{position:relative}
-.tap-tip{position:absolute;right:8px;top:12px;writing-mode:vertical-rl;font-family:var(--fb);font-size:14px;letter-spacing:.15em;color:#B8291E;border:1.5px solid rgba(184,41,30,.65);border-radius:4px;padding:6px 3px;line-height:1;transform:rotate(3deg);opacity:.9}
+.tap-tip{position:absolute;right:22px;top:14px;writing-mode:vertical-rl;font-family:var(--fb);font-size:14px;letter-spacing:.15em;color:#B8291E;border:1.5px solid rgba(184,41,30,.65);border-radius:4px;padding:6px 3px;line-height:1;transform:rotate(3deg);opacity:.9}
 .paper h3{margin:0 0 4px;font-family:var(--fb);font-weight:400;font-size:28px;text-align:center;letter-spacing:.1em}
 .paper .lead{margin:0 0 12px;font-size:14px;white-space:nowrap;color:#5a4f44;text-align:center}
 .te-rows{display:flex;flex-direction:column;gap:6px;margin:4px 0 14px}
@@ -468,7 +468,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
           <button class="te-row" data-say="はなす、はなして" style="--d:4"><span class="th"><span class="sx big">す</span><span class="ar">→</span><span class="to">して</span></span><span class="exs"><span class="tx">話す</span><span class="ar">→</span><span class="tx">話<b>して</b></span></span></button>
           <button class="te-row ex-row" data-say="いく、いって" style="--d:5"><span class="exl">例外</span><span class="th"><span class="sx big">く</span><span class="ar">→</span><span class="to">って</span></span><span class="exs"><span class="tx">行く</span><span class="ar">→</span><span class="tx">行<b>って</b></span></span><span class="note">不是 行いて</span></button>
         </div>
-        <h4 class="ans-h">この場の題目（點一下聽）</h4>
+        <h4 class="ans-h">この場の題目</h4>
         <div class="ans-list" id="sm-ans"></div>
         <button class="btn main go" onclick="smBegin()">はっけよい（開始）</button>
       </div></div>
@@ -1063,7 +1063,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11f';
+const APP_VER='2026.11.11g';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
