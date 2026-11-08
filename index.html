@@ -391,7 +391,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-run{position:absolute;top:50%;width:16px;height:22px;transform:translate(-50%,-62%);background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:2px;box-shadow:0 0 8px rgba(242,196,106,.8);transition:left .3s}
 .sh-flag{position:absolute;right:-2px;top:-14px;width:2px;height:20px;background:#ddd}.sh-flag::after{content:'';position:absolute;left:2px;top:0;border-left:12px solid #E5483A;border-top:6px solid transparent;border-bottom:6px solid transparent}
 .sh-rt{margin:0;gap:4px}
-.sh-stage{position:relative;flex:1 1 auto;min-height:200px;margin:0 0 10px;border-radius:14px;overflow:hidden;background:#0d0f16 url(img/bg_sando.webp) center bottom/cover no-repeat!important}
+.sh-stage{position:relative;flex:1 1 auto;min-height:140px;margin:0 0 10px;border-radius:14px;overflow:hidden;background:#0d0f16 url(img/bg_sando.webp) center bottom/cover no-repeat!important}
 .sh-stage::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(10,10,16,.25),transparent 30%,transparent 75%,rgba(10,10,16,.55))}
 .sh-forest{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 .sh-yk,.sh-me{z-index:2}
@@ -400,15 +400,16 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .sh-me{width:44px!important;height:66px!important;box-shadow:0 10px 16px rgba(0,0,0,.6)!important}
 .sh-me span{width:30px!important;height:30px!important;font-size:17px!important}
 .sh-pct{z-index:3;top:auto!important;bottom:8px;font-size:12px}
-.sh-card{display:flex;align-items:center;gap:12px;text-align:left!important;padding:10px 14px!important;margin:0 0 4px;border:1px solid rgba(212,165,74,.55);border-radius:12px;background:rgba(18,17,24,.92);box-shadow:inset 0 0 0 3px rgba(18,17,24,.9),inset 0 0 0 4px rgba(212,165,74,.2)}
-.sh-card .say{flex:0 0 auto;width:46px;height:46px;border-color:rgba(212,165,74,.6);color:#F2C46A}
+.sh-card{display:flex;align-items:center;gap:10px;text-align:left!important;padding:8px 12px!important;margin:0 0 4px;border:1px solid rgba(212,165,74,.55);border-radius:12px;background:rgba(18,17,24,.92);box-shadow:inset 0 0 0 3px rgba(18,17,24,.9),inset 0 0 0 4px rgba(212,165,74,.2)}
+.sh-card .say{flex:0 0 auto;width:40px;height:40px;min-height:40px;border-color:rgba(212,165,74,.6);color:#F2C46A}
 .sh-cw{flex:1;min-width:0}
-.sh-card .sh-text{text-align:left;color:var(--ink)}
+.sh-card .sh-text{text-align:left;color:var(--ink);text-wrap:balance}
+.sh-top .sh-rt{justify-self:center}
 .sh-card .sh-tr{text-align:left}
 #s-shadow .feedback{min-height:1.3em;margin:2px 0;font-size:14px}
-.sh-micw{display:flex;align-items:center;justify-content:center;gap:16px;margin:2px 0 8px}
-.sh-mic{width:76px;height:76px;min-height:76px;border-radius:50%;padding:0;display:grid;place-items:center;border:2px solid #F2C46A;background:radial-gradient(circle at 50% 40%,#2a2318,#141016);box-shadow:0 0 0 6px rgba(242,196,106,.12),0 0 24px rgba(242,196,106,.35)}
-.sh-mic svg{width:34px;height:34px;stroke:#F6E2B8;fill:none;stroke-width:1.8;stroke-linecap:round}
+.sh-micw{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 0 8px}
+.sh-mic{width:60px;height:60px;min-height:60px;border-radius:50%;padding:0;display:grid;place-items:center;border:2px solid #F2C46A;background:radial-gradient(circle at 50% 40%,#2a2318,#141016);box-shadow:0 0 0 6px rgba(242,196,106,.12),0 0 24px rgba(242,196,106,.35)}
+.sh-mic svg{width:28px;height:28px;stroke:#F6E2B8;fill:none;stroke-width:1.8;stroke-linecap:round}
 .sh-mic:disabled{opacity:1}.sh-stage.run~* .sh-mic,.sh-micw.on .sh-mic{animation:micPulse 1s ease-in-out infinite}
 @keyframes micPulse{50%{box-shadow:0 0 0 12px rgba(242,196,106,.06),0 0 34px rgba(242,196,106,.6)}}
 .sh-wave{display:flex;align-items:center;gap:4px;height:40px}
@@ -506,9 +507,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 
 <!-- 第三關 影踏み（影子跟讀） -->
 <section class="screen focus" id="s-shadow">
-  <div class="sh-top"><span class="sh-hp" id="sh-hp"></span><span class="sh-title">影子跟讀</span><span class="sh-streak" id="sh-score">連續 0</span></div>
-  <div class="sh-prog"><div class="sh-bar"><i id="sh-fill"></i><span class="sh-dots" id="sh-dots"></span><b class="sh-run" id="sh-run"></b><em class="sh-flag"></em></div><div class="tgl sh-rt" id="sh-rt"><button class="lb" data-m="on" onclick="shRuby(true)">讀音</button><button class="sw" id="sh-rsw" role="switch" aria-label="讀音開關" onclick="shRuby(!META.shRuby)"><i></i></button><button class="lb" data-m="off" onclick="shRuby(false)">隱藏</button></div></div>
-  <div class="sh-stage" id="sh-stage">
+  <div class="sh-top"><span class="sh-hp" id="sh-hp"></span><div class="tgl sh-rt" id="sh-rt"><button class="lb" data-m="on" onclick="shRuby(true)">讀音</button><button class="sw" id="sh-rsw" role="switch" aria-label="讀音開關" onclick="shRuby(!META.shRuby)"><i></i></button><button class="lb" data-m="off" onclick="shRuby(false)">隱藏</button></div><span class="sh-streak" id="sh-score">連續 0</span></div>
+    <div class="sh-stage" id="sh-stage">
     <svg class="sh-forest" id="sh-forest" preserveAspectRatio="none"></svg>
     <img class="sh-yk" id="sh-yk" alt="">
     <div class="sh-me" id="sh-me"><span>宝</span></div>
@@ -523,12 +523,12 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
       <button class="btn main" onclick="shIntroGo()">追上去（開始）</button>
     </div>
   </div>
-  <div class="sh-card"><button class="say" onclick="shListen()" aria-label="聽一次"><svg><use href="#i-snd"/></svg></button><div class="sh-cw"><div class="sh-text" id="sh-text"></div><div class="sh-tr" id="sh-tr" hidden></div></div></div>
+  <div class="sh-card"><button class="say" onclick="shListen()" aria-label="聽一次"><svg><use href="#i-snd"/></svg></button><div class="sh-cw"><div class="sh-text" id="sh-text"></div><div class="sh-tr" id="sh-tr"></div></div></div>
   <div class="feedback" id="sh-fb">　</div>
   <div class="sh-self" id="sh-self" hidden><button class="btn" onclick="shSelf(1)">跟上了</button><button class="btn" onclick="shSelf(.4)">沒跟上</button></div>
-  <div class="sh-micw"><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button class="sh-mic" id="sh-go" onclick="shGo()" aria-label="開始跟讀"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg></button><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-  <div class="sh-bot"><button class="sh-pill" onclick="shTrToggle()"><svg viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6v14"/></svg>例句</button><button class="sh-pill dim" onclick="leaveShadow()">にげる</button><button class="sh-pill" id="sh-skip" onclick="shSkip()"><svg viewBox="0 0 24 24"><path d="M4 6l7 6-7 6zM13 6l7 6-7 6z"/></svg>跳過</button></div>
-  <span id="sh-count" hidden></span><span id="sh-listen" hidden></span>
+  <div class="sh-micw"><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><button class="sh-mic" id="sh-mic" onclick="shGo()" aria-label="開始跟讀"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg></button><span class="sh-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+  <div class="actions"><button class="btn sm" onclick="leaveShadow()">にげる（逃跑）</button><button class="btn sm" id="sh-listen" onclick="shListen()">きく</button><button class="btn main" id="sh-go" onclick="shGo()">影踏み</button></div>
+  <span id="sh-count" hidden></span>
 </section>
 
 <!-- 結算 -->
@@ -701,13 +701,13 @@ const SH={hp:3,streak:0,win:false,winT:0,list:[],i:0,ok:0,best:0,failed:[],run:f
 function shPool(){return VOCAB.filter(w=>w.ex&&!N5W.has(w.j)&&!N5W.has(w.k)&&normJa(w.ex).length>=8&&normJa(w.ex).length<=26)}
 function startShadow(prev){ac();const pool=shPool();const list=prev&&prev.length?prev:shuffle(pool).slice(0,5);Object.assign(SH,{list,i:0,ok:0,best:0,failed:[],hp:3,streak:0});go('s-shadow');shPaintRt();shHud();shShow();if(!prev){document.getElementById('sh-intro').hidden=false;SFX.scroll()}}
 function shIntroGo(){document.getElementById('sh-intro').hidden=true}
-function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;document.querySelector('.sh-micw').classList.remove('on');document.getElementById('sh-tr').hidden=true;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
+function shShow(){const w=SH.list[SH.i];SH.run=false;SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
   const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
-  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{const W=tx.clientWidth,n=t.length;const fs=Math.floor(W/n);tx.style.fontSize=(fs>=16?Math.min(22,fs):21)+'px'});document.getElementById('sh-tr').textContent=w.tr||'';
+  const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);tx.style.fontSize='';requestAnimationFrame(()=>{tx.style.whiteSpace='nowrap';let fs=21;tx.style.fontSize=fs+'px';while(tx.scrollWidth>tx.clientWidth&&fs>13){fs--;tx.style.fontSize=fs+'px'}});document.getElementById('sh-tr').textContent=w.tr||'';
   document.getElementById('sh-stage').classList.remove('caught');document.getElementById('sh-self').hidden=true;document.getElementById('sh-pct').textContent='';
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='按喇叭先聽，再按麥克風跟著唸';
-  document.getElementById('sh-go').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
+  document.getElementById('sh-go').disabled=false;document.getElementById('sh-mic').disabled=false;document.getElementById('sh-listen').disabled=false;shDraw()}
 /* 直的小路：妖怪在前方（上面）往遠處跑，拖著影子；你在後面（下面）往前追，踩到影子就算跟上 */
 /* 參道（背景借用）：直線透視；影子是一段段往你這邊指的箭頭，貼著妖怪腳下 */
 const SHF={phase:0,last:0};
@@ -727,10 +727,10 @@ function shDraw(){const st=document.getElementById('sh-stage'),H=st.clientHeight
   svg.innerHTML=h;
   {const units=[...document.querySelectorAll('#sh-text i')];const nn=units.reduce((a,u)=>a+(+u.dataset.n||1),0);let k=0;units.forEach(u=>{u.className=k<SH.pu*nn?'u':k<SH.py*nn?'y':'';k+=(+u.dataset.n||1)})}
   if(SH.started&&!SH.win)yk.style.opacity=Math.max(.45,1-SH.pu*.5).toFixed(2);st.classList.toggle('caught',caught||!!SH.win);
-  const L=SH.list.length||1;document.getElementById('sh-fill').style.width=((SH.i+Math.min(1,SH.pu))/L*100)+'%';document.getElementById('sh-run').style.left=((SH.i+Math.min(1,SH.pu))/L*100)+'%'}
+  const L=SH.list.length||1;}
 function shHud(){document.getElementById('sh-hp').innerHTML=[0,1,2].map(k=>`<svg viewBox="0 0 24 24" class="${k<SH.hp?'':'off'}"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3.1 4.8 6.6 4.8c2.2 0 3.6 1.3 4.4 2.6.8-1.3 2.2-2.6 4.4-2.6 3.5 0 5.7 3.5 4.2 6.9C19.5 16.4 12 21 12 21z"/></svg>`).join('');
   const sc=document.getElementById('sh-score');sc.textContent=`連續 ${SH.streak}`;sc.classList.toggle('hot',SH.streak>=3);
-  document.getElementById('sh-dots').innerHTML=SH.list.map(()=>'<i></i>').join('')}
+  }
 function shTrToggle(){const t=document.getElementById('sh-tr');t.hidden=!t.hidden;SFX.click()}
 function shSkip(){if(SH.run)return;const w=SH.list[SH.i];SH.failed.push(w);SH.streak=0;shHud();shNext()}
 /* 踩住時：御札真的衝上去追到妖怪腳下 */
@@ -743,7 +743,7 @@ function shPaintRt(){const on=!!META.shRuby;document.querySelectorAll('#sh-rt .l
 function shListen(){ac();SFX.click();shUtter(SH.list[SH.i].ex,.85)}
 /* 唸到哪裡：聽到的字依序對進句子（容許跳 3 個字） */
 function shProg(target,heard){const t=normJa(target),h=normJa(heard);let i=0;for(const c of h){for(let j=i;j<Math.min(t.length,i+4);j++){if(t[j]===c){i=j+1;break}}}return t.length?i/t.length:0}
-function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');document.querySelector('.sh-micw').classList.add('on');SHF.last=performance.now();document.getElementById('sh-go').disabled=true;document.getElementById('sh-listen').disabled=true;
+function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document.getElementById('sh-stage').classList.add('run');SHF.last=performance.now();document.getElementById('sh-go').disabled=true;document.getElementById('sh-mic').disabled=true;document.getElementById('sh-listen').disabled=true;
   const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='妖怪開跑了——慢半拍跟著唸！';
   const useMic=!!SR&&!vc.denied;if(useMic){try{const r=new SR();SH.rec=r;r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=3;
       r.onresult=e=>{let all='';for(let i=0;i<e.results.length;i++)all+=e.results[i][0].transcript;SH.heard=all;const p=shProg(w.ex,all);if(p>SH.pu){SH.pu=p;SH.started=true}};
@@ -754,7 +754,7 @@ function shGo(){ac();const w=SH.list[SH.i];if(SH.run)return;SH.run=true;document
     document.getElementById('sh-pct').textContent=SH.started?`重疊 ${Math.round(Math.min(SH.pu/Math.max(SH.py,.01),1)*100)}%`:'';
     shDraw();const done=SH.ended&&(now-SH.ended>2600||SH.pu>=.96);if(done){shFinish(useMic&&!!SH.rec&&!vc.denied);return}SH.raf=requestAnimationFrame(tick)};SH.raf=requestAnimationFrame(tick)}
 function shSelf(v){document.getElementById('sh-self').hidden=true;SH.pu=v;SH.started=true;SH.follow=[v];shDraw();shJudge()}
-function shFinish(mic){document.getElementById('sh-stage').classList.remove('run');document.querySelector('.sh-micw').classList.remove('on');try{SH.rec&&SH.rec.stop()}catch(e){}SH.rec=null;if(!mic){document.getElementById('sh-self').hidden=false;const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='麥克風沒開：自己判斷有沒有跟上';return}shJudge()}
+function shFinish(mic){document.getElementById('sh-stage').classList.remove('run');try{SH.rec&&SH.rec.stop()}catch(e){}SH.rec=null;if(!mic){document.getElementById('sh-self').hidden=false;const fb=document.getElementById('sh-fb');fb.className='feedback';fb.textContent='麥克風沒開：自己判斷有沒有跟上';return}shJudge()}
 function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.length?SH.follow.reduce((a,b)=>a+b,0)/SH.follow.length:0,score=Math.round(100*(.7*acc+.3*fol));SH.best=Math.max(SH.best,score);
   const fb=document.getElementById('sh-fb'),yk=document.getElementById('sh-yk');document.getElementById('sh-pct').textContent=`影踏み ${score} 點`;
   {const tx=document.getElementById('sh-text');tx.innerHTML=exRb(w.ex);tx.classList.add('rb')}
@@ -1288,7 +1288,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.13b';
+const APP_VER='2026.11.13d';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
