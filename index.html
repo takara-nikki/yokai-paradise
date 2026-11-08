@@ -487,6 +487,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wdn{fill:var(--dim);opacity:.55;text-anchor:middle;font-weight:500;letter-spacing:.05em;pointer-events:none}
 #s-verb:has(.wwrap) .vq{display:flex;flex-direction:column;align-items:center}#s-verb:has(.wwrap) #v-k{order:3;margin-top:6px}
 .wfg,.wcfg{fill:var(--dim);text-anchor:middle;font-weight:500;pointer-events:none}.wteach .wfg,.wteach .wcfg{fill:#7a6e60}.wteach .wfg.dim,.wteach .wfm.dim{opacity:.28}.wfm{text-anchor:middle;font-weight:600;fill:#7a6e60}
+#s-verb.wst3 #v-form{display:none}#s-verb.wst3 #v-k{font-size:20px;color:var(--ink);margin-top:8px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1376,14 +1377,14 @@ function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice
   if(arr.length<3)arr=arr.concat(shuffle(VERBS.filter(x=>x.d!==v.d&&x.g===v.g).map(x=>x.d)));return [...new Set(arr)].slice(0,3)}
 function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;cancelAnimationFrame(vb.wraf);if(isW){if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];const st=META.wst||1;it.st=st===1||Math.random()<.7?st:1+Math.floor(Math.random()*(st-1));if(it.st===3&&!SENT[it.v.d]){const ks=Object.keys(SENT),kk=ks[Math.floor(Math.random()*ks.length)];it.v=VERBS.find(x=>x.d===kk)}}const {v,f}=it,M=isW?WHEEL:VMODES[vb.i%4];vb.done=false;vb.mode=M;
   document.getElementById('v-count').textContent=`${vb.i+1} / 10`;document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;
-  document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;document.getElementById('v-verb').classList.remove('sent');document.getElementById('s-verb').classList.remove('wnov');{const nb=document.getElementById('v-next');nb.textContent='次へ（下一題）';nb.onclick=verbNext}
+  document.querySelector('#v-mode .ms').textContent=M.seal;document.getElementById('v-mname').textContent=M.name;document.getElementById('v-verb').classList.remove('sent');document.getElementById('s-verb').classList.remove('wnov','wst3');{const nb=document.getElementById('v-next');nb.textContent='次へ（下一題）';nb.onclick=verbNext}
   const vEl=document.getElementById('v-verb'),kEl=document.getElementById('v-k'),fEl=document.getElementById('v-form'),box=document.getElementById('v-opts');let opts,cur;
   if(M.id==='yuki'){const c=conj(v.d,v.g,f);vEl.textContent=c;kEl.textContent='這是哪個動詞的變化？';fEl.textContent=FORMS[f];
     cur={ans:v.d};opts=shuffle([v.d,...revCands(v,f)]).map(o=>({o,label:o}))}
   else if(M.id==='fake'){vEl.textContent=v.d;kEl.textContent=`${v.k}（${v.m}）`;fEl.textContent='哪一個變錯了？';
     const forms=shuffle([0,1,2,3,4,5]).slice(0,4),bad=Math.floor(Math.random()*4),wrong=distract(v,forms[bad]).filter(x=>x!==conj(v.d,v.g,forms[bad]))[0];
     cur={ans:String(bad),badForm:forms[bad],wrong};opts=forms.map((ff,k)=>({o:String(k),label:`<small>${FORMS[ff]}</small>${k===bad?wrong:conj(v.d,v.g,ff)}`,small:true}))}
-  else if(M.id==='wheel'){const st=it.st,m=v.m.split(/[（、(]/)[0];cur={ans:String(f)};vEl.classList.toggle('sent',st===3);document.getElementById('s-verb').classList.toggle('wnov',st!==3);
+  else if(M.id==='wheel'){const st=it.st,m=v.m.split(/[（、(]/)[0];cur={ans:String(f)};vEl.classList.toggle('sent',st===3);document.getElementById('s-verb').classList.toggle('wnov',st!==3);document.getElementById('s-verb').classList.toggle('wst3',st===3);
     document.getElementById('v-mname').textContent=`妖怪轉盤・第${['','一','二','三'][META.wst||1]}階段${(META.wst||1)===1?`・第${META.wlv||1}關`:''}　${META.wok||0}/8`;
     if(st===3){const [sj,sz]=SENT[v.d][WF.indexOf(f)];vEl.innerHTML=sj.replace('＿','<span class="wblank">　　　</span>');kEl.textContent=sz;fEl.textContent='空格要填哪一個？'}
     else if(st===2){vEl.textContent=v.k;kEl.textContent=`${v.d}（${m}）`;fEl.textContent=`停在「${WDAN[f]}」`+(f===1&&v.d.endsWith('う')?'（う→わ）':'')}
@@ -1424,7 +1425,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17i';
+const APP_VER='2026.11.17j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
