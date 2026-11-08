@@ -1335,7 +1335,7 @@ function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementByI
   const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 /* 點方塊不會消掉，只會唸給你聽當提示；要自己唸出來才會消 */
-function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;if(!SR||vc.denied){say(b.p.r);match(b,null);return}say(b.p.r,.8);b.el.classList.remove('hint');void b.el.offsetWidth;b.el.classList.add('hint');const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent=`提示：${b.p.r}——換你唸出來`}
+function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r,.8);b.el.classList.remove('hint');void b.el.offsetWidth;b.el.classList.add('hint');const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent=`提示：${b.p.r}——換你唸出來`}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
   FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:26,w:ra.width,up:3.5,g:.28,speed:5,kind:1,size:5,cols:['#5a3a20','#8a5a2a','#D4A54A','#F4EFE3','#BFD0FF']});FX.buzz(15);
   lv.gems++;lv.done++;lv.combo++;lv.best=Math.max(lv.best,lv.combo);META.gems++;if(lv.combo>META.best)META.best=lv.combo;if(!lv.practice){lv.hit.set(a.p,(lv.hit.get(a.p)||0)+1);if(lv.hit.get(a.p)===REPEAT&&!lv.missed.includes(a.p))mark(pKey(a.p),true)}lv.speed=Math.min(lv.base*2,lv.speed+lv.base*.07);lvHud();
@@ -1557,7 +1557,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18c';
+const APP_VER='2026.11.18d';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
