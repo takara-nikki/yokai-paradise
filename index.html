@@ -1079,12 +1079,12 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11l';
+const APP_VER='2026.11.11n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
 const SUMO_FOES=[YOKAI[0],YOKAI[1],{n:'河童大關',img:'img/kappa.webp',wave:'square',f:[180,140,160],vib:9,cut:900,len:.9,boss:true,taunt:'河童把盤子裡的水都笑灑了'}];
-const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=10;
+const SM={bout:0,pos:0,wins:0,verb:null,f:2,ans:'',t0:0,dur:10000,raf:0,lock:false,used:[],deck:[],q:[],miss:[],missNext:[]};const SM_N=15;
 const isK=c=>/[\u3400-\u9fff々]/.test(c);
 function rb(k,r){let a=0,b=0;while(a<k.length&&a<r.length&&!isK(k[a])&&k[a]===r[a])a++;while(b<k.length-a&&b<r.length-a&&!isK(k[k.length-1-b])&&k[k.length-1-b]===r[r.length-1-b])b++;const mid=k.slice(a,k.length-b),rm=r.slice(a,r.length-b);if(!mid||!rm||!/[\u3400-\u9fff]/.test(mid))return k;return k.slice(0,a)+`<ruby>${mid}<rt>${rm}</rt></ruby>`+k.slice(k.length-b)}
 function smDeal(){const g1=VERBS.filter(v=>v.g===1),keep=g1.filter(v=>SM.miss.includes(v.d)).slice(0,SM_N);const rest=shuffle(g1.filter(v=>!keep.includes(v)&&!SM.used.includes(v.d)));SM.deck=[...keep,...rest].slice(0,SM_N);if(SM.deck.length<SM_N)SM.deck.push(...shuffle(g1.filter(v=>!SM.deck.includes(v))).slice(0,SM_N-SM.deck.length));SM.used=SM.deck.map(v=>v.d);SM.q=[];SM.missNext=[];smPaintAns()}
@@ -1097,12 +1097,12 @@ function startSumo(){ac();if(!SM.open||!SM.deck.length){SM.miss=[...new Set(SM.m
   const w=document.getElementById('sm-scroll');w.hidden=false;[w.querySelector('.scroll'),w.querySelector('.inner')].forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
   w.querySelectorAll('.te-row').forEach(b=>b.onclick=()=>say(b.dataset.say));SFX.pick()}
 function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
-function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*(SM.foe&&SM.foe.boss?.045:.065),c=ring*.5;
+function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*(SM.foe&&SM.foe.boss?.032:.05),c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
-function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;SM.need=y.boss?4:2;SM.lose=y.boss?-2:-3;SM.dur=y.boss?8000:10000;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
-  document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
+function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;SM.need=y.boss?6:4;SM.lose=y.boss?-3:-4;SM.dur=y.boss?8000:10000;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
+  document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-foe-img').style.scale=y===YOKAI[1]?'-1 1':'';document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);if(y.boss&&!FX.reduce){smBossIntro(y);return}cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
 /* 大魔王進場：場內暗下、橫幅「見参」劃過、從天而降水花四濺、重震 */
 function smBossIntro(y){SM.lock=true;const ring=document.getElementById('ring'),foe=document.getElementById('sm-foe'),img=document.getElementById('sm-foe-img');document.getElementById('sm-moves').innerHTML='';
