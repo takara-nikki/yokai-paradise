@@ -17,7 +17,7 @@
   color-scheme:dark;
 }
 html,body{height:100%}
-body{margin:0;background:var(--bg) radial-gradient(60% 40% at 100% 0%,rgba(224,106,85,.16),transparent 70%) fixed;
+body{margin:0;background:radial-gradient(90% 55% at 100% 0%,rgba(232,120,79,.42),transparent 70%) fixed,radial-gradient(80% 50% at 0% 100%,rgba(200,64,47,.30),transparent 70%) fixed,linear-gradient(160deg,#3a1a10 0%,#1d110c 45%,#120c0a 100%) fixed,var(--bg);
   color:var(--ink);font-family:var(--fs);font-size:18px;line-height:1.45;overflow-x:hidden;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
 *{box-sizing:border-box}
@@ -1310,7 +1310,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.14a';
+const APP_VER='2026.11.14b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
