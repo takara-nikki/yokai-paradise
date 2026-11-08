@@ -75,6 +75,12 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 .stage::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(22,19,17,.55) 45%,rgba(22,19,17,.15) 100%);border-radius:inherit;pointer-events:none}
 .stage>*{z-index:1}
 .yokai{position:absolute;bottom:0;left:0;width:112px;height:112px}
+.yokai.boss{width:142px;height:142px}
+.yokai.boss .yname{top:4px;left:calc(100% + 2px);color:#E06A55;font-weight:700}
+.fighter.foe.boss{width:48%;max-width:250px;bottom:calc(7% + 9%)}
+.fighter.foe.boss img{animation-name:foeFloatB}
+@keyframes foeFloatB{0%,100%{translate:0 0;rotate:-1.5deg}50%{translate:0 -5%;rotate:1.5deg}}
+.fighter.foe.boss img{filter:drop-shadow(0 10px 14px rgba(0,0,0,.7)) drop-shadow(0 0 18px rgba(224,106,85,.35))}
 .yokai .fig{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));user-select:none;-webkit-user-drag:none}
 .yokai svg{width:100%;height:100%;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
 .yokai .acc{fill:rgba(143,168,224,.35)}
@@ -232,7 +238,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 #s-lava .mic{height:24px}#s-lava .mic[hidden]{display:flex!important;visibility:hidden}
 #s-lava .feedback{font-size:14px;height:1.4em;line-height:1.4em;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #s-lava .actions .btn{min-height:44px}
-@media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
+@media (max-height:720px){.stage{height:108px;margin:4px 0 2px}.yokai{width:86px;height:86px}.yokai.boss{width:106px;height:106px}.torii{height:76px;width:36px}.prompt .mean{font-size:22px}.slot{height:32px;font-size:20px}.hint{min-height:0}#s-battle .feedback{font-size:14px;min-height:1.2em}.fu{margin:4px auto}}
 /* 河童相撲：開場卷軸 */
 .scroll-wrap{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(10,8,7,.72);backdrop-filter:blur(2px);padding:calc(16px + env(safe-area-inset-top,0px)) 10px calc(16px + env(safe-area-inset-bottom,0px))}
 .scroll{position:relative;display:flex;align-items:stretch;max-height:100%;width:min(100%,440px);animation:unroll .95s cubic-bezier(.22,1,.36,1) both}
@@ -745,7 +751,7 @@ function newBox(ch){const holder=document.getElementById('boxes');const size=bat
 function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
   const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?YOKAI[4]:YOKAI[Math.floor(Math.random()*4)];
-  const el=document.getElementById('yokai');el.className='yokai hop';el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
+  const el=document.getElementById('yokai');el.className='yokai hop'+(y.boss?' boss':'');el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
   document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.i+1} / ${battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
   document.getElementById('p-mean').textContent=w.m;document.getElementById('p-hint').innerHTML='';
   const fb=document.getElementById('fb');fb.className='feedback';fb.textContent=battle.trace?`描字練習：照著淡淡的字描，描錯不扣命`:`${y.n}が来た！聽發音，寫 ${w.k.length} 個平假名`;
@@ -1057,7 +1063,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11c';
+const APP_VER='2026.11.11f';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1079,7 +1085,7 @@ function smPlace(){const ring=document.getElementById('ring').clientWidth,step=r
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
-function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe';document.getElementById('sm-me').className='fighter me';
+function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
 function smNext(){if(!SM.q.length)SM.q=shuffle(SM.deck.slice());let v=SM.q.shift();if(SM.verb&&v===SM.verb&&SM.q.length){SM.q.push(v);v=SM.q.shift()}
