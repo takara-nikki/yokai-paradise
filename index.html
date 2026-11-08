@@ -629,7 +629,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
   <h1 style="margin-top:8px">狸の化け術</h1>
   <p class="tag">動詞分三類，一次練一類。</p>
   <div class="list" style="margin-top:16px">
-    <button class="gcard vsel" onclick="startVerb(1)"><span class="wm">五</span><span class="k">第一類　五段動詞</span><span class="due">書く・飲む・帰る</span><span class="m">字尾的假名換段，て形最多變化</span></button>
+    <button class="gcard vsel" onclick="startVerb(1)"><span class="wm">五</span><span class="k">第一類五段動詞轉轉盤</span><span class="due">書く・飲む・帰る</span><span class="m">轉盤練 ます・ない・可能・意向</span></button>
     <button class="gcard vsel" onclick="startVerb(2)"><span class="wm">る</span><span class="k">第二類　る動詞</span><span class="due">食べる・見る</span><span class="m">去掉る再接，最簡單</span></button>
     <button class="gcard vsel" onclick="startVerb(3)"><span class="wm">変</span><span class="k">第三類　する・来る</span><span class="due">勉強する</span><span class="m">不規則，只能整個背</span></button>
     <button class="gcard vsel sumo-card" onclick="gIntro('startSumo')"><span class="wm">河</span><span class="k">河童相撲　て形特訓</span><span class="due">飲んで・書いて</span><span class="m">出招把妖怪推出土俵</span></button>
@@ -1428,7 +1428,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.17m';
+const APP_VER='2026.11.17n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
