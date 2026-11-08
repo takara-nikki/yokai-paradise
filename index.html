@@ -1,6 +1,6 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="タカラ妖怪天国"><meta name="theme-color" content="#161311"><meta name="description" content="Yokai Paradise — タカラ妖怪天国：N4 日文練習遊戲"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#161311}img{max-width:100%}[hidden]{display:none!important}html,body{overscroll-behavior:none}</style></head><body><title>タカラ妖怪天国</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;700&family=Yuji+Syuku&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+TC:wght@400;700&family=Yuji+Syuku&family=Cinzel:wght@500;600&display=swap">
 <style>
 /* 版型：單欄手機優先；勇者試煉夜版；符紙黃＋朱紅印泥為亮色，溶岩橘只在第二關 */
 :root{
@@ -36,7 +36,8 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .seal{grid-row:span 2;width:62px;height:62px;border-radius:50%;border:3px double var(--seal);display:grid;place-items:center;transform:rotate(-6deg);font-family:var(--fb);color:var(--seal);font-size:28px;line-height:1}
 .seal span{transform:translateY(-0.07em)}
 h1{margin:0;font-size:24px;line-height:1.15;text-wrap:balance}
-h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1 .en{display:block;margin-top:4px;font-family:"Cinzel","Times New Roman",serif;font-size:12px;font-weight:600;letter-spacing:.24em;color:#E9E1D4;white-space:nowrap}
+h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;color:#E9E1D4}
 .tag{color:var(--dim);font-size:15px;margin:0}
 .ico{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;padding:0}
 .ico svg,.pill svg,.back svg,.say svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -344,7 +345,7 @@ h1 .en{display:block;margin-top:3px;font-family:var(--fm);font-size:11px;font-we
 <section class="screen on" id="s-home">
   <div class="card-top">
     <div class="seal"><span>封</span></div>
-    <h1>タカラ妖怪天国<span class="en">Yokai Paradise</span></h1>
+    <h1>タカラ妖怪天国<span class="en">TAKARA<i>●</i>JLPT N4</span></h1>
     <div style="grid-row:span 2;display:flex;gap:8px"><button class="ico" id="reloadBtn" onclick="hardReload()" aria-label="重新整理，抓最新版" hidden><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button><button class="ico" id="muteHome" onclick="toggleMute()" aria-label="聲音開關"></button></div>
     <p class="tag">妖怪は待ってくれない。<span id="verTag" style="font-family:var(--fm);font-size:12px;opacity:.6"></span></p>
   </div>
@@ -1091,7 +1092,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.11q';
+const APP_VER='2026.11.11r';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
