@@ -479,8 +479,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .wcbtn{cursor:pointer}.wsnd{stroke:#8FA8E0;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #s-verb:has(.wwrap) .vq .verb .say{display:none!important}
 #s-verb.wnov .vq .verb{display:none}
-#s-verb:has(.wwrap) #v-form{font-size:24px;padding:8px 22px;margin-top:6px;color:var(--ink)}
-#s-verb.wnov #v-k{font-size:17px;margin-top:4px}
+#s-verb:has(.wwrap) #v-form{font-size:30px;padding:8px 28px;margin-top:6px;color:var(--ink);letter-spacing:.06em}
+#s-verb.wnov #v-k{font-size:14px;margin-top:4px;color:var(--dim)}
 .wczh{fill:var(--dim);text-anchor:middle;font-weight:500}
 .wsvg text{font-family:var(--fs)}
 .wteach .wsec.dim{opacity:.35}.wteach .wlb.dim{opacity:.28}
@@ -1471,7 +1471,7 @@ const VMODES=[
  {id:'fake',seal:'偽',name:'誰是冒牌妖怪',sec:8,intro:'四隻妖怪各說一個變化，抓出說錯的那隻。'},
  {id:'yuki',seal:'雪',name:'雪女の逆呪文',sec:6,intro:'雪女唸出變化形，說出它的原形，太慢會被冰凍。'}];
 const WHEEL={id:'wheel',seal:'轉',name:'妖怪轉盤',sec:14,intro:'轉到對的那一格，按「停」。'};
-const WF=[0,1,4,5],WDAN={0:'い段',1:'あ段',4:'え段',5:'お段'},WZH={0:'禮貌形',1:'否定形',4:'會、能',5:'一起…吧'};
+const WCN={0:'禮貌形',1:'否定形',4:'可能形',5:'意向形'};const WF=[0,1,4,5],WDAN={0:'い段',1:'あ段',4:'え段',5:'お段'},WZH={0:'禮貌形',1:'否定形',4:'會、能',5:'一起…吧'};
 const SENT={
 'かく':[['毎日、日記を＿。','每天寫日記。'],['今日はブログを＿。','今天不寫部落格。'],['私は漢字が少し＿。','我會寫一點漢字。'],['先生に手紙を＿。','寫信給老師吧。']],
 'のむ':[['毎朝コーヒーを＿。','每天早上喝咖啡。'],['私はお酒を＿。','我不喝酒。'],['この水は＿。','這水可以喝。'],['一緒にお茶を＿。','一起喝茶吧。']],
@@ -1539,7 +1539,7 @@ function verbShow(){clearInterval(vb.spin);const it=vb.q[vb.i],isW=vb.g===1;canc
     document.getElementById('v-mname').textContent=`妖怪轉盤・第${['','一','二','三'][META.wst||1]}階段${(META.wst||1)===1?`・第${META.wlv||1}關`:''}　${META.wok||0}/${wNeed()}`;
     if(st===3){const [sj,sz]=SENT[v.d][WF.indexOf(f)];vEl.innerHTML=sj.replace('＿','<span class="wblank">　　　</span>');kEl.textContent=sz;fEl.textContent='空格要填哪一個？'}
     else if(st===2){vEl.textContent=v.k;kEl.textContent=`${v.d}（${m}）`;fEl.textContent=`停在「${WDAN[f]}」`+(f===1&&v.d.endsWith('う')?'（う→わ）':'')}
-    else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=`${FORMS[f]}・${WZH[f]}`}
+    else{vEl.textContent=v.k;kEl.textContent=[`${m}（禮貌說法）`,`不${m}`,'','',`能${m}`,`${m}吧`][f];fEl.textContent=WCN[f]}
     box.innerHTML=wheelSVG(v,false,null,st===1,shuffle([...WF]));vb.cur=cur;
     const root=box.querySelector('.wwrap'),secs=root.querySelectorAll('.wsec');wSet(root,0);let k=Math.floor(Math.random()*4);
     const hop=()=>{secs.forEach((g,n)=>g.classList.toggle('on',n===k));secs[k].parentNode.appendChild(secs[k]);vb.wk=k;try{SFX.wtick()}catch(e){}k=(k+1)%4};hop();
@@ -1576,7 +1576,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19c';
+const APP_VER='2026.11.19d';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
