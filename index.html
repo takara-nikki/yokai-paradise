@@ -1507,7 +1507,7 @@ function wheelSVG(v,teach,act,hint,ord,lesson){const P=(i,ox,oy)=>`x="${(86*Math
   return `<text class="wlb${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-oy="${ty}" ${P(i,0,ty)} font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}</text>`
    +(g?`<text class="wfg${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-ox="${g.dx.toFixed(1)}" data-oy="${(ty-fs*.95).toFixed(1)}" ${P(i,g.dx,ty-fs*.95)} font-size="${g.fz.toFixed(1)}">${R.r}</text>`:'')
    +(teach?`<text class="wfm${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-oy="${ty+16}" ${P(i,0,ty+16)} font-size="11">${FORMS[f]}</text>`:'')
-   +(lesson?`<text class="wfm" data-i="${i}" ${P(i,0,ty+fs*.75+5)} font-size="9.5">${FORMS[f]}・${WDAN[f]}</text>`:'')+(hint&&!lesson?`<text class="wdn" data-i="${i}" data-oy="${(ty+fs*.75+4).toFixed(1)}" ${P(i,0,ty+fs*.75+4)} font-size="10">${WDAN[f]}</text>`:'')}).join('');
+   +(lesson?`<text class="wfm" data-i="${i}" ${P(i,0,ty+fs*.75+5)} font-size="9.5">${FORMS[f]}・${WDAN[f]}</text>`:'')+(hint&&!lesson?`<text class="wdn" data-i="${i}" data-oy="${(ty+fs*.75+4).toFixed(1)}" ${P(i,0,ty+fs*.75+4)} font-size="9.5">${FORMS[f]}・${WDAN[f]}</text>`:'')}).join('');
  const cF=+Math.min(teach?24:21,(teach?76:70)/v.k.length).toFixed(1),cy=8,cg=wFg(v.k.length,R.n,R.r,cF),cfg=cg?`<text class="wcfg" x="${cg.dx.toFixed(1)}" y="${(cy-cF*.95).toFixed(1)}" font-size="${cg.fz.toFixed(1)}">${R.r}</text>`:'',m=(v.m||"").split(/[（、(]/)[0];
  return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-121 -121 242 242"><defs><filter id="wglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feFlood flood-color="#E8B04A" flood-opacity=".9"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g class="wrot">${O.map((f,i)=>`<g class="opt wsec${lesson?(act.includes(f)?' on':''):(act&&!act.includes(f)?' dim':'')}" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="50"/>${teach?'':`<svg class="wsnd" x="-8" y="-43" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg>`}${cfg}<text class="wcent" y="${cy}" font-size="${cF}">${v.k}</text>${teach?'':`<text class="wczh" y="29" font-size="${Math.min(13,78/(m.length||1)).toFixed(1)}">${m}</text>`}</g></svg></div>`}
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
@@ -1576,7 +1576,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19b';
+const APP_VER='2026.11.19c';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
