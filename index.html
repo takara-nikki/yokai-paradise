@@ -1582,7 +1582,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19k';
+const APP_VER='2026.11.19m';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1807,5 +1807,9 @@ function askLeave(fn){ac();const inLava=document.getElementById('s-lava').classL
   ov.querySelector('#lvStay').onclick=()=>{close();if(inLava&&lv.paused)pauseLava()};
   ov.querySelector('#lvGo').onclick=()=>{close();fn()};
   ov.onclick=e=>{if(e.target===ov){close();if(inLava&&lv.paused)pauseLava()}}}
+
+/* 從背景回來（離開超過 30 秒）就重新開啟到首頁 */
+(()=>{let away=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){away=Date.now()}else if(away&&Date.now()-away>30000){try{save()}catch(e){}location.reload()}});
+ window.addEventListener('pageshow',e=>{if(e.persisted)location.reload()})})();
 </script>
 </body></html>
