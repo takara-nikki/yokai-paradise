@@ -552,6 +552,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .fighter{will-change:left,translate;transform:translateZ(0)}
 .smDust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(214,196,160,.85),rgba(214,196,160,0) 70%);pointer-events:none;z-index:5}
 .fighter.foe:not(.boss){width:32%;max-width:170px}
+#st-start.locked{background:#3a3430!important;background-image:none!important;color:#8a7f72!important;box-shadow:none!important;border:1px solid var(--line)!important;cursor:not-allowed}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -617,7 +618,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <p class="tag" id="st-tag" style="text-align:center;margin:0 0 8px">時間到就開戰。點喇叭可以再聽一次。</p>
   <div class="st-set" id="st-set"><div class="tgl" id="st-mode" hidden><button class="lb" data-m="auto" onclick="setStMode('auto')">輪播</button><button class="sw" id="st-sw" role="switch" aria-label="輪播／自己閱讀" onclick="setStMode(study.quiet?'auto':'self')"><i></i></button><button class="lb" data-m="self" onclick="setStMode('self')">自讀</button></div><span class="st-optw" id="st-opt" hidden><i class="sep"></i><span class="tgl" id="st-ruby"><button class="lb" data-m="on" onclick="setRuby(true)">讀音</button><button class="sw" id="rb-sw" role="switch" aria-label="讀音開關" onclick="setRuby(META.ruby===false)"><i></i></button><button class="lb" data-m="off" onclick="setRuby(false)">隱藏</button></span></span></div>
   <div class="list study" id="st-list"></div>
-  <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="askLeave(()=>leaveStudy())">帰る（回去）</button><button class="btn main" onclick="endStudy()">覚えた！（開始）</button></div>
+  <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="askLeave(()=>leaveStudy())">帰る（回去）</button><button class="btn main" id="st-start" onclick="endStudy()">覚えた！（開始）</button></div>
 </section>
 
 <!-- 第二關 溶岩の試煉 -->
@@ -1146,7 +1147,7 @@ const study={list:[],t0:0,dur:0,raf:0,idx:-1,PER:5000};
 function paintRuby(){const off=META.ruby===false;document.querySelectorAll('#st-ruby .lb').forEach(b=>b.classList.toggle('on',b.dataset.m===(off?'off':'on')));const sw=document.getElementById('rb-sw');sw.classList.toggle('r',off);sw.setAttribute('aria-checked',!off)}
 function setRuby(v){META.ruby=v;save();paintRuby();(study.list||[]).forEach((w,i)=>{if(w.rj){const el=document.querySelector('#st-'+i+' .k');if(el)el.innerHTML=v?rbx(w.rj,w.rr):w.rj}})}
 function toggleRuby(){setRuby(META.ruby===false)}
-function openStudy(title,items,per,onStart,timed,opts){ac();document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet),lockQuiet:!!(opts&&opts.quiet)});const canMode=!timed&&!study.lockQuiet;document.getElementById('st-mode').hidden=!canMode;document.getElementById('st-set').hidden=!canMode&&!(opts&&opts.ruby);document.getElementById('st-opt').querySelector('.sep').hidden=!canMode;document.getElementById('st-tag').hidden=!timed;document.querySelector('#s-study .timer').classList.toggle('thin',!timed);if(canMode)study.quiet=META.stMode==='self';paintStMode();
+function openStudy(title,items,per,onStart,timed,opts){ac();{const sb=document.getElementById('st-start');const lk=!!(opts&&opts.locked);sb.disabled=lk;sb.classList.toggle('locked',lk);sb.textContent=lk?'還不知道怎麼玩':'覚えた！（開始）'}document.getElementById('st-opt').hidden=!(opts&&opts.ruby);paintRuby();Object.assign(study,{list:items,PER:per,dur:items.length*per,idx:-1,onStart,timed:!!timed,quiet:!!(opts&&opts.quiet),lockQuiet:!!(opts&&opts.quiet)});const canMode=!timed&&!study.lockQuiet;document.getElementById('st-mode').hidden=!canMode;document.getElementById('st-set').hidden=!canMode&&!(opts&&opts.ruby);document.getElementById('st-opt').querySelector('.sep').hidden=!canMode;document.getElementById('st-tag').hidden=!timed;document.querySelector('#s-study .timer').classList.toggle('thin',!timed);if(canMode)study.quiet=META.stMode==='self';paintStMode();
   document.querySelector('#s-study .tag').textContent=opts&&opts.tag?opts.tag:timed?'時間到就開戰。點喇叭可以再聽一次。':(opts&&opts.ruby?'不限時。背好了再按開始。':'不限時。背好了再按開始，接著先描字練習。');
   document.getElementById('st-title').textContent=title;
   document.getElementById('st-list').innerHTML=(opts&&opts.intro||'')+items.map((w,i)=>`<div class="gcard${(w.kl||w.k.length)>5||w.ex||w.pun?' wide':''}" id="st-${i}"><span class="k"${(w.kl||w.k.length)>11?' style="font-size:19px"':''}>${w.k}</span><button class="say" aria-label="唸出來" data-say="${w.say}"><svg><use href="#i-snd"/></svg></button><span class="m">${w.sub}</span>${w.pun?`<span class="pun"><b>${w.pun[0]}</b>　<span class="pr">${w.pun[1]}</span></span>`:''}${w.ex?`<span class="pun exl">${w.ex}</span>`:''}</div>`).join('');
@@ -1458,7 +1459,7 @@ function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","な
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{const T=today(),isDue=v=>SRS['v:'+v.d]&&SRS['v:'+v.d].due<=T;let vs=[...shuffle(pool.filter(isDue)),...shuffle(pool.filter(v=>!isDue(v)))];while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
   if(g===1){const easy=(META.wst||1)===1,ok=VERBS.filter(x=>x.g===1&&!x.d.endsWith('る')&&!x.d.endsWith('う')),used=new Set(q.filter(Boolean).map(x=>x.v.d));
     q.forEach(it=>{if(!it)return;if(easy)it.f=wPickF();else if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];if(easy&&(it.v.d.endsWith('る')||it.v.d.endsWith('う'))){const c=shuffle(ok.filter(x=>!used.has(x.d)))[0]||ok[0];used.add(c.d);it.v=c}})}
-  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく",m:"寫"},false,wActive(),false,null,true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'});if(g===1)setTimeout(wLvIntro,350)}
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく",m:"寫"},false,wActive(),false,null,true)),quiet:true,locked:g!==1,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'});if(g===1)setTimeout(wLvIntro,350)}
 const WLV_INFO=[
  {k:'禮',c:'#E8B04A',t:'ます形・禮貌形',p:['跟長輩、店員、不熟的人說話用的禮貌說法。','字尾改成 <b>い段</b>，再接 ます。'],e:['書く → 書<b>き</b>ます','飲む → 飲<b>み</b>ます','話す → 話<b>し</b>ます']},
  {k:'否',c:'#E06A55',t:'ない形・否定形',p:['「不…」的意思，口語最常用。','字尾改成 <b>あ段</b>，再接 ない。'],e:['書く → 書<b>か</b>ない','飲む → 飲<b>ま</b>ない','買う → 買<b>わ</b>ない（う 要變 わ）']},
@@ -1585,7 +1586,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19o';
+const APP_VER='2026.11.19p';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
