@@ -461,7 +461,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 #s-vsel .vsel .wm{position:absolute;right:-6px;bottom:-22px;font-family:var(--fb);font-size:120px;line-height:1;color:var(--accent);opacity:.09;pointer-events:none}
 #v-opts:has(.wwrap){margin-top:4px;flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center}#s-verb:has(.wwrap) .explain{margin-top:8px;padding:8px 12px;font-size:14px;flex:0 0 auto;min-height:0;height:4.9em}
 .wwrap{grid-column:1/-1;display:grid;place-items:center;margin:0}
-.wwrap:not(.wteach){height:100%;width:100%}.wwrap:not(.wteach) .wsvg{height:100%;max-height:100%;width:auto;max-width:min(92vw,370px)}.wteach .wsvg{width:min(78vw,300px);height:auto;overflow:visible}
+.wwrap:not(.wteach){height:100%;width:100%}.wwrap:not(.wteach) .wsvg{height:92%;max-height:92%;width:auto;max-width:min(80vw,330px)}.wteach .wsvg{width:min(78vw,300px);height:auto;overflow:visible}
 .wsec{cursor:pointer}.wsec path{fill:#241d18;stroke:#5a4632;stroke-width:1.2;transition:fill .12s}
 .wsec:nth-child(2n) path{fill:#2c231c}
 .wsec.on path{fill:#5a4520;stroke:#F3C766;stroke-width:2.5;filter:url(#wglow)}
@@ -1502,13 +1502,13 @@ function wLabel(v,f){return v.k.slice(0,-1)+conj(v.d,1,f).slice(v.d.length-1)}
 function wSector(c){const r=118,ri=53,rad=x=>(x-90)*Math.PI/180,P=(R,x)=>`${(R*Math.cos(rad(x))).toFixed(2)} ${(R*Math.sin(rad(x))).toFixed(2)}`;return `M${P(ri,c-45)} L${P(r,c-45)} A${r} ${r} 0 0 1 ${P(r,c+45)} L${P(ri,c+45)} A${ri} ${ri} 0 0 0 ${P(ri,c-45)}Z`}
 function wRd(v){let n=0;while(n<v.k.length&&/[一-鿿々]/.test(v.k[n]))n++;return {n,r:n?v.d.slice(0,v.d.length-(v.k.length-n)):''}}
 function wFg(len,n,r,F){if(!n)return null;const dx=(-len/2+n/2)*F,fz=Math.min(F*.56,n*F*1.4/r.length);return {dx,fz}}
-function wheelSVG(v,teach,act,hint,ord,lesson){const P=(i,ox,oy)=>`x="${(86*Math.sin(i*Math.PI/2)+ox).toFixed(1)}" y="${(-86*Math.cos(i*Math.PI/2)+oy).toFixed(1)}"`;const O=ord||WF;const R=wRd(v),wFs=+Math.min(20,...O.map(f=>62/wLabel(v,f).length)).toFixed(1);
+function wheelSVG(v,teach,act,hint,ord,lesson){const P=(i,ox,oy)=>`x="${(86*Math.sin(i*Math.PI/2)+ox).toFixed(1)}" y="${(-86*Math.cos(i*Math.PI/2)+oy).toFixed(1)}"`;const O=ord||WF;const R=wRd(v),wFs=+Math.min(17,...O.map(f=>54/wLabel(v,f).length)).toFixed(1);
  const L=O.map((f,i)=>{if(lesson&&!act.includes(f))return '';const t=wLabel(v,f),fs=wFs,stem=v.k.length-1,g=wFg(t.length,R.n,R.r,fs),ty=teach?-4:6;
   return `<text class="wlb${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-oy="${ty}" ${P(i,0,ty)} font-size="${fs}"><tspan class="wst">${t.slice(0,stem)}</tspan><tspan class="wch">${t.slice(stem,stem+1)}</tspan>${t.slice(stem+1)}</text>`
    +(g?`<text class="wfg${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-ox="${g.dx.toFixed(1)}" data-oy="${(ty-fs*.95).toFixed(1)}" ${P(i,g.dx,ty-fs*.95)} font-size="${g.fz.toFixed(1)}">${R.r}</text>`:'')
    +(teach?`<text class="wfm${act&&!act.includes(f)?' dim':''}" data-i="${i}" data-oy="${ty+16}" ${P(i,0,ty+16)} font-size="11">${FORMS[f]}</text>`:'')
    +(lesson?`<text class="wfm" data-i="${i}" ${P(i,0,ty+fs*.75+5)} font-size="9.5">${FORMS[f]}・${WDAN[f]}</text>`:'')+(hint&&!lesson?`<text class="wdn" data-i="${i}" data-oy="${(ty+fs*.75+4).toFixed(1)}" ${P(i,0,ty+fs*.75+4)} font-size="10">${WDAN[f]}</text>`:'')}).join('');
- const cF=+Math.min(teach?26:24,(teach?84:80)/v.k.length).toFixed(1),cy=8,cg=wFg(v.k.length,R.n,R.r,cF),cfg=cg?`<text class="wcfg" x="${cg.dx.toFixed(1)}" y="${(cy-cF*.95).toFixed(1)}" font-size="${cg.fz.toFixed(1)}">${R.r}</text>`:'',m=(v.m||"").split(/[（、(]/)[0];
+ const cF=+Math.min(teach?24:21,(teach?76:70)/v.k.length).toFixed(1),cy=8,cg=wFg(v.k.length,R.n,R.r,cF),cfg=cg?`<text class="wcfg" x="${cg.dx.toFixed(1)}" y="${(cy-cF*.95).toFixed(1)}" font-size="${cg.fz.toFixed(1)}">${R.r}</text>`:'',m=(v.m||"").split(/[（、(]/)[0];
  return `<div class="wwrap${teach?' wteach':''}"><svg class="wsvg" viewBox="-121 -121 242 242"><defs><filter id="wglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feFlood flood-color="#E8B04A" flood-opacity=".9"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g class="wrot">${O.map((f,i)=>`<g class="opt wsec${lesson?(act.includes(f)?' on':''):(act&&!act.includes(f)?' dim':'')}" data-o="${f}" data-say="${v.d}、${conj(v.d,1,f)}"><path d="${wSector(i*90)}"/></g>`).join('')}</g><g class="wlbs">${L}</g><g class="wcbtn"><circle class="wcen" r="50"/>${teach?'':`<svg class="wsnd" x="-8" y="-43" width="16" height="16" viewBox="0 0 24 24"><use href="#i-snd"/></svg>`}${cfg}<text class="wcent" y="${cy}" font-size="${cF}">${v.k}</text>${teach?'':`<text class="wczh" y="29" font-size="${Math.min(13,78/(m.length||1)).toFixed(1)}">${m}</text>`}</g></svg></div>`}
 function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rotate(${a})`);const idx=Math.round(((-a%360)+360)%360/90)%4;
   root.querySelectorAll('.wlbs text').forEach(t=>{const c=+t.dataset.i*90+a,x=86*Math.sin(c*Math.PI/180),y=-86*Math.cos(c*Math.PI/180);t.setAttribute('x',(x+(+t.dataset.ox||0)).toFixed(1));t.setAttribute('y',(y+(+t.dataset.oy||0)).toFixed(1))});
@@ -1576,7 +1576,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19';
+const APP_VER='2026.11.19b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
