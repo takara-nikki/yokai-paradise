@@ -544,6 +544,9 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .sh-card{min-height:0}
 .vrule2 .wwrap{height:auto!important;width:100%!important;padding:6px 0}.vrule2 .wwrap .wsvg{height:auto!important;max-height:none!important;width:min(80vw,300px)!important;max-width:none!important}
 .wl-t{font-size:18px;font-weight:700;color:var(--ink);margin:0 0 6px}.wl-ex{margin:10px auto 14px;display:grid;gap:6px;justify-items:center;font-size:17px;color:var(--ink)}.wl-ex b{color:#F08A72}.g-intro p b{color:#F08A72}
+.lvConf{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:24px;background:rgba(8,6,5,0);transition:background .22s}.lvConf.on{background:rgba(8,6,5,.62)}
+.lvBox{width:min(100%,320px);padding:20px 18px 16px;border-radius:18px;background:rgba(28,22,18,.98);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.55);text-align:center;transform:translateY(10px) scale(.97);opacity:0;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .2s}.lvConf.on .lvBox{transform:none;opacity:1}
+.lvBox b{display:block;font-size:19px;color:var(--ink)}.lvBox p{margin:8px 0 16px;font-size:14px;color:var(--dim);line-height:1.5}.lvBox .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -596,7 +599,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="fu"><span class="head">御札</span><div id="boxes"></div><span class="foot">悪霊退散</span></div>
   <div class="feedback" id="fb">　</div>
   <div class="actions">
-    <button class="btn sm" onclick="leaveBattle()">にげる（逃跑）</button>
+    <button class="btn sm" onclick="askLeave(()=>leaveBattle())">にげる（逃跑）</button>
     <button class="btn sm" onclick="peek()">天機</button>
     <button class="btn main" id="sealBtn" onclick="judge()">書けた！</button>
   </div>
@@ -609,7 +612,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <p class="tag" id="st-tag" style="text-align:center;margin:0 0 8px">時間到就開戰。點喇叭可以再聽一次。</p>
   <div class="st-set" id="st-set"><div class="tgl" id="st-mode" hidden><button class="lb" data-m="auto" onclick="setStMode('auto')">輪播</button><button class="sw" id="st-sw" role="switch" aria-label="輪播／自己閱讀" onclick="setStMode(study.quiet?'auto':'self')"><i></i></button><button class="lb" data-m="self" onclick="setStMode('self')">自讀</button></div><span class="st-optw" id="st-opt" hidden><i class="sep"></i><span class="tgl" id="st-ruby"><button class="lb" data-m="on" onclick="setRuby(true)">讀音</button><button class="sw" id="rb-sw" role="switch" aria-label="讀音開關" onclick="setRuby(META.ruby===false)"><i></i></button><button class="lb" data-m="off" onclick="setRuby(false)">隱藏</button></span></span></div>
   <div class="list study" id="st-list"></div>
-  <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="leaveStudy()">帰る（回去）</button><button class="btn main" onclick="endStudy()">覚えた！（開始）</button></div>
+  <div class="actions" style="margin-top:12px"><button class="btn sm" onclick="askLeave(()=>leaveStudy())">帰る（回去）</button><button class="btn main" onclick="endStudy()">覚えた！（開始）</button></div>
 </section>
 
 <!-- 第二關 溶岩の試煉 -->
@@ -624,7 +627,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="mic" id="mic" hidden><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span id="mic-t">說日文…</span><i></i></div>
   <div class="heard" id="heard" hidden></div>
   <div class="feedback" id="l-fb">唸出方塊上的日文，不會唸就點一下聽提示</div>
-  <div class="actions"><button class="btn sm" onclick="leaveLava()">にげる（逃跑）</button><button class="btn main" id="l-pause" onclick="pauseLava()">待って（暫停）</button></div>
+  <div class="actions"><button class="btn sm" onclick="askLeave(()=>leaveLava())">にげる（逃跑）</button><button class="btn main" id="l-pause" onclick="pauseLava()">待って（暫停）</button></div>
 </section>
 
 <!-- 第三關 影踏み（影子跟讀） -->
@@ -705,7 +708,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="sh-card"><button class="say" onclick="shListen()" aria-label="聽一次"><svg><use href="#i-snd"/></svg></button><div class="sh-cw"><div class="sh-text" id="sh-text"></div><div class="sh-tr" id="sh-tr"></div></div></div>
   <div class="feedback" id="sh-fb">　</div>
   <div class="sh-self" id="sh-self" hidden><button class="btn" onclick="shSelf(1)">跟上了</button><button class="btn" onclick="shSelf(.4)">沒跟上</button></div>
-  <div class="actions"><button class="btn sm" onclick="leaveShadow()">にげる（逃跑）</button><button class="btn sm" id="sh-listen" onclick="shListen()">きく</button><button class="btn main" id="sh-go" onclick="shGo()">影踏み</button></div>
+  <div class="actions"><button class="btn sm" onclick="askLeave(()=>leaveShadow())">にげる（逃跑）</button><button class="btn sm" id="sh-listen" onclick="shListen()">きく</button><button class="btn main" id="sh-go" onclick="shGo()">影踏み</button></div>
   <span id="sh-count" hidden></span>
 </section>
 
@@ -721,7 +724,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
       <span class="pill">最高連擊 <b id="r-v3">0</b></span>
     </div>
     <div class="list" id="r-list"></div>
-    <div class="row"><button class="btn" style="flex:1" onclick="go('s-home')">帰る（回去）</button><button class="btn main" id="r-again">もう一回（再來）</button></div>
+    <div class="row"><button class="btn" style="flex:1" onclick="askLeave(()=>go('s-home'))">帰る（回去）</button><button class="btn main" id="r-again">もう一回（再來）</button></div>
   </div>
 </section>
 
@@ -803,7 +806,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   </div>
   <div class="sm-msg" id="sm-msg">　</div>
   <div class="moves" id="sm-moves"></div>
-  <div class="actions"><button class="btn sm" onclick="leaveSumo()">にげる（逃跑）</button></div>
+  <div class="actions"><button class="btn sm" onclick="askLeave(()=>leaveSumo())">にげる（逃跑）</button></div>
 </section>
 
 <!-- 化け術 -->
@@ -813,7 +816,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="vq"><div class="vmode" id="v-mode"><span class="ms">狸</span><span id="v-mname">狸の變身</span></div><div class="verb"><span id="v-verb">食べる</span> <button class="say" style="display:inline-grid;vertical-align:middle" aria-label="唸動詞" onclick="say(document.getElementById('v-verb').textContent)"><svg><use href="#i-snd"/></svg></button></div><div class="k" id="v-k"></div><div class="form" id="v-form">て形</div></div>
   <div class="opts" id="v-opts"></div>
   <div class="explain" id="v-exp">狸葉子放頭上，抽到什麼形就變什麼形。</div>
-  <div class="actions" style="margin-top:14px"><button class="btn sm" onclick="leaveVerb()">にげる（逃跑）</button><button class="btn main" id="v-next" onclick="verbNext()" disabled>次へ（下一題）</button></div>
+  <div class="actions" style="margin-top:14px"><button class="btn sm" onclick="askLeave(()=>leaveVerb())">にげる（逃跑）</button><button class="btn main" id="v-next" onclick="verbNext()" disabled>次へ（下一題）</button></div>
 </section>
 
 <div class="toast" id="toast"></div>
@@ -1576,7 +1579,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19d';
+const APP_VER='2026.11.19e';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1783,5 +1786,14 @@ function coachRun(id,steps){let k=0;const ov=document.createElement('div');ov.cl
   ov.onclick=e=>{if(e.target.closest('.coSkip')){done();return}k++;show()};show()}
 
 try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(()=>{})}catch(e){}
+
+/* 回上一頁前再確認 */
+function askLeave(fn){ac();const inLava=document.getElementById('s-lava').classList.contains('on')&&typeof lv!=='undefined'&&!lv.over&&!lv.paused;if(inLava)pauseLava();
+  const ov=document.createElement('div');ov.className='lvConf';const scr=document.body.dataset.scr||'';const msg=scr==='s-study'||scr==='s-vsel'||scr==='s-grave'?'回到上一頁。':'這輪還沒打完，下次從同批題目開始。';
+  ov.innerHTML=`<div class="lvBox"><b>確定要離開嗎？</b><p>${msg}</p><div class="actions"><button class="btn sm" id="lvStay">留下</button><button class="btn main" id="lvGo">離開</button></div></div>`;document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
+  const close=()=>{ov.classList.remove('on');setTimeout(()=>ov.remove(),220)};
+  ov.querySelector('#lvStay').onclick=()=>{close();if(inLava&&lv.paused)pauseLava()};
+  ov.querySelector('#lvGo').onclick=()=>{close();fn()};
+  ov.onclick=e=>{if(e.target===ov){close();if(inLava&&lv.paused)pauseLava()}}}
 </script>
 </body></html>
