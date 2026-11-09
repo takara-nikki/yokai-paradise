@@ -1582,7 +1582,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19i';
+const APP_VER='2026.11.19j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1606,9 +1606,9 @@ function smPlace(){const ring=document.getElementById('ring').clientWidth,step=r
 function smPush(ok){const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),A=ok?me:foe,D=ok?foe:me,dir=ok?1:-1,boss=SM.foe&&SM.foe.boss;
   if(FX.reduce){smPlace();return}
   me.classList.remove('shake');foe.classList.remove('shake');
-  A.animate([{translate:'0 0',scale:'1 1'},{translate:`${-14*dir}px 2px`,scale:'.9 1.06',offset:.45},{translate:`${10*dir}px 0`,scale:'1.1 .92',offset:.8},{translate:'0 0',scale:'1 1'}],{duration:340,easing:'cubic-bezier(.3,.7,.3,1)'});
+  A.animate([{translate:'0 0'},{translate:`${-14*dir}px 2px`,offset:.45},{translate:`${10*dir}px 0`,offset:.8},{translate:'0 0'}],{duration:340,easing:'cubic-bezier(.3,.7,.3,1)'});
   setTimeout(()=>{smPlace();try{SFX.taiko(boss?.9:.65)}catch(e){}FX.shake(document.getElementById('ring'),boss?9:6,180);FX.buzz(boss?[30,30,40]:28);
-    D.animate([{translate:'0 0',scale:'1 1',rotate:'0deg'},{translate:`${(boss&&ok?8:22)*dir}px 0`,scale:'.88 1.08',rotate:`${4*dir}deg`,offset:.3},{translate:`${(boss&&ok?3:10)*dir}px 0`,scale:'1.04 .97',rotate:`${-2*dir}deg`,offset:.7},{translate:'0 0',scale:'1 1',rotate:'0deg'}],{duration:520,easing:'ease-out'});
+    D.animate([{translate:'0 0',rotate:'0deg'},{translate:`${(boss&&ok?8:22)*dir}px 0`,rotate:`${4*dir}deg`,offset:.3},{translate:`${(boss&&ok?3:10)*dir}px 0`,rotate:`${-2*dir}deg`,offset:.7},{translate:'0 0',rotate:'0deg'}],{duration:520,easing:'ease-out'});
     smDust(D,dir,boss&&ok?5:9)},150)}
 function smDust(el,dir,n){const ring=document.getElementById('ring'),r=ring.getBoundingClientRect(),b=el.getBoundingClientRect();for(let i=0;i<n;i++){const d=document.createElement('i');d.className='smDust';const x=b.left-r.left+b.width*(dir>0?.25:.75)+(Math.random()-.5)*b.width*.4,y=b.bottom-r.top-6;d.style.left=x+'px';d.style.top=y+'px';const sz=6+Math.random()*10;d.style.width=d.style.height=sz+'px';ring.appendChild(d);
   d.animate([{transform:'translate(0,0) scale(.6)',opacity:.85},{transform:`translate(${(-dir)*(20+Math.random()*50)}px,${-8-Math.random()*26}px) scale(1.6)`,opacity:0}],{duration:520+Math.random()*300,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>d.remove()}}
