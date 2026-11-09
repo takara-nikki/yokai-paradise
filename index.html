@@ -547,7 +547,9 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .lvConf{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:24px;background:rgba(8,6,5,0);transition:background .22s}.lvConf.on{background:rgba(8,6,5,.62)}
 .lvBox{width:min(100%,320px);padding:20px 18px 16px;border-radius:18px;background:rgba(28,22,18,.98);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.55);text-align:center;transform:translateY(10px) scale(.97);opacity:0;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .2s}.lvConf.on .lvBox{transform:none;opacity:1}
 .lvBox b{display:block;font-size:19px;color:var(--ink)}.lvBox p{margin:8px 0 16px;font-size:14px;color:var(--dim);line-height:1.5}.lvBox .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fighter.me img.neko{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
+.fighter.me img.neko{width:100%;height:100%;object-fit:contain;transform:translateZ(0);backface-visibility:hidden}
+.fighter.me::after{content:'';position:absolute;left:18%;right:18%;bottom:-4px;height:8px;border-radius:50%;background:rgba(0,0,0,.45);filter:blur(3px);z-index:-1}
+.fighter{will-change:left,translate;transform:translateZ(0)}
 .smDust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(214,196,160,.85),rgba(214,196,160,0) 70%);pointer-events:none;z-index:5}
 </style>
 
@@ -1582,7 +1584,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19m';
+const APP_VER='2026.11.19n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
