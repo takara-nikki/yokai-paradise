@@ -542,6 +542,8 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 #sh-text,.sh-card .sh-text{font-size:20px!important;text-wrap:wrap!important;word-break:normal;line-break:strict;min-height:calc(2 * 1.5em)}
 .sh-card .sh-text.rb,.sh-card .sh-text.rbon{min-height:calc(2 * 2.1em)}
 .sh-card{min-height:0}
+.vrule2 .wwrap{height:auto!important;width:100%!important;padding:6px 0}.vrule2 .wwrap .wsvg{height:auto!important;max-height:none!important;width:min(80vw,300px)!important;max-width:none!important}
+.wl-t{font-size:18px;font-weight:700;color:var(--ink);margin:0 0 6px}.wl-ex{margin:10px auto 14px;display:grid;gap:6px;justify-items:center;font-size:17px;color:var(--ink)}.wl-ex b{color:#F08A72}.g-intro p b{color:#F08A72}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1447,7 +1449,20 @@ function ruleOnly(v,f){if(v.g===2)return `去掉「る」再接 ${["ます","な
 function startVerb(g){g=g||vb.g||1;vb.g=g;const pool=VERBS.filter(v=>v.g===g);const q=pendGet('v'+g,()=>{const T=today(),isDue=v=>SRS['v:'+v.d]&&SRS['v:'+v.d].due<=T;let vs=[...shuffle(pool.filter(isDue)),...shuffle(pool.filter(v=>!isDue(v)))];while(vs.length<10)vs=vs.concat(shuffle(pool));return vs.slice(0,10).map((v,i)=>({v,f:i%4===1?2+Math.floor(Math.random()*2):Math.floor(Math.random()*6)}))},l=>l.map(x=>[x.v.d,x.f]),a=>a.map(([d,f])=>{const v=VERBS.find(x=>x.d===d);return v?{v,f}:null}));
   if(g===1){const easy=(META.wst||1)===1,ok=VERBS.filter(x=>x.g===1&&!x.d.endsWith('る')&&!x.d.endsWith('う')),used=new Set(q.filter(Boolean).map(x=>x.v.d));
     q.forEach(it=>{if(!it)return;if(easy)it.f=wPickF();else if(!WF.includes(it.f))it.f=WF[Math.floor(Math.random()*4)];if(easy&&(it.v.d.endsWith('る')||it.v.d.endsWith('う'))){const c=shuffle(ok.filter(x=>!used.has(x.d)))[0]||ok[0];used.add(c.d);it.v=c}})}
-  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく",m:"寫"},false,wActive(),false,null,true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'})}
+  openStudy(`化け術・${['','第一類','第二類','第三類'][g]} 教學`,q.map(({v,f})=>{const c=conj(v.d,v.g,f);const lg=(v.d+c).length>12;return {k:lg?`${v.d}<br>→ ${c}`:`${v.d} → ${c}`,kl:lg?Math.max(v.d.length,c.length+2):undefined,sub:`${v.k}（${v.m}）・${FORMS[f]}`,say:`${v.d}、${c}`,pun:[GNAME[v.g],ruleOnly(v,f)]}}),5000,()=>beginVerb(q),false,{intro:VERB_RULES[g].replace("%WHEEL%",()=>wheelSVG({k:"書く",d:"かく",m:"寫"},false,wActive(),false,null,true)),quiet:true,tag:'點喇叭可以聽原形和變化後的形。不限時，看好了再開始考。'});if(g===1)setTimeout(wLvIntro,350)}
+const WLV_INFO=[
+ {k:'禮',c:'#E8B04A',t:'ます形・禮貌形',p:['跟長輩、店員、不熟的人說話用的禮貌說法。','字尾改成 <b>い段</b>，再接 ます。'],e:['書く → 書<b>き</b>ます','飲む → 飲<b>み</b>ます','話す → 話<b>し</b>ます']},
+ {k:'否',c:'#E06A55',t:'ない形・否定形',p:['「不…」的意思，口語最常用。','字尾改成 <b>あ段</b>，再接 ない。'],e:['書く → 書<b>か</b>ない','飲む → 飲<b>ま</b>ない','買う → 買<b>わ</b>ない（う 要變 わ）']},
+ {k:'能',c:'#6FB89A',t:'可能形',p:['「會…、能…」，表示做得到。','字尾改成 <b>え段</b>，再接 る。'],e:['書く → 書<b>け</b>る','話す → 話<b>せ</b>る','読む → 読<b>め</b>る']},
+ {k:'意',c:'#8FA8E0',t:'意向形',p:['「一起…吧」「打算…」，邀約或下決心。','字尾改成 <b>お段</b>，再接 う。'],e:['書く → 書<b>こ</b>う','行く → 行<b>こ</b>う','飲む → 飲<b>も</b>う']},
+ {k:'混',c:'#E8B04A',t:'ます形＋ない形 混合',p:['兩個形開始混在一起出。','先看清楚題目要哪一個形，再按停。'],e:['書きます（い段）／書かない（あ段）']},
+ {k:'混',c:'#E8B04A',t:'加入可能形',p:['三個形一起混。','え段＋る 的可能形最容易跟ます搞混。'],e:['書きます／書かない／書ける']},
+ {k:'混',c:'#E8B04A',t:'四個形全部混',p:['ます・ない・可能・意向，四格都會考。','記住：い・あ・え・お 各對一個形。'],e:['書きます／書かない／書ける／書こう']}];
+function wLvIntro(){if((META.wst||1)!==1)return;const lv=META.wlv||1;if((META.wIntro||0)>=lv)return;const g=WLV_INFO[lv-1];if(!g)return;
+  let el=document.getElementById('g-intro');if(!el){el=document.createElement('div');el.id='g-intro';el.className='sh-intro g-intro';document.body.appendChild(el)}
+  el.innerHTML=`<div class="sh-in"><div class="sh-kanji" style="--k:${g.c}">${g.k}</div><p class="wl-t">第 ${lv} 關・${g.t}</p>${g.p.map(t=>`<p>${t}</p>`).join('')}<div class="wl-ex">${g.e.map(t=>`<div>${t}</div>`).join('')}</div><div class="actions" style="justify-content:center"><button class="btn main" id="gi-go">知道了</button></div></div>`;
+  el.hidden=false;el.querySelector('#gi-go').onclick=()=>{el.hidden=true;META.wIntro=lv;save()}}
+
 function beginVerb(q){ac();pendClear('v'+vb.g);vb.q=q;Object.assign(vb,{i:0,combo:0,best:0,score:0});go('s-verb');verbShow()}
 /* 四種玩法輪流：狸の變身 → 河童相撲 → 誰是冒牌妖怪 → 雪女の逆呪文 */
 const VMODES=[
@@ -1499,7 +1514,7 @@ function wSet(root,a){root.querySelector('.wrot').setAttribute('transform',`rota
   root.querySelectorAll('.wlbs text').forEach(t=>{const c=+t.dataset.i*90+a,x=86*Math.sin(c*Math.PI/180),y=-86*Math.cos(c*Math.PI/180);t.setAttribute('x',(x+(+t.dataset.ox||0)).toFixed(1));t.setAttribute('y',(y+(+t.dataset.oy||0)).toFixed(1))});
   root.querySelectorAll('.wsec').forEach((g,i)=>g.classList.toggle('on',i===idx));return idx}
 function wNeed(){const st=META.wst||1;return st===1?[10,10,10,10,20,40,80][(META.wlv||1)-1]:40}
-function wReset(b){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='再按一次確認重練';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='從第1關重練'}},3000);return}META.wst=1;META.wlv=1;META.wok=0;save();pendClear('v1');toast('轉盤進度歸零，從第1關開始');startVerb(1)}
+function wReset(b){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='再按一次確認重練';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='從第1關重練'}},3000);return}META.wst=1;META.wlv=1;META.wok=0;META.wIntro=0;save();pendClear('v1');toast('轉盤進度歸零，從第1關開始');startVerb(1)}
 function wGain(){const st=META.wst||1,lv=META.wlv||1;META.wok=(META.wok||0)+1;if(META.wok>=wNeed()){META.wok=0;if(st===1&&lv<7){META.wlv=lv+1;toast(['','下一關：ない形','下一關：可能形','下一關：意向形','開始混合：ます形＋ない形','加入可能形一起混','加入意向形，四個一起混'][lv])}else if(st<3){META.wst=st+1;toast(st===1?'解鎖第二階段：這是什麼段？':'解鎖第三階段：句子填空')}}save()}
 const U_OF={};Object.entries(ROW).forEach(([u,r])=>{for(let k=0;k<4;k++)U_OF[r[k]]=u});
 function revCands(v,f){const c=conj(v.d,v.g,f),out=new Set();const tail2=c.slice(-2),s2=c.slice(0,-2);
@@ -1561,7 +1576,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.18p';
+const APP_VER='2026.11.19';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
