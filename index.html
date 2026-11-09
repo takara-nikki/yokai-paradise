@@ -547,6 +547,8 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .lvConf{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:24px;background:rgba(8,6,5,0);transition:background .22s}.lvConf.on{background:rgba(8,6,5,.62)}
 .lvBox{width:min(100%,320px);padding:20px 18px 16px;border-radius:18px;background:rgba(28,22,18,.98);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.55);text-align:center;transform:translateY(10px) scale(.97);opacity:0;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .2s}.lvConf.on .lvBox{transform:none;opacity:1}
 .lvBox b{display:block;font-size:19px;color:var(--ink)}.lvBox p{margin:8px 0 16px;font-size:14px;color:var(--dim);line-height:1.5}.lvBox .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fighter.me img.neko{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
+.smDust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(214,196,160,.85),rgba(214,196,160,0) 70%);pointer-events:none;z-index:5}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -780,7 +782,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="timer"><i id="smbar"></i></div>
   <div class="ring" id="ring">
     <div class="dohyo"><div class="tawara l"></div><div class="tawara r"></div><div class="lines"></div></div>
-    <div class="fighter me" id="sm-me"><div class="ofuda"><span>宝</span></div></div>
+    <div class="fighter me" id="sm-me"><img class="neko" src="img/neko_sumo.webp" alt=""></div>
     <div class="fighter foe" id="sm-foe"><img id="sm-foe-img" src="img/mon_vocab.webp" alt=""></div>
     <div class="call" id="sm-call">はっけよい！</div>
   </div>
@@ -1580,7 +1582,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19h';
+const APP_VER='2026.11.19i';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1601,6 +1603,15 @@ function smBegin(){document.getElementById('sm-scroll').hidden=true;smBout()}
 function smPlace(){const ring=document.getElementById('ring').clientWidth,step=ring*(SM.foe&&SM.foe.boss?.032:.05),c=ring*.5;
   const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),w=me.offsetWidth;
   me.style.left=(c-w*.95+SM.pos*step)+'px';foe.style.left=(c-w*.05+SM.pos*step)+'px'}
+function smPush(ok){const me=document.getElementById('sm-me'),foe=document.getElementById('sm-foe'),A=ok?me:foe,D=ok?foe:me,dir=ok?1:-1,boss=SM.foe&&SM.foe.boss;
+  if(FX.reduce){smPlace();return}
+  me.classList.remove('shake');foe.classList.remove('shake');
+  A.animate([{translate:'0 0',scale:'1 1'},{translate:`${-14*dir}px 2px`,scale:'.9 1.06',offset:.45},{translate:`${10*dir}px 0`,scale:'1.1 .92',offset:.8},{translate:'0 0',scale:'1 1'}],{duration:340,easing:'cubic-bezier(.3,.7,.3,1)'});
+  setTimeout(()=>{smPlace();try{SFX.taiko(boss?.9:.65)}catch(e){}FX.shake(document.getElementById('ring'),boss?9:6,180);FX.buzz(boss?[30,30,40]:28);
+    D.animate([{translate:'0 0',scale:'1 1',rotate:'0deg'},{translate:`${(boss&&ok?8:22)*dir}px 0`,scale:'.88 1.08',rotate:`${4*dir}deg`,offset:.3},{translate:`${(boss&&ok?3:10)*dir}px 0`,scale:'1.04 .97',rotate:`${-2*dir}deg`,offset:.7},{translate:'0 0',scale:'1 1',rotate:'0deg'}],{duration:520,easing:'ease-out'});
+    smDust(D,dir,boss&&ok?5:9)},150)}
+function smDust(el,dir,n){const ring=document.getElementById('ring'),r=ring.getBoundingClientRect(),b=el.getBoundingClientRect();for(let i=0;i<n;i++){const d=document.createElement('i');d.className='smDust';const x=b.left-r.left+b.width*(dir>0?.25:.75)+(Math.random()-.5)*b.width*.4,y=b.bottom-r.top-6;d.style.left=x+'px';d.style.top=y+'px';const sz=6+Math.random()*10;d.style.width=d.style.height=sz+'px';ring.appendChild(d);
+  d.animate([{transform:'translate(0,0) scale(.6)',opacity:.85},{transform:`translate(${(-dir)*(20+Math.random()*50)}px,${-8-Math.random()*26}px) scale(1.6)`,opacity:0}],{duration:520+Math.random()*300,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>d.remove()}}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
 function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;SM.rallied=false;SM.need=y.boss?6:4;SM.lose=y.boss?-3:-4;SM.dur=y.boss?8000:10000;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
   document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-foe-img').style.scale=y===YOKAI[1]?'-1 1':'';document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
@@ -1644,7 +1655,7 @@ function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);d
   if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.splat(document.getElementById('sm-foe-img'),{scale:SM.foe.boss?.6:.75});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
   else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('s-sumo'),7,220);FX.buzz(80);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
   {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
-  say(full);smPlace();setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
+  say(full);smPush(ok);setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
     if(SM.foe.boss&&!SM.rallied&&SM.pos===SM.need-1){smRally();return}
     if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{SFX.boutWin();document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;if(SM.foe&&SM.foe.boss){META.kappaWin=1;save()}setTimeout(smBoutEnd,1900)}
     else if(SM.pos<=SM.lose){document.getElementById('sm-me').classList.add('out');cry(SM.foe);SFX.boutLose();smCall('負け…',1200);setTimeout(smBoutEnd,1300)}
