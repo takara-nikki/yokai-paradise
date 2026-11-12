@@ -553,6 +553,36 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .smDust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(214,196,160,.85),rgba(214,196,160,0) 70%);pointer-events:none;z-index:5}
 .fighter.foe:not(.boss){width:32%;max-width:170px}
 #st-start.locked{background:#3a3430!important;background-image:none!important;color:#8a7f72!important;box-shadow:none!important;border:1px solid var(--line)!important;cursor:not-allowed}
+#s-judge{display:flex;flex-direction:column;gap:10px}
+.jd-top{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.jd-top img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+.jd-bub{flex:1;position:relative;padding:8px 12px;border-radius:12px;background:rgba(28,22,18,.9);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.jd-bub small{display:block;font-size:11px;color:var(--gold);letter-spacing:.08em}.jd-bub span{font-size:15px;color:var(--ink)}
+.jd-paper{flex:1 1 auto;min-height:0;overflow:auto;padding:14px 16px;border-radius:14px;color:#1E1A17;background:var(--fiber),var(--grain),linear-gradient(180deg,#F4EFE3,#E6DDC8);box-shadow:inset 0 0 0 3px rgba(244,239,227,.6),inset 0 0 0 4px rgba(150,120,70,.35),0 8px 20px rgba(0,0,0,.35)}
+.jd-ttl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}.jd-ttl b{font-size:18px}.jd-ttl span{font-size:12px;color:#7a6e60}
+.jd-txt{font-size:19px;line-height:1.9;font-weight:600}
+.jd-s{color:#4a4038;transition:color .25s,background .25s;border-radius:4px;cursor:pointer}
+.jd-s.lit{color:#1E1A17;background:rgba(212,165,74,.28)}
+.jd-s.done{color:#1E1A17}.jd-s em{font-style:normal;color:#C8402F;text-decoration:underline wavy rgba(200,64,47,.5)}
+.jd-zh{margin-top:8px;font-size:13px;color:#7a6e60}
+.jd-live{flex:0 0 auto;text-align:center;font-size:14px;color:var(--dim);min-height:1.4em}
+.jd-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#E5483A;margin-right:6px;vertical-align:middle;animation:jdBlink 1s infinite}@keyframes jdBlink{50%{opacity:.25}}
+.jd-res{flex:0 0 auto;padding:12px 14px;border-radius:14px;background:rgba(28,22,18,.9);border:1px solid var(--line)}
+.jd-score{display:flex;align-items:center;gap:6px;margin-bottom:8px}.jd-score b{font-family:var(--fm);font-size:38px;color:var(--ink);line-height:1}.jd-score span{color:var(--dim)}
+.jd-stamp{margin-left:auto;font-family:var(--fb);font-size:20px;padding:4px 10px;border:2px double currentColor;border-radius:6px;transform:rotate(-6deg)}
+.jd-stamp.big{color:var(--gold)}.jd-stamp.ok{color:#F08A72}.jd-stamp.ng{color:#9a8f82}
+.jd-m{display:grid;grid-template-columns:4em 1fr 2.2em;align-items:center;gap:8px;font-size:13px;margin:4px 0}
+.jd-m i{height:6px;border-radius:3px;background:#2a2420;overflow:hidden}.jd-m i b{display:block;height:100%;background:linear-gradient(90deg,#C8402F,#E8B04A)}
+.jd-m em{font-style:normal;font-family:var(--fm);text-align:right}.jd-m small{grid-column:2/4;margin-top:-4px;font-size:11px;color:var(--dim)}
+.jd-tip{margin:6px 0 0;font-size:12px;color:var(--dim)}
+#s-judge .actions{display:grid;grid-template-columns:auto auto 1fr;gap:8px}
+#s-koto.on{display:flex;flex-direction:column;min-height:calc(100svh - env(safe-area-inset-top,0px));box-sizing:border-box}
+#s-koto .vsel{position:relative;overflow:hidden;min-height:110px}#s-koto .vsel .wm{position:absolute;right:-6px;bottom:-22px;font-family:var(--fb);font-size:120px;line-height:1;color:var(--accent);opacity:.09;pointer-events:none}
+.jd-nat{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-left:4px;align-self:flex-end;padding-bottom:4px}
+.jd-diag{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.jd-diag h4{margin:0 0 6px;font-size:14px;color:var(--gold);letter-spacing:.2em}
+.jd-diag ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}.jd-diag li{font-size:13px;line-height:1.5}
+.jd-diag li b{display:block;color:var(--ink);font-size:14px}.jd-diag li span{color:var(--dim)}.jd-diag li.jd-note{list-style:none;margin-left:-1.3em;padding:8px 10px;border-radius:10px;background:rgba(212,165,74,.08)}
+#s-judge.res{overflow:auto}#s-judge.res .jd-paper{flex:0 0 auto;max-height:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -578,7 +608,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="tiles">
     <button class="tile stage1" onclick="gIntro('startBattle')"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
     <button class="tile stage2" onclick="gIntro('startLava')"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
-    <button class="tile stage3" onclick="startShadow()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">影</span><span class="no">第三關 · 跟讀</span><h2>影踏み</h2><p>聽妖怪唸一句，<br>慢半拍追著唸、踩住牠的影子。</p></button>
+    <button class="tile stage3" onclick="{const t=document.getElementById('jd-lvtag');if(t)t.textContent=JD_LV[(META.jdLv||1)-1];go('s-koto')}"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">言</span><span class="no">第三關 · 口說</span><h2>言霊の間</h2><p>影子跟讀，<br>再接受閻魔大王的口語審判。</p></button>
     <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞分三類練變身，<br>相撲、變身都在這。</p></button>
     <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
   </div>
@@ -755,6 +785,26 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <p class="tag">設定</p>
   <div class="setList" id="setList"></div>
   <p class="note" id="setVer"></p>
+</section>
+
+<!-- 言霊の間 選單 -->
+<section class="screen" id="s-koto">
+  <button class="back" onclick="askLeave(()=>go('s-home'))"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>帰る（回去）</button>
+  <h1 style="margin-top:8px">言霊の間</h1>
+  <p class="tag">說出口的話有靈力，練到妖怪都聽得懂。</p>
+  <div class="list" style="margin-top:16px">
+    <button class="gcard vsel" onclick="startShadow()"><span class="wm">影</span><span class="k">影踏み　影子跟讀</span><span class="due">一句一句</span><span class="m">聽妖怪唸一句，慢半拍追著唸</span></button>
+    <button class="gcard vsel" onclick="gIntro('startJudge')"><span class="wm">閻</span><span class="k">口語審判官</span><span class="due" id="jd-lvtag">短文</span><span class="m">唸完整篇短文，閻魔大王打分數</span></button>
+  </div>
+</section>
+
+<!-- 口語審判官 -->
+<section class="screen focus" id="s-judge">
+  <div class="jd-top"><img src="img/oni.webp" alt=""><div class="jd-bub"><small>閻魔大王</small><span id="jd-say">唸給我聽。</span></div></div>
+  <div class="jd-paper" id="jd-paper"><div class="jd-ttl" id="jd-ttl"></div><div class="jd-txt" id="jd-txt"></div><div class="jd-zh" id="jd-zh"></div></div>
+  <div class="jd-res" id="jd-res" hidden></div>
+  <div class="jd-live" id="jd-live">按「開始朗讀」，從頭唸到尾</div>
+  <div class="actions"><button class="btn sm" onclick="askLeave(()=>jdLeave())">にげる</button><button class="btn sm" id="jd-demo" onclick="jdDemo()">聽示範</button><button class="btn main" id="jd-go" onclick="jdGo()">開始朗讀</button></div>
 </section>
 
 <!-- 妖怪帳 -->
@@ -1586,7 +1636,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.19t';
+const APP_VER='2026.11.20b';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1731,6 +1781,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){if(documen
 const GINTRO={
  startBattle:{k:'封',c:'#E06A55',p:['妖怪排隊闖進參道，<br>每一隻都喊著一個單字。','聽清楚發音，寫出平假名，<br>寫對就把牠封印！'],s:['先看一輪單字卡','聽發音，用手指寫平假名'],b:'拿起筆，開始封印'},
  startLava:{k:'溶',c:'#FF7A3D',p:['洞窟深處岩漿翻滾，<br>片語方塊一塊塊往下掉。','唸對日文就能消掉方塊，<br>別讓它們掉進岩漿！'],s:['先看一輪片語卡','對著方塊唸出日文','唸不出來，點方塊聽提示'],b:'打開麥克風，開始',mic:1},
+ startJudge:{k:'閻',c:'#E06A55',p:['閻魔大王要聽你唸一整篇短文，<br>唸得好不好，由他判決。','從頭唸到尾不要停，<br>唸完按「判決」看分數。'],s:['可以先按「聽示範」','按「開始朗讀」，整篇唸完','按「判決」看四項分數'],b:'打開麥克風，開始',mic:1},
  startSumo:{k:'河',c:'#6FB89A',p:['河童擺好架式，<br>要跟你比一場相撲。','選出正確的音變，<br>把牠推出土俵！'],s:['看原形，選對て形','答錯會被推回來'],b:'上土俵'}};
 function gIntro(fn){ac();const g=GINTRO[fn];let el=document.getElementById('g-intro');
  if(!el){el=document.createElement('div');el.id='g-intro';el.className='sh-intro g-intro';document.body.appendChild(el)}
@@ -1783,6 +1834,7 @@ const COACH={
  's-battle':[['#s-battle .say','再聽一次發音'],['#boxes','在格子裡用手指寫平假名'],['#s-battle [onclick="peek()"]','想不起來？偷看一下（天機）'],['#sealBtn','寫完按這裡判定'],['#s-battle [data-mute]','聲音開關']],
  's-lava':[['#arena','方塊會往下掉，唸出上面的日文就消掉'],['#mic','麥克風在聽你唸，亮起來代表收音中'],['#l-pause','需要喘口氣就暫停']],
  's-shadow':[['#sh-rt','漢字讀音開關'],['#sh-listen','先聽妖怪唸一次'],['#sh-go','按下去，慢半拍跟著唸，踩住影子']],
+ 's-judge':[['#jd-paper','這篇要整篇唸完，點句子可以聽'],['#jd-demo','先聽一次標準朗讀'],['#jd-go','按下去開始收音，唸完再按一次判決']],
  's-verb':[['#v-form','題目：要停在哪一個形'],['#v-opts .wcbtn','點中間聽原形的發音'],['#v-next','亮到對的那格時按「停」']]};
 function coachFor(id){const st=COACH[id];if(!st)return;if(id==='s-verb'&&!document.querySelector('#v-opts .wwrap'))return;META.coach=META.coach||{};if(META.coach[id])return;
   let tries=0;const wait=()=>{if(!document.getElementById(id).classList.contains('on'))return;const blocked=document.getElementById('splash')||[...document.querySelectorAll('#g-intro,#sh-intro')].some(e=>!e.hidden)||document.querySelector('.coach');
@@ -1815,5 +1867,90 @@ function askLeave(fn){ac();const inLava=document.getElementById('s-lava').classL
 /* 從背景回來（離開超過 30 秒）就重新開啟到首頁 */
 (()=>{let away=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){away=Date.now()}else if(away&&Date.now()-away>30000){try{save()}catch(e){}location.reload()}});
  window.addEventListener('pageshow',e=>{if(e.persisted)location.reload()})})();
+
+/* ===== 口語審判官 ===== */
+const JD_TXT=[
+ [ {t:'自己紹介',zh:'自我介紹',s:['私の名前は林です。','台湾の台北から来ました。','今、会社で働いています。','趣味は写真を撮ることです。','どうぞよろしくお願いします。']},
+   {t:'毎日の生活',zh:'每天的生活',s:['毎朝七時に起きます。','朝ご飯を食べてから、電車で会社へ行きます。','会社まで三十分ぐらいかかります。','夜はたいてい家で料理を作ります。']},
+   {t:'雨の日',zh:'下雨天',s:['昨日は雨でした。','だから、どこへも行かないで、家で本を読みました。','夕方、友達から電話がありました。','来週、一緒に映画を見に行くことになりました。']},
+   {t:'町の公園',zh:'鎮上的公園',s:['私の町には大きい公園があります。','春になると、桜がとてもきれいです。','週末はたくさんの人が公園でお弁当を食べます。','私も今度、家族と行こうと思っています。']} ],
+ [ {t:'京都旅行',zh:'京都旅行',s:['先週の日曜日、友達と京都へ旅行に行きました。','朝早く新幹線に乗って、十時ごろ京都に着きました。','まず、有名なお寺を見に行きました。','人が多かったですが、とても静かできれいな所でした。','昼ご飯には湯豆腐を食べました。','初めて食べましたが、やさしい味でおいしかったです。']},
+   {t:'日本語の勉強',zh:'學日文',s:['私は日本語を勉強して一年になります。','最初はひらがなを覚えるのが大変でした。','今は簡単な会話ができるようになりました。','でも、漢字はまだ難しいです。','来年の夏、日本語能力試験を受けるつもりです。','合格できるように頑張ります。']},
+   {t:'引っ越し',zh:'搬家',s:['来月、引っ越しをします。','今のアパートは駅から遠くて、不便だからです。','新しい部屋は駅から歩いて五分です。','近くにスーパーやコンビニもあります。','部屋は少し狭いですが、窓が大きくて明るいです。','引っ越しの日は、友達が手伝ってくれることになっています。']},
+   {t:'朝の運動',zh:'晨間運動',s:['最近、体のために運動を始めました。','毎朝、家の近くを三十分ぐらい走っています。','最初の一週間は足が痛くて、やめたいと思いました。','でも、続けているうちに、だんだん楽になりました。','今は走らないと、気持ちが悪いです。']} ],
+ [ {t:'日本の季節',zh:'日本的季節',s:['日本には四つの季節があります。','春は暖かくて、桜が咲きます。','多くの人が花見をしながら、お弁当を食べたり、歌を歌ったりします。','夏はとても暑くて、雨もよく降ります。','秋は涼しくて、木の葉が赤や黄色に変わります。','冬は寒くて、北の方では雪がたくさん降ります。','私は台湾から来たので、初めて雪を見たとき、とても感動しました。','季節によって楽しみ方が違うのが、日本のおもしろいところだと思います。']},
+   {t:'写真の仕事',zh:'攝影工作',s:['私はカメラマンの仕事をしています。','結婚式や会社の紹介ビデオを撮ることが多いです。','結婚式の日は朝早くから夜遅くまで働くので、とても疲れます。','でも、二人の幸せそうな顔を撮ることができるので、この仕事が好きです。','撮影の後は、パソコンで写真や映像を編集します。','お客さんに喜んでもらえると、本当にうれしくなります。','将来は日本でも写真を撮ってみたいです。']},
+   {t:'図書館のルール',zh:'圖書館規則',s:['この図書館では、本を一度に五冊まで借りることができます。','借りた本は二週間以内に返さなければなりません。','返すのが遅れると、次の一週間は本を借りることができません。','館内では、大きい声で話してはいけません。','携帯電話はマナーモードにしてください。','飲み物は飲んでもいいですが、食べ物を食べてはいけません。','分からないことがあったら、一階の受付で聞いてください。']},
+   {t:'友達へのメール',zh:'給朋友的信',s:['田中さん、お元気ですか。','先日は台湾に来てくれて、ありがとうございました。','一緒に夜市へ行ったり、小籠包を食べたりして、本当に楽しかったです。','写真をたくさん撮ったので、メールで送ります。','来年の春には、私が日本へ遊びに行く予定です。','そのときは、東京を案内してもらえませんか。','また会えるのを楽しみにしています。']} ]];
+const JD_LV=['短文','中篇','長文'],JD_TARGET=[120,150,180];
+const jd={rec:null,on:false,fin:'',inter:'',t0:0,last:0,pause:0,p:null,norm:'',map:[]};
+function jdPick(){const lv=Math.min(2,(META.jdLv||1)-1),list=JD_TXT[lv];META.jdN=(META.jdN||0)+1;return {lv,...list[(META.jdN-1)%list.length]}}
+function startJudge(){ac();jd.p=jdPick();jd.fin='';jd.inter='';jd.pause=0;const T=document.getElementById('jd-txt');
+  document.getElementById('jd-ttl').innerHTML=`<b>${jd.p.t}</b><span>${JD_LV[jd.p.lv]}・${jd.p.s.length} 句</span>`;
+  T.innerHTML=jd.p.s.map((x,i)=>`<span class="jd-s" data-i="${i}">${x}</span>`).join('');
+  document.getElementById('jd-zh').textContent=jd.p.zh;
+  T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>{if(!jd.on)say(e.textContent,.9)});
+  // 正規化文字與每個字對應的句子
+  jd.norm='';jd.map=[];jd.p.s.forEach((x,i)=>{const n=normJa(x);jd.norm+=n;for(const c of n)jd.map.push(i)});
+  document.getElementById('jd-res').hidden=true;document.getElementById('s-judge').classList.remove('res');document.getElementById('jd-paper').hidden=false;document.getElementById('jd-live').textContent='按「開始朗讀」，從頭唸到尾';
+  const g=document.getElementById('jd-go');g.textContent='開始朗讀';g.onclick=jdGo;document.getElementById('jd-demo').disabled=false;
+  document.getElementById('jd-say').textContent=['唸給我聽。','這篇不難，唸清楚。','長了一點，別停下來。'][jd.p.lv];go('s-judge')}
+function jdDemo(){ac();if(jd.on)return;say(jd.p.s.join(''),.9)}
+function jdLive(){const all=normJa(jd.fin+jd.inter),k=Math.round(shProg(jd.norm,all)*jd.norm.length),upto=k?jd.map[Math.min(k,jd.map.length)-1]:-1;
+  document.querySelectorAll('#jd-txt .jd-s').forEach((e,i)=>e.classList.toggle('lit',i<=upto));
+  const sec=Math.floor((performance.now()-jd.t0)/1000);document.getElementById('jd-live').innerHTML=`<i class="jd-dot"></i>收音中　${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}　唸完按「判決」`}
+function jdGo(){ac();if(!SR){toast('這台手機不支援語音辨識');return}
+  try{speechSynthesis.cancel()}catch(e){}
+  const r=new SR();r.lang='ja-JP';r.continuous=true;r.interimResults=true;jd.rec=r;jd.on=true;jd.fin='';jd.inter='';jd.pause=0;jd.t0=performance.now();jd.last=0;
+  r.onresult=e=>{const now=performance.now();if(jd.last&&now-jd.last>2200)jd.pause++;jd.last=now;let it='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)jd.fin+=t;else it+=t}jd.inter=it;jdLive()};
+  r.onend=()=>{if(jd.on){jd.fin+=jd.inter;jd.inter='';try{r.start()}catch(e){}}};r.onerror=e=>{if(e.error==='not-allowed'){jd.on=false;toast('請允許麥克風')}};
+  try{r.start()}catch(e){}
+  document.getElementById('jd-demo').disabled=true;const g=document.getElementById('jd-go');g.textContent='判決！';g.onclick=jdEnd;
+  jd.tick=setInterval(()=>{if(jd.on)jdLive()},500);jdLive();try{SFX.taiko(.5)}catch(e){}}
+function jdStop(){jd.on=false;clearInterval(jd.tick);try{jd.rec&&jd.rec.stop()}catch(e){}}
+function jdLeave(){jdStop();go('s-koto')}
+function jdLCS(a,b){const n=a.length,m=b.length,dp=Array.from({length:n+1},()=>new Uint16Array(m+1));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const hit=new Uint8Array(n);let i=0,j=0;while(i<n&&j<m){if(a[i]===b[j]){hit[i]=1;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}return hit}
+function jdEnd(){ac();const dur=Math.max(1,(performance.now()-jd.t0)/1000);jdStop();const heard=normJa(jd.fin+jd.inter);
+  const hit=jdLCS(jd.norm,heard.slice(0,jd.norm.length*2)),N=jd.norm.length,got=hit.reduce((a,b)=>a+b,0);
+  const per=jd.p.s.map(()=>[0,0]);jd.map.forEach((si,k)=>{per[si][1]++;per[si][0]+=hit[k]});
+  const acc=got/N,comp=per.filter(([g,t])=>g/t>=.5).length/per.length,rate=got/(dur/60),flu=Math.min(1,rate/JD_TARGET[jd.p.lv]),pz=Math.max(0,1-jd.pause*.2);
+  const score=Math.round(100*(acc*.5+comp*.2+flu*.2+pz*.1)),ok=score>=70,big=score>=90;
+  // 標紅沒唸到的字
+  let k=0;const miss=[];const T=document.getElementById('jd-txt');T.innerHTML=jd.p.s.map((x,i)=>{let h='';const xs=[...x];xs.forEach((c,ci)=>{const n=normJa(c);if(!n){h+=c;return}if(!hit[k])miss.push({c,prev:xs[ci-1]||'',si:i,end:ci>=xs.length-4});h+=hit[k]?c:`<em>${c}</em>`;k+=n.length});return `<span class="jd-s done" data-i="${i}">${h}</span>`}).join('');
+  T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>say(jd.p.s[+e.dataset.i],.9));
+  const bar=(lb,v,note)=>`<div class="jd-m"><span>${lb}</span><i><b style="width:${Math.round(v*100)}%"></b></i><em>${Math.round(v*100)}</em><small>${note}</small></div>`;
+  const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+
+    bar('正確度',acc,`唸對 ${got} / ${N} 字`)+bar('完整度',comp,`${per.filter(([g,t])=>g/t>=.5).length} / ${per.length} 句`)+bar('流暢度',flu,`每分鐘 ${Math.round(rate)} 字`)+bar('停頓',pz,`卡住 ${jd.pause} 次`)+jdDiag({miss,per,acc,rate,flu,score,big})+`<p class="jd-tip">紅字是沒聽到的部分，點句子可以聽示範。</p>`;
+  document.getElementById('jd-say').textContent=big?'唸得漂亮，准你通過！':ok?'嗯，合格。下次再順一點。':acc<.5?'聽不太清楚，再來一次。':'還差一點，判你再審！';
+  document.getElementById('jd-live').textContent='';document.getElementById('s-judge').classList.add('res');
+  try{FX.stamp(big?'大合格':ok?'合格':'再審')}catch(e){}try{ok?SFX.win():SFX.lose()}catch(e){}
+  if(ok){META.jdPass=(META.jdPass||0)+1;if(META.jdPass>=3&&(META.jdLv||1)<3){META.jdLv=(META.jdLv||1)+1;META.jdPass=0;toast('解鎖'+JD_LV[META.jdLv-1]+'！文章變長了')}}META.jdBest=Math.max(META.jdBest||0,score);save();
+  const lt=document.getElementById('jd-lvtag');if(lt)lt.textContent=JD_LV[(META.jdLv||1)-1];
+  document.getElementById('jd-demo').disabled=false;const g=document.getElementById('jd-go');g.textContent='下一篇';g.onclick=startJudge}
+
+/* 審判書：條列原因＋建議 */
+function jdDiag(d){const R=[],has=re=>d.miss.filter(m=>re.test(m.c)),O='おこそとのほもよろごぞどぼぽょ',U='うくすつぬふむゆるぐずづぶぷゅ',E='えけせてねへめれげぜでべぺ';
+  const cnt={sok:has(/[っッ]/),yo:has(/[ゃゅょャュョ]/),n:has(/[んン]/),dk:has(/[がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ]/),
+    lng:d.miss.filter(m=>m.c==='ー'||(m.c==='う'&&(O+U).includes(m.prev))||(m.c==='い'&&E.includes(m.prev))),
+    kan:has(/[一-鿿]/),end:d.miss.filter(m=>m.end)};
+  const skip=d.per.filter(([g,t])=>g/t<.2).length,ex=a=>[...new Set(a.map(m=>m.c))].slice(0,4).join('・');
+  if(skip)R.push(['漏掉整句（'+skip+' 句）','可能唸太小聲或跳行。手指著句子唸，一句結束再換氣，不要搶下一句。']);
+  if(cnt.kan.length>=3)R.push(['漢字詞沒被聽懂：'+ex(cnt.kan),'多半是讀音不確定或含糊帶過。先點那句聽示範，把讀音唸到不用想再整篇唸。']);
+  if(cnt.sok.length)R.push(['促音「っ」不見了','っ是停一拍，不是跳過。唸成「ki-[停]-te」，心裡數一下再發下一個音。']);
+  if(cnt.lng.length)R.push(['長音拉不夠：'+ex(cnt.lng.map(m=>({c:m.prev+m.c}))),'長音要佔兩拍。こう＝ko-o，せい＝se-e，拍手數拍子練習。']);
+  if(cnt.yo.length)R.push(['拗音 ゃゅょ 唸開了','きょ 是一拍，不是 ki-yo 兩拍。嘴巴從 i 的形狀快速滑過去。']);
+  if(cnt.dk.length>=2)R.push(['濁音不夠濁：'+ex(cnt.dk),'華語母語者常把 が・だ・ば 唸成 か・た・ぱ。發音前喉嚨先震動，摸喉嚨確認有震。']);
+  if(cnt.n.length)R.push(['「ん」吃掉了','ん也是一拍，要停留一下，不要直接黏到下一個字。']);
+  if(cnt.end.length>=3)R.push(['句尾太輕','です・ます 被吞掉。日本人句尾音量會降，但子音要在。最後一個字唸清楚再收。']);
+  if(d.flu<.6&&d.acc>=.5)R.push(['速度太慢（每分鐘 '+Math.round(d.rate)+' 字）','一字一字唸會不像母語者。以「意群」為單位：私の名前は／林です，一段一口氣。']);
+  if(d.rate>JD_TARGET[jd.p.lv]*1.3&&d.acc<.75)R.push(['太快而含糊','先降到示範的速度，每個字唸清楚，熟了再加速。']);
+  if(jd.pause>=2)R.push(['中途卡住 '+jd.pause+' 次','先默讀一遍、找出不會的字，再開始朗讀。卡住就從那句開頭重唸。']);
+  if(d.acc<.35&&!R.length)R.push(['幾乎沒收到聲音','靠近手機、環境安靜一點，音量比平常說話大一些。']);
+  let h='';
+  if(d.big&&!R.length)h='<li><b>已經很接近母語者</b><span>下一步：跟著示範做影子跟讀，模仿高低音和句子的起伏。</span></li>';
+  else h=R.slice(0,4).map(([a,b])=>`<li><b>${a}</b><span>${b}</span></li>`).join('');
+  h+='<li class="jd-note"><b>母語者感的關鍵：語調</b><span>機器聽不出高低音，請用「影踏み」跟示範同步唸，耳朵比分數準。</span></li>';
+  return `<div class="jd-diag"><h4>審判書</h4><ol>${h}</ol></div>`}
 </script>
 </body></html>
