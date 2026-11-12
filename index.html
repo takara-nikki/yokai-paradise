@@ -583,6 +583,11 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .jd-diag ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}.jd-diag li{font-size:13px;line-height:1.5}
 .jd-diag li b{display:block;color:var(--ink);font-size:14px}.jd-diag li span{color:var(--dim)}.jd-diag li.jd-note{list-style:none;margin-left:-1.3em;padding:8px 10px;border-radius:10px;background:rgba(212,165,74,.08)}
 #s-judge.res{overflow:auto}#s-judge.res .jd-paper{flex:0 0 auto;max-height:none}
+.jd-ttl{gap:8px}.jd-ttl span{margin-left:auto}
+.jd-fbtn{flex:0 0 auto;font:inherit;font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid #b9a888;background:transparent;color:#7a6e60;cursor:pointer}
+.jd-fbtn.on{background:#1E1A17;color:#F4EFE3;border-color:#1E1A17}
+.jd-txt{line-height:2.25}.jd-txt rt{font-size:10px;font-weight:500;color:#8a7d6c;letter-spacing:0}
+.jd-paper.nofuri rt{visibility:hidden}.jd-paper.nofuri .jd-txt{line-height:1.9}.jd-paper.nofuri rt{display:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1636,7 +1641,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20b';
+const APP_VER='2026.11.20c';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1870,26 +1875,31 @@ function askLeave(fn){ac();const inLava=document.getElementById('s-lava').classL
 
 /* ===== 口語審判官 ===== */
 const JD_TXT=[
- [ {t:'自己紹介',zh:'自我介紹',s:['私の名前は林です。','台湾の台北から来ました。','今、会社で働いています。','趣味は写真を撮ることです。','どうぞよろしくお願いします。']},
-   {t:'毎日の生活',zh:'每天的生活',s:['毎朝七時に起きます。','朝ご飯を食べてから、電車で会社へ行きます。','会社まで三十分ぐらいかかります。','夜はたいてい家で料理を作ります。']},
-   {t:'雨の日',zh:'下雨天',s:['昨日は雨でした。','だから、どこへも行かないで、家で本を読みました。','夕方、友達から電話がありました。','来週、一緒に映画を見に行くことになりました。']},
-   {t:'町の公園',zh:'鎮上的公園',s:['私の町には大きい公園があります。','春になると、桜がとてもきれいです。','週末はたくさんの人が公園でお弁当を食べます。','私も今度、家族と行こうと思っています。']} ],
- [ {t:'京都旅行',zh:'京都旅行',s:['先週の日曜日、友達と京都へ旅行に行きました。','朝早く新幹線に乗って、十時ごろ京都に着きました。','まず、有名なお寺を見に行きました。','人が多かったですが、とても静かできれいな所でした。','昼ご飯には湯豆腐を食べました。','初めて食べましたが、やさしい味でおいしかったです。']},
-   {t:'日本語の勉強',zh:'學日文',s:['私は日本語を勉強して一年になります。','最初はひらがなを覚えるのが大変でした。','今は簡単な会話ができるようになりました。','でも、漢字はまだ難しいです。','来年の夏、日本語能力試験を受けるつもりです。','合格できるように頑張ります。']},
-   {t:'引っ越し',zh:'搬家',s:['来月、引っ越しをします。','今のアパートは駅から遠くて、不便だからです。','新しい部屋は駅から歩いて五分です。','近くにスーパーやコンビニもあります。','部屋は少し狭いですが、窓が大きくて明るいです。','引っ越しの日は、友達が手伝ってくれることになっています。']},
-   {t:'朝の運動',zh:'晨間運動',s:['最近、体のために運動を始めました。','毎朝、家の近くを三十分ぐらい走っています。','最初の一週間は足が痛くて、やめたいと思いました。','でも、続けているうちに、だんだん楽になりました。','今は走らないと、気持ちが悪いです。']} ],
- [ {t:'日本の季節',zh:'日本的季節',s:['日本には四つの季節があります。','春は暖かくて、桜が咲きます。','多くの人が花見をしながら、お弁当を食べたり、歌を歌ったりします。','夏はとても暑くて、雨もよく降ります。','秋は涼しくて、木の葉が赤や黄色に変わります。','冬は寒くて、北の方では雪がたくさん降ります。','私は台湾から来たので、初めて雪を見たとき、とても感動しました。','季節によって楽しみ方が違うのが、日本のおもしろいところだと思います。']},
-   {t:'写真の仕事',zh:'攝影工作',s:['私はカメラマンの仕事をしています。','結婚式や会社の紹介ビデオを撮ることが多いです。','結婚式の日は朝早くから夜遅くまで働くので、とても疲れます。','でも、二人の幸せそうな顔を撮ることができるので、この仕事が好きです。','撮影の後は、パソコンで写真や映像を編集します。','お客さんに喜んでもらえると、本当にうれしくなります。','将来は日本でも写真を撮ってみたいです。']},
-   {t:'図書館のルール',zh:'圖書館規則',s:['この図書館では、本を一度に五冊まで借りることができます。','借りた本は二週間以内に返さなければなりません。','返すのが遅れると、次の一週間は本を借りることができません。','館内では、大きい声で話してはいけません。','携帯電話はマナーモードにしてください。','飲み物は飲んでもいいですが、食べ物を食べてはいけません。','分からないことがあったら、一階の受付で聞いてください。']},
-   {t:'友達へのメール',zh:'給朋友的信',s:['田中さん、お元気ですか。','先日は台湾に来てくれて、ありがとうございました。','一緒に夜市へ行ったり、小籠包を食べたりして、本当に楽しかったです。','写真をたくさん撮ったので、メールで送ります。','来年の春には、私が日本へ遊びに行く予定です。','そのときは、東京を案内してもらえませんか。','また会えるのを楽しみにしています。']} ]];
+ [ {t:'自己紹介',zh:'自我介紹',s:['私[わたし]の名前[なまえ]は林[りん]です。','台湾[たいわん]の台北[タイペイ]から来[き]ました。','今[いま]、会社[かいしゃ]で働[はたら]いています。','趣味[しゅみ]は写真[しゃしん]を撮[と]ることです。','どうぞよろしくお願[ねが]いします。']},
+   {t:'毎日の生活',zh:'每天的生活',s:['毎朝[まいあさ]七時[しちじ]に起[お]きます。','朝[あさ]ご飯[はん]を食[た]べてから、電車[でんしゃ]で会社[かいしゃ]へ行[い]きます。','会社[かいしゃ]まで三十分[さんじゅっぷん]ぐらいかかります。','夜[よる]はたいてい家[いえ]で料理[りょうり]を作[つく]ります。']},
+   {t:'雨の日',zh:'下雨天',s:['昨日[きのう]は雨[あめ]でした。','だから、どこへも行[い]かないで、家[いえ]で本[ほん]を読[よ]みました。','夕方[ゆうがた]、友達[ともだち]から電話[でんわ]がありました。','来週[らいしゅう]、一緒[いっしょ]に映画[えいが]を見[み]に行[い]くことになりました。']},
+   {t:'町の公園',zh:'鎮上的公園',s:['私[わたし]の町[まち]には大[おお]きい公園[こうえん]があります。','春[はる]になると、桜[さくら]がとてもきれいです。','週末[しゅうまつ]はたくさんの人[ひと]が公園[こうえん]でお弁当[べんとう]を食[た]べます。','私[わたし]も今度[こんど]、家族[かぞく]と行[い]こうと思[おも]っています。']} ],
+ [ {t:'京都旅行',zh:'京都旅行',s:['先週[せんしゅう]の日曜日[にちようび]、友達[ともだち]と京都[きょうと]へ旅行[りょこう]に行[い]きました。','朝早[あさはや]く新幹線[しんかんせん]に乗[の]って、十時[じゅうじ]ごろ京都[きょうと]に着[つ]きました。','まず、有名[ゆうめい]なお寺[てら]を見[み]に行[い]きました。','人[ひと]が多[おお]かったですが、とても静[しず]かできれいな所[ところ]でした。','昼[ひる]ご飯[はん]には湯豆腐[ゆどうふ]を食[た]べました。','初[はじ]めて食[た]べましたが、やさしい味[あじ]でおいしかったです。']},
+   {t:'日本語の勉強',zh:'學日文',s:['私[わたし]は日本語[にほんご]を勉強[べんきょう]して一年[いちねん]になります。','最初[さいしょ]はひらがなを覚[おぼ]えるのが大変[たいへん]でした。','今[いま]は簡単[かんたん]な会話[かいわ]ができるようになりました。','でも、漢字[かんじ]はまだ難[むずか]しいです。','来年[らいねん]の夏[なつ]、日本語[にほんご]能力[のうりょく]試験[しけん]を受[う]けるつもりです。','合格[ごうかく]できるように頑張[がんば]ります。']},
+   {t:'引っ越し',zh:'搬家',s:['来月[らいげつ]、引[ひ]っ越[こ]しをします。','今[いま]のアパートは駅[えき]から遠[とお]くて、不便[ふべん]だからです。','新[あたら]しい部屋[へや]は駅[えき]から歩[ある]いて五分[ごふん]です。','近[ちか]くにスーパーやコンビニもあります。','部屋[へや]は少[すこ]し狭[せま]いですが、窓[まど]が大[おお]きくて明[あか]るいです。','引[ひ]っ越[こ]しの日[ひ]は、友達[ともだち]が手伝[てつだ]ってくれることになっています。']},
+   {t:'朝の運動',zh:'晨間運動',s:['最近[さいきん]、体[からだ]のために運動[うんどう]を始[はじ]めました。','毎朝[まいあさ]、家[いえ]の近[ちか]くを三十分[さんじゅっぷん]ぐらい走[はし]っています。','最初[さいしょ]の一週間[いっしゅうかん]は足[あし]が痛[いた]くて、やめたいと思[おも]いました。','でも、続[つづ]けているうちに、だんだん楽[らく]になりました。','今[いま]は走[はし]らないと、気持[きも]ちが悪[わる]いです。']} ],
+ [ {t:'日本の季節',zh:'日本的季節',s:['日本[にほん]には四[よっ]つの季節[きせつ]があります。','春[はる]は暖[あたた]かくて、桜[さくら]が咲[さ]きます。','多[おお]くの人[ひと]が花見[はなみ]をしながら、お弁当[べんとう]を食[た]べたり、歌[うた]を歌[うた]ったりします。','夏[なつ]はとても暑[あつ]くて、雨[あめ]もよく降[ふ]ります。','秋[あき]は涼[すず]しくて、木[き]の葉[は]が赤[あか]や黄色[きいろ]に変[か]わります。','冬[ふゆ]は寒[さむ]くて、北[きた]の方[ほう]では雪[ゆき]がたくさん降[ふ]ります。','私[わたし]は台湾[たいわん]から来[き]たので、初[はじ]めて雪[ゆき]を見[み]たとき、とても感動[かんどう]しました。','季節[きせつ]によって楽[たの]しみ方[かた]が違[ちが]うのが、日本[にほん]のおもしろいところだと思[おも]います。']},
+   {t:'写真の仕事',zh:'攝影工作',s:['私[わたし]はカメラマンの仕事[しごと]をしています。','結婚式[けっこんしき]や会社[かいしゃ]の紹介[しょうかい]ビデオを撮[と]ることが多[おお]いです。','結婚式[けっこんしき]の日[ひ]は朝早[あさはや]くから夜遅[よるおそ]くまで働[はたら]くので、とても疲[つか]れます。','でも、二人[ふたり]の幸[しあわ]せそうな顔[かお]を撮[と]ることができるので、この仕事[しごと]が好[す]きです。','撮影[さつえい]の後[あと]は、パソコンで写真[しゃしん]や映像[えいぞう]を編集[へんしゅう]します。','お客[きゃく]さんに喜[よろこ]んでもらえると、本当[ほんとう]にうれしくなります。','将来[しょうらい]は日本[にほん]でも写真[しゃしん]を撮[と]ってみたいです。']},
+   {t:'図書館のルール',zh:'圖書館規則',s:['この図書館[としょかん]では、本[ほん]を一度[いちど]に五冊[ごさつ]まで借[か]りることができます。','借[か]りた本[ほん]は二週間[にしゅうかん]以内[いない]に返[かえ]さなければなりません。','返[かえ]すのが遅[おく]れると、次[つぎ]の一週間[いっしゅうかん]は本[ほん]を借[か]りることができません。','館内[かんない]では、大[おお]きい声[こえ]で話[はな]してはいけません。','携帯[けいたい]電話[でんわ]はマナーモードにしてください。','飲[の]み物[もの]は飲[の]んでもいいですが、食[た]べ物[もの]を食[た]べてはいけません。','分[わ]からないことがあったら、一階[いっかい]の受付[うけつけ]で聞[き]いてください。']},
+   {t:'友達へのメール',zh:'給朋友的信',s:['田中[たなか]さん、お元気[げんき]ですか。','先日[せんじつ]は台湾[たいわん]に来[き]てくれて、ありがとうございました。','一緒[いっしょ]に夜市[よいち]へ行[い]ったり、小籠包[ショーロンポー]を食[た]べたりして、本当[ほんとう]に楽[たの]しかったです。','写真[しゃしん]をたくさん撮[と]ったので、メールで送[おく]ります。','来年[らいねん]の春[はる]には、私[わたし]が日本[にほん]へ遊[あそ]びに行[い]く予定[よてい]です。','そのときは、東京[とうきょう]を案内[あんない]してもらえませんか。','また会[あ]えるのを楽[たの]しみにしています。']} ]];
 const JD_LV=['短文','中篇','長文'],JD_TARGET=[120,150,180];
 const jd={rec:null,on:false,fin:'',inter:'',t0:0,last:0,pause:0,p:null,norm:'',map:[]};
-function jdPick(){const lv=Math.min(2,(META.jdLv||1)-1),list=JD_TXT[lv];META.jdN=(META.jdN||0)+1;return {lv,...list[(META.jdN-1)%list.length]}}
+function jdPick(){const lv=Math.min(2,(META.jdLv||1)-1),list=JD_TXT[lv];META.jdN=(META.jdN||0)+1;const x=list[(META.jdN-1)%list.length];return {lv,...x,r:x.s,s:x.s.map(jdPlain)}}
+const jdPlain=x=>x.replace(/\[[^\]]*\]/g,'');
+function jdSeg(x){const o=[];x.replace(/([\u4e00-\u9fff々]+)\[([^\]]+)\]|([^\[]+?)(?=[\u4e00-\u9fff々]+\[|$)/g,(m,b,r,t)=>{o.push(b?{b,r}:{b:t})});return o}
+function jdRuby(x,hitFn){return jdSeg(x).map(g=>{let h='';for(const c of g.b)h+=hitFn?hitFn(c):c;return g.r?`<ruby>${h}<rt>${g.r}</rt></ruby>`:h}).join('')}
+function jdFuri(){META.jdFuri=META.jdFuri===false;save();jdFuriSet()}
+function jdFuriSet(){const on=META.jdFuri!==false;document.getElementById('jd-paper').classList.toggle('nofuri',!on);const b=document.getElementById('jd-fbtn');if(b){b.classList.toggle('on',on);b.textContent=on?'讀音 開':'讀音 關'}}
 function startJudge(){ac();jd.p=jdPick();jd.fin='';jd.inter='';jd.pause=0;const T=document.getElementById('jd-txt');
-  document.getElementById('jd-ttl').innerHTML=`<b>${jd.p.t}</b><span>${JD_LV[jd.p.lv]}・${jd.p.s.length} 句</span>`;
-  T.innerHTML=jd.p.s.map((x,i)=>`<span class="jd-s" data-i="${i}">${x}</span>`).join('');
+  document.getElementById('jd-ttl').innerHTML=`<b>${jd.p.t}</b><span>${JD_LV[jd.p.lv]}・${jd.p.s.length} 句</span><button class="jd-fbtn" id="jd-fbtn" onclick="jdFuri()"></button>`;jdFuriSet();
+  T.innerHTML=jd.p.r.map((x,i)=>`<span class="jd-s" data-i="${i}">${jdRuby(x)}</span>`).join('');
   document.getElementById('jd-zh').textContent=jd.p.zh;
-  T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>{if(!jd.on)say(e.textContent,.9)});
+  T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>{if(!jd.on)say(jd.p.s[+e.dataset.i],.9)});
   // 正規化文字與每個字對應的句子
   jd.norm='';jd.map=[];jd.p.s.forEach((x,i)=>{const n=normJa(x);jd.norm+=n;for(const c of n)jd.map.push(i)});
   document.getElementById('jd-res').hidden=true;document.getElementById('s-judge').classList.remove('res');document.getElementById('jd-paper').hidden=false;document.getElementById('jd-live').textContent='按「開始朗讀」，從頭唸到尾';
@@ -1917,7 +1927,7 @@ function jdEnd(){ac();const dur=Math.max(1,(performance.now()-jd.t0)/1000);jdSto
   const acc=got/N,comp=per.filter(([g,t])=>g/t>=.5).length/per.length,rate=got/(dur/60),flu=Math.min(1,rate/JD_TARGET[jd.p.lv]),pz=Math.max(0,1-jd.pause*.2);
   const score=Math.round(100*(acc*.5+comp*.2+flu*.2+pz*.1)),ok=score>=70,big=score>=90;
   // 標紅沒唸到的字
-  let k=0;const miss=[];const T=document.getElementById('jd-txt');T.innerHTML=jd.p.s.map((x,i)=>{let h='';const xs=[...x];xs.forEach((c,ci)=>{const n=normJa(c);if(!n){h+=c;return}if(!hit[k])miss.push({c,prev:xs[ci-1]||'',si:i,end:ci>=xs.length-4});h+=hit[k]?c:`<em>${c}</em>`;k+=n.length});return `<span class="jd-s done" data-i="${i}">${h}</span>`}).join('');
+  let k=0;const miss=[];const T=document.getElementById('jd-txt');T.innerHTML=jd.p.r.map((x,i)=>{const xs=[...jd.p.s[i]];let ci=-1;const h=jdRuby(x,c=>{ci++;const n=normJa(c);if(!n)return c;const ok=hit[k];if(!ok)miss.push({c,prev:xs[ci-1]||'',si:i,end:ci>=xs.length-4});k+=n.length;return ok?c:`<em>${c}</em>`});return `<span class="jd-s done" data-i="${i}">${h}</span>`}).join('');
   T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>say(jd.p.s[+e.dataset.i],.9));
   const bar=(lb,v,note)=>`<div class="jd-m"><span>${lb}</span><i><b style="width:${Math.round(v*100)}%"></b></i><em>${Math.round(v*100)}</em><small>${note}</small></div>`;
   const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+
