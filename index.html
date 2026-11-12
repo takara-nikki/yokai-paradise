@@ -1653,7 +1653,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20f';
+const APP_VER='2026.11.20g';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1896,8 +1896,8 @@ const jdNum=t=>t.normalize('NFKC').replace(/\d+/g,n=>{n=+n;if(n>=10000)return St
 const jdPlain=x=>x.replace(/\[[^\]]*\]/g,'');
 function jdSeg(x){const o=[];x.replace(/([\u4e00-\u9fff々]+)\[([^\]]+)\]|([^\[]+?)(?=[\u4e00-\u9fff々]+\[|$)/g,(m,b,r,t)=>{o.push(b?{b,r}:{b:t})});return o}
 function jdRuby(x,hitFn){return jdSeg(x).map(g=>{let h='';for(const c of g.b)h+=hitFn?hitFn(c):c;return g.r?`<ruby>${h}<rt>${g.r}</rt></ruby>`:h}).join('')}
-function jdTrT(){META.jdTr=!META.jdTr;save();jdTrSet()}
-function jdTrSet(){const on=!!META.jdTr;document.getElementById('jd-paper').classList.toggle('tr',on);const b=document.getElementById('jd-tbtn');if(b){b.classList.toggle('on',on);b.textContent=on?'翻譯 開':'翻譯 關'}}
+function jdTrT(){META.jdTr=META.jdTr===false;save();jdTrSet()}
+function jdTrSet(){const on=META.jdTr!==false;document.getElementById('jd-paper').classList.toggle('tr',on);const b=document.getElementById('jd-tbtn');if(b){b.classList.toggle('on',on);b.textContent=on?'翻譯 開':'翻譯 關'}}
 function jdFuri(){META.jdFuri=META.jdFuri===false;save();jdFuriSet()}
 function jdFuriSet(){const on=META.jdFuri!==false;document.getElementById('jd-paper').classList.toggle('nofuri',!on);const b=document.getElementById('jd-fbtn');if(b){b.classList.toggle('on',on);b.textContent=on?'讀音 開':'讀音 關'}}
 function startJudge(){ac();jd.p=jdPick();jd.fin='';jd.inter='';jd.pause=0;const T=document.getElementById('jd-txt');
