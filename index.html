@@ -597,6 +597,9 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .jd-radar .rl{stroke:rgba(244,239,227,.1)}.jd-radar .ra{fill:rgba(232,176,74,.28);stroke:#E8B04A;stroke-width:2;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(232,176,74,.45))}
 .jd-radar .rd{fill:#F6DA86}.jd-radar .rk{font-size:12px;fill:var(--ink)}.jd-radar .rv{font-size:13px;font-family:var(--fm);fill:#E8B04A}.jd-radar .rv.lo{fill:#F08A72}
 .jd-facts{text-align:center;font-size:12px;color:var(--dim);margin-top:2px}
+.jd-best{margin-left:10px;padding:1px 8px;border-radius:999px;background:rgba(200,64,47,.12);color:#A8341F;font-size:12px}
+.jd-time{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:6px}.jd-time b{font-family:var(--fm);font-size:18px;color:var(--ink)}
+.jd-nr{font-style:normal;padding:2px 10px;border-radius:999px;background:linear-gradient(90deg,#C8402F,#E8B04A);color:#fff;font-weight:700;box-shadow:0 0 12px rgba(232,176,74,.5)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1650,7 +1653,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20e';
+const APP_VER='2026.11.20f';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1900,13 +1903,14 @@ function jdFuriSet(){const on=META.jdFuri!==false;document.getElementById('jd-pa
 function startJudge(){ac();jd.p=jdPick();jd.fin='';jd.inter='';jd.pause=0;const T=document.getElementById('jd-txt');
   document.getElementById('jd-ttl').innerHTML=`<b>${jd.p.t}</b><span>${jd.p.sea?'<i class="jd-sea">季節限定</i>':''}${JD_LV[jd.p.lv]}・${jd.p.s.length} 句</span><div class="jd-tools"><button class="jd-fbtn" id="jd-fbtn" onclick="jdFuri()"></button><button class="jd-fbtn" id="jd-tbtn" onclick="jdTrT()"></button></div>`;jdFuriSet();jdTrSet();
   T.innerHTML=jd.p.r.map((x,i)=>`<span class="jd-s" data-i="${i}">${jdRuby(x)}</span><span class="jd-tr">${jd.p.tr[i]||''}</span>`).join('');
-  document.getElementById('jd-zh').textContent=jd.p.zh;
+  const rc=(META.jdRec||{})[jd.p.t];document.getElementById('jd-zh').innerHTML=jd.p.zh+(rc?`<span class="jd-best">最佳紀錄 ${jdFmt(rc.t)}</span>`:'');
   T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>{if(!jd.on)say(jd.p.s[+e.dataset.i],.9)});
   // 正規化文字與每個字對應的句子
   jd.norm='';jd.map=[];jd.p.s.forEach((x,i)=>{const n=normJa(x);jd.norm+=n;for(const c of n)jd.map.push(i)});
   document.getElementById('jd-res').hidden=true;document.getElementById('s-judge').classList.remove('res');document.getElementById('jd-paper').hidden=false;document.getElementById('jd-live').textContent='按「開始朗讀」，從頭唸到尾';
   const g=document.getElementById('jd-go');g.textContent='開始朗讀';g.onclick=jdGo;document.getElementById('jd-demo').disabled=false;
   document.getElementById('jd-say').textContent=['唸給我聽。','這篇不難，唸清楚。','長了一點，別停下來。'][jd.p.lv];go('s-judge')}
+function jdFmt(t){t=Math.round(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
 function jdDemo(){ac();if(jd.on)return;say(jd.p.s.join(''),.9)}
 function jdLive(){const all=normJa(jdNum(jd.fin+jd.inter)),k=Math.round(shProg(jd.norm,all)*jd.norm.length),upto=k?jd.map[Math.min(k,jd.map.length)-1]:-1;
   document.querySelectorAll('#jd-txt .jd-s').forEach((e,i)=>e.classList.toggle('lit',i<=upto));
@@ -1932,11 +1936,12 @@ function jdEnd(){ac();const dur=Math.max(1,(performance.now()-jd.t0)/1000);jdSto
   let k=0;const miss=[],all=[];const T=document.getElementById('jd-txt');T.innerHTML=jd.p.r.map((x,i)=>{const xs=[...jd.p.s[i]];let ci=-1;const h=jdRuby(x,c=>{ci++;const n=normJa(c);if(!n)return c;const ok=hit[k],o={c,prev:xs[ci-1]||'',si:i,end:ci>=xs.length-4,ok};all.push(o);if(!ok)miss.push(o);k+=n.length;return ok?c:`<em>${c}</em>`});return `<span class="jd-s done" data-i="${i}">${h}</span><span class="jd-tr">${jd.p.tr[i]||''}</span>`}).join('');
   T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>say(jd.p.s[+e.dataset.i],.9));
   const ax=jdAxes(all,{acc,comp,flu,pz});const score=Math.round(100*(ax[0].v*.3+ax[1].v*.1+ax[2].v*.15+ax[3].v*.1+ax[4].v*.1+ax[5].v*.1+ax[6].v*.1+ax[7].v*.05)),ok=score>=70,big=score>=90;
-  const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+jdRadar(ax)+
+  META.jdRec=META.jdRec||{};const prev=META.jdRec[jd.p.t],nr=ok&&(!prev||dur<prev.t);if(nr)META.jdRec[jd.p.t]={t:Math.round(dur*10)/10,s:score};
+  const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-time"><span>用時 <b>${jdFmt(dur)}</b></span><span>${nr?'<i class="jd-nr">新紀錄</i>':prev?'最佳 '+jdFmt(prev.t):'合格才會留紀錄'}</span></div><div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+jdRadar(ax)+
     `<div class="jd-facts">唸對 ${got} / ${N} 字・完整 ${per.filter(([g,t])=>g/t>=.5).length} / ${per.length} 句・每分鐘 ${Math.round(rate)} 字・卡住 ${jd.pause} 次</div>`+jdDiag({miss,per,acc,rate,flu,score,big})+`<p class="jd-tip">紅字是沒聽到的部分，點句子可以聽示範。</p>`;
   document.getElementById('jd-say').textContent=big?'唸得漂亮，准你通過！':ok?'嗯，合格。下次再順一點。':acc<.5?'聽不太清楚，再來一次。':'還差一點，判你再審！';
   document.getElementById('jd-live').textContent='';document.getElementById('s-judge').classList.add('res');
-  try{FX.stamp(big?'大合格':ok?'合格':'再審')}catch(e){}try{ok?SFX.win():SFX.lose()}catch(e){}
+  try{FX.stamp(nr&&prev?'新紀錄':big?'大合格':ok?'合格':'再審')}catch(e){}try{ok?SFX.win():SFX.lose()}catch(e){}
   if(ok){META.jdPass=(META.jdPass||0)+1;if(META.jdPass>=3&&(META.jdLv||1)<3){META.jdLv=(META.jdLv||1)+1;META.jdPass=0;toast('解鎖'+JD_LV[META.jdLv-1]+'！文章變長了')}}META.jdBest=Math.max(META.jdBest||0,score);save();
   const lt=document.getElementById('jd-lvtag');if(lt)lt.textContent=JD_LV[(META.jdLv||1)-1];
   document.getElementById('jd-demo').disabled=false;const g=document.getElementById('jd-go');g.textContent='下一篇';g.onclick=startJudge}
