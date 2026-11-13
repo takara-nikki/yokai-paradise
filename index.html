@@ -600,6 +600,13 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .jd-best{margin-left:10px;padding:1px 8px;border-radius:999px;background:rgba(200,64,47,.12);color:#A8341F;font-size:12px}
 .jd-time{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:6px}.jd-time b{font-family:var(--fm);font-size:18px;color:var(--ink)}
 .jd-nr{font-style:normal;padding:2px 10px;border-radius:999px;background:linear-gradient(90deg,#C8402F,#E8B04A);color:#fff;font-weight:700;box-shadow:0 0 12px rgba(232,176,74,.5)}
+.jd-rp{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.jd-rp h4{margin:0 0 8px;font-size:14px;color:var(--gold);letter-spacing:.2em}
+.jd-rpi{padding:10px 12px;border-radius:12px;background:rgba(244,239,227,.05);border:1px solid rgba(244,239,227,.08);margin-bottom:8px}
+.jd-rpt{font-size:15px;line-height:2;color:var(--ink)}.jd-rpt em{font-style:normal;color:#F08A72;text-decoration:underline wavy rgba(240,138,114,.5)}.jd-rpt rt{font-size:9px;color:var(--dim)}
+.jd-paper.nofuri~.jd-res .jd-rpt rt{display:none}
+.jd-rpb{display:flex;gap:8px;margin-top:6px}.jd-rpb button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:34px;border-radius:10px;border:1px solid rgba(232,176,74,.4);background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.jd-rpb button.on{background:rgba(232,176,74,.2);box-shadow:0 0 10px rgba(232,176,74,.35)}
+.jd-rpb svg{width:16px;height:16px;fill:none;stroke:#E8B04A;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1653,7 +1660,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20g';
+const APP_VER='2026.11.20h';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1918,12 +1925,30 @@ function jdLive(){const all=normJa(jdNum(jd.fin+jd.inter)),k=Math.round(shProg(j
 function jdGo(){ac();if(!SR){toast('這台手機不支援語音辨識');return}
   try{speechSynthesis.cancel()}catch(e){}
   const r=new SR();r.lang='ja-JP';r.continuous=true;r.interimResults=true;jd.rec=r;jd.on=true;jd.fin='';jd.inter='';jd.pause=0;jd.t0=performance.now();jd.last=0;
-  r.onresult=e=>{const now=performance.now();if(jd.last&&now-jd.last>2200)jd.pause++;jd.last=now;let it='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)jd.fin+=t;else it+=t}jd.inter=it;jdLive()};
+  r.onresult=e=>{const now=performance.now();if(jd.last&&now-jd.last>2200)jd.pause++;jd.last=now;let it='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)jd.fin+=t;else it+=t}jd.inter=it;jdLive();try{jd.tl.push({t:(now-jd.t0)/1000,k:Math.round(shProg(jd.norm,normJa(jdNum(jd.fin+jd.inter)))*jd.norm.length)})}catch(_){}};
   r.onend=()=>{if(jd.on){jd.fin+=jd.inter;jd.inter='';try{r.start()}catch(e){}}};r.onerror=e=>{if(e.error==='not-allowed'){jd.on=false;toast('請允許麥克風')}};
-  try{r.start()}catch(e){}
+  try{r.start()}catch(e){}jd.tl=[];jdRecStart();
   document.getElementById('jd-demo').disabled=true;const g=document.getElementById('jd-go');g.textContent='判決！';g.onclick=jdEnd;
   jd.tick=setInterval(()=>{if(jd.on)jdLive()},500);jdLive();try{SFX.taiko(.5)}catch(e){}}
-function jdStop(){jd.on=false;clearInterval(jd.tick);try{jd.rec&&jd.rec.stop()}catch(e){}}
+function jdStop(){jd.on=false;clearInterval(jd.tick);try{jd.rec&&jd.rec.stop()}catch(e){}try{jd.mr&&jd.mr.state!=='inactive'&&jd.mr.stop()}catch(e){}}
+/* 錄下自己的聲音，判決後回放問題片段 */
+function jdRecStart(){jd.audio=null;jd.mr=null;if(!navigator.mediaDevices||!window.MediaRecorder)return;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{if(!jd.on){st.getTracks().forEach(t=>t.stop());return}
+    const ch=[],mr=new MediaRecorder(st);jd.mr=mr;jd.recOff=(performance.now()-jd.t0)/1000;
+    mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
+    mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());if(ch.length){jd.audio=new Audio(URL.createObjectURL(new Blob(ch,{type:mr.mimeType||'audio/mp4'})));jd.audio.preload='auto'}};
+    mr.start(250)}).catch(()=>{})}
+function jdSpan(i){let a=jd.map.indexOf(i),b=jd.map.lastIndexOf(i)+1,tl=jd.tl||[],t0=0,t1=null;
+  for(const e of tl){if(e.k<=a)t0=e.t;if(t1===null&&e.k>=b)t1=e.t}
+  if(t1===null)t1=tl.length?tl[tl.length-1].t:t0+4;return [Math.max(0,t0-.4-(jd.recOff||0)),t1+.8-(jd.recOff||0)]}
+function jdPlayMe(i,btn){const A=jd.audio;if(!A){toast('這次沒有錄到聲音');return}const [a,b]=jdSpan(i);try{speechSynthesis.cancel()}catch(e){}
+  clearTimeout(jd.pt);A.pause();document.querySelectorAll('.jd-rp button').forEach(x=>x.classList.remove('on'));btn&&btn.classList.add('on');
+  const go=()=>{A.currentTime=a;A.play().catch(()=>{});jd.pt=setTimeout(()=>{A.pause();btn&&btn.classList.remove('on')},Math.max(800,(b-a)*1000))};
+  A.readyState>=1?go():(A.onloadedmetadata=go,A.load())}
+function jdPlayDemo(i){try{jd.audio&&jd.audio.pause()}catch(e){}say(jd.p.s[i],.9)}
+function jdReplay(per){const bad=per.map(([g,t],i)=>({i,r:g/t})).filter(x=>x.r<.999).sort((x,y)=>x.r-y.r).slice(0,5);if(!bad.length)return'';
+  const T=document.querySelectorAll('#jd-txt .jd-s');
+  return `<div class="jd-rp"><h4>問題片段回放</h4>${bad.map(x=>`<div class="jd-rpi"><div class="jd-rpt">${T[x.i]?T[x.i].innerHTML:jd.p.s[x.i]}</div><div class="jd-rpb"><button onclick="jdPlayMe(${x.i},this)"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg>我的</button><button onclick="jdPlayDemo(${x.i})"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6"/></svg>示範</button></div></div>`).join('')}<p class="jd-tip">先聽自己的，再聽示範，找出差在哪裡。</p></div>`}
 function jdLeave(){jdStop();go('s-koto')}
 function jdLCS(a,b){const n=a.length,m=b.length,dp=Array.from({length:n+1},()=>new Uint16Array(m+1));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
   const hit=new Uint8Array(n);let i=0,j=0;while(i<n&&j<m){if(a[i]===b[j]){hit[i]=1;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}return hit}
@@ -1938,7 +1963,7 @@ function jdEnd(){ac();const dur=Math.max(1,(performance.now()-jd.t0)/1000);jdSto
   const ax=jdAxes(all,{acc,comp,flu,pz});const score=Math.round(100*(ax[0].v*.3+ax[1].v*.1+ax[2].v*.15+ax[3].v*.1+ax[4].v*.1+ax[5].v*.1+ax[6].v*.1+ax[7].v*.05)),ok=score>=70,big=score>=90;
   META.jdRec=META.jdRec||{};const prev=META.jdRec[jd.p.t],nr=ok&&(!prev||dur<prev.t);if(nr)META.jdRec[jd.p.t]={t:Math.round(dur*10)/10,s:score};
   const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-time"><span>用時 <b>${jdFmt(dur)}</b></span><span>${nr?'<i class="jd-nr">新紀錄</i>':prev?'最佳 '+jdFmt(prev.t):'合格才會留紀錄'}</span></div><div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+jdRadar(ax)+
-    `<div class="jd-facts">唸對 ${got} / ${N} 字・完整 ${per.filter(([g,t])=>g/t>=.5).length} / ${per.length} 句・每分鐘 ${Math.round(rate)} 字・卡住 ${jd.pause} 次</div>`+jdDiag({miss,per,acc,rate,flu,score,big})+`<p class="jd-tip">紅字是沒聽到的部分，點句子可以聽示範。</p>`;
+    `<div class="jd-facts">唸對 ${got} / ${N} 字・完整 ${per.filter(([g,t])=>g/t>=.5).length} / ${per.length} 句・每分鐘 ${Math.round(rate)} 字・卡住 ${jd.pause} 次</div>`+jdReplay(per)+jdDiag({miss,per,acc,rate,flu,score,big})+`<p class="jd-tip">紅字是沒聽到的部分，點句子可以聽示範。</p>`;
   document.getElementById('jd-say').textContent=big?'唸得漂亮，准你通過！':ok?'嗯，合格。下次再順一點。':acc<.5?'聽不太清楚，再來一次。':'還差一點，判你再審！';
   document.getElementById('jd-live').textContent='';document.getElementById('s-judge').classList.add('res');
   try{FX.stamp(nr&&prev?'新紀錄':big?'大合格':ok?'合格':'再審')}catch(e){}try{ok?SFX.win():SFX.lose()}catch(e){}
