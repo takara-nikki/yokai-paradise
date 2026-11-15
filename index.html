@@ -1435,7 +1435,7 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
   lv.raf=requestAnimationFrame(lvLoop)}
 function fxSheet(kind,x,y,size,anchorBottom){const e=document.createElement('i');e.className='fxs '+kind;e.style.cssText=`left:${x}px;top:${y}px;width:${size}px;height:${size}px;margin:${anchorBottom?-size*.8:-size/2}px 0 0 ${-size/2}px`;document.body.appendChild(e);setTimeout(()=>e.remove(),1150)}
 function kill(b,cls){b.alive=false;if(lv.sel===b)lv.sel=null;b.el.onclick=null;if(cls){b.el.classList.add(cls);setTimeout(()=>b.el.remove(),520)}else b.el.remove()}
-function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementById('arena').getBoundingClientRect();const x=r.left+r.width/2,y=ar.top+lv.lavaY;fxSheet('smoke',x,y,Math.max(130,r.width*1.25),1);FX.burst(x,y,{n:30,w:r.width,dir:-1.57,spread:1.1,speed:6,up:1,g:.16,size:4,life:44,cols:['#FF7A2B','#FFC14A','#FF4A1F']});FX.burst(x,y-10,{n:12,w:r.width,dir:-1.57,spread:.6,speed:1.4,up:.4,g:-.03,size:9,life:70,kind:2,cols:['rgba(90,80,72,.55)','rgba(60,52,46,.5)']});FX.flash('rgba(255,110,40,.4)');FX.shake(document.getElementById('arena'),5);FX.buzz(60)}
+function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementById('arena').getBoundingClientRect();const x=r.left+r.width/2,y=ar.top+lv.lavaY;fxSheet('smoke',x,y,Math.max(130,r.width*1.25),1);FX.flash('rgba(255,110,40,.4)');FX.shake(document.getElementById('arena'),5);FX.buzz(60)}
   const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 /* 點方塊不會消掉，只會唸給你聽當提示；要自己唸出來才會消 */
@@ -1675,7 +1675,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.22v';
+const APP_VER='2026.11.23v';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
