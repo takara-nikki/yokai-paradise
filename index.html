@@ -555,7 +555,7 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .smDust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(214,196,160,.85),rgba(214,196,160,0) 70%);pointer-events:none;z-index:5}
 .fighter.foe:not(.boss){width:32%;max-width:170px}
 #st-start.locked{background:#3a3430!important;background-image:none!important;color:#8a7f72!important;box-shadow:none!important;border:1px solid var(--line)!important;cursor:not-allowed}
-#s-judge{display:flex;flex-direction:column;gap:10px}
+#s-judge.on{display:flex;flex-direction:column;gap:10px}
 .jd-top{display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .jd-top img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
 .jd-bub{flex:1;position:relative;padding:8px 12px;border-radius:12px;background:rgba(28,22,18,.9);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
@@ -1662,7 +1662,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20j';
+const APP_VER='2026.11.20k';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
