@@ -158,7 +158,8 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 @keyframes bub{0%{opacity:0;transform:translateY(0) scale(.4)}30%{opacity:.9}100%{opacity:0;transform:translateY(-38px) scale(1.2)}}
 .blk{position:absolute;left:0;top:0;width:31%;min-height:58px;padding:7px 6px;border-radius:12px;font-size:16px;font-weight:700;line-height:1.25;text-align:center;will-change:transform}
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
-.blk.ja{background:#3B2A18;border:1.5px solid #9C7330;color:#FFF1D6}
+.blk.ja{background:none;border:14px solid transparent;border-image:url(img/blk_frame.webp) 60 fill/14px/0 stretch;padding:0 2px;color:#FFF1D6;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}
+.blk.ja.sel{box-shadow:none;filter:drop-shadow(0 0 10px rgba(232,176,74,.7))}
 .blk .lb{display:block;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
 #fx{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
 .fx-splat{position:fixed;z-index:61;pointer-events:none;mix-blend-mode:normal}.fx-splat svg{width:100%;height:100%;display:block}
@@ -609,6 +610,11 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .jd-rpb{display:flex;gap:8px;margin-top:6px}.jd-rpb button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:34px;border-radius:10px;border:1px solid rgba(232,176,74,.4);background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
 .jd-rpb button.on{background:rgba(232,176,74,.2);box-shadow:0 0 10px rgba(232,176,74,.35)}
 .jd-rpb svg{width:16px;height:16px;fill:none;stroke:#E8B04A;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fxs{position:fixed;z-index:60;pointer-events:none;background-repeat:no-repeat;background-size:1200% 100%;animation:fxs 1.08s steps(12) forwards}
+.fxs.ink{background-image:url(img/fx_ink.webp);filter:drop-shadow(0 0 14px rgba(255,255,255,.55));animation-name:fxs,fxRise}
+.fxs.smoke{background-image:url(img/fx_smoke.webp)}
+@keyframes fxs{from{background-position-x:0}to{background-position-x:calc(100% * 12 / 11)}}
+@keyframes fxRise{from{transform:translateY(0) scale(.9)}to{transform:translateY(-34px) scale(1.08);opacity:.85}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1422,14 +1428,16 @@ function lvLoop(now){const dt=Math.min(.05,(now-lv.last)/1000);lv.last=now;
     if(!lv.queue.length&&!lv.bag.length&&!lv.blocks.length){lavaRoundDone();return}
   }
   lv.raf=requestAnimationFrame(lvLoop)}
+function fxSheet(kind,x,y,size,anchorBottom){const e=document.createElement('i');e.className='fxs '+kind;e.style.cssText=`left:${x}px;top:${y}px;width:${size}px;height:${size}px;margin:${anchorBottom?-size*.8:-size/2}px 0 0 ${-size/2}px`;document.body.appendChild(e);setTimeout(()=>e.remove(),1150)}
 function kill(b,cls){b.alive=false;if(lv.sel===b)lv.sel=null;b.el.onclick=null;if(cls){b.el.classList.add(cls);setTimeout(()=>b.el.remove(),520)}else b.el.remove()}
-function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementById('arena').getBoundingClientRect();const x=r.left+r.width/2,y=ar.top+lv.lavaY;FX.burst(x,y,{n:30,w:r.width,dir:-1.57,spread:1.1,speed:6,up:1,g:.16,size:4,life:44,cols:['#FF7A2B','#FFC14A','#FF4A1F']});FX.burst(x,y-10,{n:12,w:r.width,dir:-1.57,spread:.6,speed:1.4,up:.4,g:-.03,size:9,life:70,kind:2,cols:['rgba(90,80,72,.55)','rgba(60,52,46,.5)']});FX.flash('rgba(255,110,40,.4)');FX.shake(document.getElementById('arena'),5);FX.buzz(60)}
+function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementById('arena').getBoundingClientRect();const x=r.left+r.width/2,y=ar.top+lv.lavaY;fxSheet('smoke',x,y,Math.max(210,r.width*1.9),1);FX.burst(x,y,{n:30,w:r.width,dir:-1.57,spread:1.1,speed:6,up:1,g:.16,size:4,life:44,cols:['#FF7A2B','#FFC14A','#FF4A1F']});FX.burst(x,y-10,{n:12,w:r.width,dir:-1.57,spread:.6,speed:1.4,up:.4,g:-.03,size:9,life:70,kind:2,cols:['rgba(90,80,72,.55)','rgba(60,52,46,.5)']});FX.flash('rgba(255,110,40,.4)');FX.shake(document.getElementById('arena'),5);FX.buzz(60)}
   const partner=lv.blocks.find(x=>x.alive&&x!==b&&x.uid===b.uid);kill(b,'burn');if(partner)kill(partner,'burn');lv.bag=lv.bag.filter(h=>h.uid!==b.uid);SFX.sizzle();lv.combo=0;lv.done++;if(lv.base)lv.speed=Math.max(lv.base*.8,lv.speed-lv.base*.15);if(!lv.practice){if(!LAVA_INFINITE)lv.hp--;if(!lv.missed.includes(b.p))lv.missed.push(b.p);mark(pKey(b.p),false)}lvHud();
   const fb=document.getElementById('l-fb');fb.className='feedback no';fb.innerHTML=`溶けた…「${b.p.j}」＝${b.p.m}`;if(lv.hp<=0){lv.over=true;setTimeout(endLava,700)}}
 /* 點方塊不會消掉，只會唸給你聽當提示；要自己唸出來才會消 */
 function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r,.8);b.el.classList.remove('hint');void b.el.offsetWidth;b.el.classList.add('hint');const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent=`提示：${b.p.r}——換你唸出來`}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
-  FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:26,w:ra.width,up:3.5,g:.28,speed:5,kind:1,size:5,cols:['#5a3a20','#8a5a2a','#D4A54A','#F4EFE3','#BFD0FF']});FX.buzz(15);
+  fxSheet('ink',ra.left+ra.width/2,ra.top+ra.height/2,Math.max(170,ra.width*1.5));if(b)fxSheet('ink',rb.left+rb.width/2,rb.top+rb.height/2,Math.max(170,rb.width*1.5));
+  FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:10,w:ra.width,up:3.5,g:.28,speed:5,kind:1,size:5,cols:['#5a3a20','#8a5a2a','#D4A54A','#F4EFE3','#BFD0FF']});FX.buzz(15);
   lv.gems++;lv.done++;lv.combo++;lv.best=Math.max(lv.best,lv.combo);META.gems++;if(lv.combo>META.best)META.best=lv.combo;if(!lv.practice){lv.hit.set(a.p,(lv.hit.get(a.p)||0)+1);if(lv.hit.get(a.p)===REPEAT&&!lv.missed.includes(a.p))mark(pKey(a.p),true)}lv.speed=Math.min(lv.base*2,lv.speed+lv.base*.07);lvHud();
   SFX.gem();FX.combo(lv.combo);setTimeout(()=>FX.bump(document.getElementById('l-gems')),650);const fb=document.getElementById('l-fb');fb.className='feedback ok';fb.innerHTML=`宝物ゲット！<span class="ans">${a.p.j}</span>　${a.p.m}${lv.combo>1?`　連擊 ×${lv.combo}`:''}`;
   {const z=document.createElement('div');z.className='zhfloat';z.textContent=a.p.m;document.body.appendChild(z);const zw=z.offsetWidth,cx=ra.left+ra.width/2-zw/2,cy=ra.top+ra.height/2-20;
@@ -1662,7 +1670,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20k';
+const APP_VER='2026.11.20n';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
