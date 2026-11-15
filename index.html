@@ -149,10 +149,12 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .btn.main{background-image:linear-gradient(180deg,rgba(255,236,214,.22),rgba(255,236,214,0) 46%,rgba(0,0,0,0) 60%,rgba(60,10,0,.18)),var(--grain),var(--grad);box-shadow:inset 0 1px 0 rgba(255,236,214,.45),inset 0 -2px 0 rgba(80,16,6,.35),0 0 0 1px rgba(212,165,74,.35),0 6px 18px rgba(221,90,69,.28)}
 /* 第二關 溶岩 */
 .arena{position:relative;flex:1 1 auto;margin:6px 0 0;border-radius:18px 18px 0 0;overflow:hidden;background:linear-gradient(180deg,rgba(22,19,17,.55),rgba(22,19,17,.25) 40%,rgba(255,106,43,.12)),url(img/bg_cave.webp) center 30%/cover no-repeat;border:1px solid var(--line);border-bottom:0}
-.lava{position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(180deg,var(--lava) 0%,var(--lava2) 70%);box-shadow:0 -10px 40px rgba(255,106,43,.55)}
-.lava::before{content:"";position:absolute;left:-10%;right:-10%;top:-10px;height:20px;background:radial-gradient(12px 10px at 10px 10px,var(--lava) 98%,transparent) 0 0/40px 20px repeat-x;animation:wave 2.4s linear infinite}
-@keyframes wave{to{transform:translateX(40px)}}
-.lava i{position:absolute;bottom:10px;width:10px;height:10px;border-radius:50%;background:#FFC46B;opacity:0;animation:bub 2.6s ease-in infinite}
+.lava{position:absolute;left:0;right:0;bottom:0;height:44px;pointer-events:none;z-index:3}
+.lava::before{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(44px / .375);background:url(img/lava.webp) 0 100%/auto 100% repeat-x;animation:lavaFlow 14s linear infinite,lavaGlow 3.2s ease-in-out infinite;filter:drop-shadow(0 -6px 18px rgba(255,106,43,.35))}
+.lava::after{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(44px / .375);background:url(img/lava.webp) 0 100%/auto 100% repeat-x;opacity:.35;mix-blend-mode:screen;animation:lavaFlow 9s linear infinite reverse}
+@keyframes lavaFlow{to{background-position-x:calc(44px / .375 * 3.375)}}
+@keyframes lavaGlow{50%{filter:drop-shadow(0 -8px 24px rgba(255,140,60,.55)) brightness(1.08)}}
+.lava i{display:none}
 @keyframes bub{0%{opacity:0;transform:translateY(0) scale(.4)}30%{opacity:.9}100%{opacity:0;transform:translateY(-38px) scale(1.2)}}
 .blk{position:absolute;left:0;top:0;width:31%;min-height:58px;padding:7px 6px;border-radius:12px;font-size:16px;font-weight:700;line-height:1.25;text-align:center;will-change:transform}
 .blk.zh{background:#2A2F45;border:1.5px solid #5C6B9E;color:#E6EBFF}
@@ -499,7 +501,7 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .nk-bob{animation:nkRun .38s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes nkRun{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-7px) rotate(2deg)}}
 @media (prefers-reduced-motion:reduce){.nk-bob{animation:none}}
-#splash{position:fixed;inset:0;z-index:9999;background:#000;display:grid;place-items:center;overflow:hidden;pointer-events:none}
+#splash{position:fixed;inset:0;z-index:9999;background:#000;display:grid;place-items:center;overflow:hidden;pointer-events:auto;touch-action:none}#splash.out{pointer-events:auto}
 #splash.out{animation:spOut .7s cubic-bezier(.22,1,.36,1) forwards}
 #splash .spOni{width:min(72vw,380px);opacity:0;transform:scale(.86);animation:spOni 1.3s cubic-bezier(.22,1,.36,1) .15s forwards}
 @keyframes spOut{to{opacity:0;transform:scale(1.06)}}@keyframes spOni{to{opacity:1;transform:none}}
@@ -1660,7 +1662,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20h';
+const APP_VER='2026.11.20j';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1850,7 +1852,12 @@ function renderSet(){document.getElementById('setList').innerHTML=
 function setArm(b,fn){if(!b.dataset.arm){b.dataset.arm=1;const t=b.querySelector('b'),o=t.textContent;t.textContent='再按一次確認';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;t.textContent=o}},3000);return}delete b.dataset.arm;fn();renderSet()}
 function tabGo(id){ac();if(id==='s-box')renderBox();if(id==='s-set')renderSet();go(id)}
 document.body.dataset.scr='s-home';document.getElementById('tabHome').classList.add('on');try{achCheck()}catch(e){}
-(()=>{const sp=document.getElementById('splash');if(!sp)return;setTimeout(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),760)},2000)})();
+(()=>{const sp=document.getElementById('splash');if(!sp)return;let gone=false,guard=0;
+  const close=()=>{if(gone)return;gone=true;sp.classList.add('out');setTimeout(()=>{sp.remove();guard=Date.now()+450},760)};
+  /* 招財貓擋住點擊：點一下只會提早進首頁，不會誤觸後面的關卡 */
+  ['pointerdown','pointerup','touchstart','touchend','click'].forEach(ev=>sp.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();if(ev==='click'||ev==='touchend')close()},{passive:false}));
+  document.addEventListener('click',e=>{if(Date.now()<guard){e.preventDefault();e.stopPropagation()}},true);
+  setTimeout(close,2000)})();
 
 /* ===== 第一次進關：小框框介紹按鍵 ===== */
 const COACH={
