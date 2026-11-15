@@ -1341,6 +1341,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
     for(const p of parts){p.t++;p.vy+=p.g;p.vx*=.96;p.vy*=.99;p.x+=p.vx;p.y+=p.vy;const a=1-p.t/p.life;cx.globalAlpha=Math.max(0,a);cx.fillStyle=p.c;
       if(p.k===0){cx.beginPath();cx.arc(p.x,p.y,p.r*(.5+.5*a),0,6.3);cx.fill()}
       else if(p.k===1){cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot+=p.vr);cx.fillRect(-p.r,-p.r*.4,p.r*2,p.r*.8);cx.restore()}
+      else if(p.k===3){p.x+=Math.sin(p.t*.12+p.rot)*.9;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot+=p.vr*.5);cx.scale(1,.55+.45*Math.cos(p.t*.16+p.rot));const r=p.r;cx.beginPath();cx.moveTo(0,r);cx.bezierCurveTo(r*1.05,r*.45,r*.95,-r*.75,r*.28,-r);cx.lineTo(0,-r*.62);cx.lineTo(-r*.28,-r);cx.bezierCurveTo(-r*.95,-r*.75,-r*1.05,r*.45,0,r);cx.fill();cx.globalAlpha*=.5;cx.fillStyle='#fff';cx.beginPath();cx.ellipse(0,r*.35,r*.22,r*.4,0,0,6.3);cx.fill();cx.restore()}
       else{cx.beginPath();cx.arc(p.x,p.y,p.r*(1.6-a),0,6.3);cx.fill()}}
     cx.globalAlpha=1;raf=parts.length?requestAnimationFrame(loop):0}
   function burst(x,y,o={}){if(reduce)return;ensure();const n=o.n||22,cols=o.cols||['#1E1A17','#D4A54A','#E06A55','#F4EFE3','#D4A54A'];
@@ -1354,7 +1355,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
   function stamp(txt,o={}){const d=document.createElement('div');d.className='fx-stamp'+(o.cls?' '+o.cls:'');d.textContent=txt;if(o.top)d.style.top=o.top;document.body.appendChild(d);if(o.sound!==false)SFX.seal();buzz(30);
     if(reduce){setTimeout(()=>d.remove(),900);return}
     d.animate([{transform:'translate(-50%,-50%) scale(2.6) rotate(-14deg)',opacity:0,easing:'cubic-bezier(.2,.9,.3,1)'},{transform:'translate(-50%,-50%) scale(.9) rotate(-6deg)',opacity:1,offset:.2},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.3},{transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.78},{transform:'translate(-50%,-65%) scale(1.04) rotate(-6deg)',opacity:0}],{duration:o.dur||1150,easing:'linear'}).onfinish=()=>d.remove();
-    setTimeout(()=>{const r=d.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:16,w:r.width,cols:o.cls==='combo'?['#D4A54A','#F4EFE3','#E7C47A']:['#E06A55','#C8402F','#F4EFE3'],speed:4,up:1,size:3})},220)}
+    setTimeout(()=>{const r=d.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,{n:18,w:r.width,cols:['#F7C6D0','#F29FB2','#FBE3E8','#E8839B','#FFD9E0'],kind:3,speed:3.4,up:1.6,g:.07,size:6,life:75})},220)}
   const COMBO={3:'三連',5:'五連',10:'十連！',15:'十五連！',20:'二十連！！',30:'三十連！！！'};
   function combo(n){if(COMBO[n])stamp(COMBO[n],{cls:'combo',top:'30%'})}
   function bump(el){if(reduce||!el)return;el.animate([{scale:'1'},{scale:'1.35'},{scale:'1'}],{duration:340,easing:'cubic-bezier(.3,1.6,.5,1)'})}
@@ -1438,7 +1439,7 @@ function burn(b){{const r=b.el.getBoundingClientRect(),ar=document.getElementByI
 function tapBlock(b){if(!b.alive||lv.paused||lv.over)return;say(b.p.r,.8);b.el.classList.remove('hint');void b.el.offsetWidth;b.el.classList.add('hint');const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent=`提示：${b.p.r}——換你唸出來`}
 function match(a,b){const ra=a.el.getBoundingClientRect(),rb=b?b.el.getBoundingClientRect():ra;kill(a);if(b)kill(b);
   fxSheet('ink',ra.left+ra.width/2,ra.top+ra.height/2,Math.max(110,ra.width*1.05));if(b)fxSheet('ink',rb.left+rb.width/2,rb.top+rb.height/2,Math.max(110,rb.width*1.05));
-  FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:10,w:ra.width,up:3.5,g:.28,speed:5,kind:1,size:5,cols:['#5a3a20','#8a5a2a','#D4A54A','#F4EFE3','#BFD0FF']});FX.buzz(15);
+  FX.burst(ra.left+ra.width/2,ra.top+ra.height/2,{n:16,w:ra.width,up:2.6,g:.07,speed:3.6,kind:3,size:6,life:70,cols:['#F7C6D0','#F29FB2','#FBE3E8','#E8839B','#FFD9E0']});FX.buzz(15);
   lv.gems++;lv.done++;lv.combo++;lv.best=Math.max(lv.best,lv.combo);META.gems++;if(lv.combo>META.best)META.best=lv.combo;if(!lv.practice){lv.hit.set(a.p,(lv.hit.get(a.p)||0)+1);if(lv.hit.get(a.p)===REPEAT&&!lv.missed.includes(a.p))mark(pKey(a.p),true)}lv.speed=Math.min(lv.base*2,lv.speed+lv.base*.07);lvHud();
   SFX.gem();FX.combo(lv.combo);setTimeout(()=>FX.bump(document.getElementById('l-gems')),650);const fb=document.getElementById('l-fb');fb.className='feedback ok';fb.innerHTML=`宝物ゲット！<span class="ans">${a.p.j}</span>　${a.p.m}${lv.combo>1?`　連擊 ×${lv.combo}`:''}`;
   {const z=document.createElement('div');z.className='zhfloat';z.textContent=a.p.m;document.body.appendChild(z);const zw=z.offsetWidth,cx=ra.left+ra.width/2-zw/2,cy=ra.top+ra.height/2-20;
@@ -1671,7 +1672,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20q';
+const APP_VER='2026.11.20r';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
