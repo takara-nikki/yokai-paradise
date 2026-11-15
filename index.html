@@ -612,7 +612,8 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
 .jd-rpb svg{width:16px;height:16px;fill:none;stroke:#E8B04A;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .fxs{position:fixed;z-index:60;pointer-events:none;background-repeat:no-repeat;background-size:1200% 100%;animation:fxs 1.08s steps(12) forwards}
 .fxs.ink{background-image:url(img/fx_ink.webp);filter:drop-shadow(0 0 14px rgba(255,255,255,.55));animation-name:fxs,fxRise}
-.fxs.smoke{background-image:url(img/fx_smoke.webp)}
+.fxs.smoke{background-image:url(img/fx_smoke.webp);animation-name:fxs,fxFade}
+@keyframes fxFade{0%,60%{opacity:1}100%{opacity:.35}}
 @keyframes fxs{from{background-position-x:0}to{background-position-x:calc(100% * 12 / 11)}}
 @keyframes fxRise{from{transform:translateY(0) scale(.9)}to{transform:translateY(-18px) scale(1.05);opacity:.85}}
 </style>
@@ -1670,7 +1671,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20p';
+const APP_VER='2026.11.20q';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
