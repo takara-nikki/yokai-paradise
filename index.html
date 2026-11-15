@@ -1344,7 +1344,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
       else if(p.k===3){p.x+=Math.sin(p.t*.12+p.rot)*.9;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot+=p.vr*.5);cx.scale(1,.55+.45*Math.cos(p.t*.16+p.rot));const r=p.r;cx.beginPath();cx.moveTo(0,r);cx.bezierCurveTo(r*1.05,r*.45,r*.95,-r*.75,r*.28,-r);cx.lineTo(0,-r*.62);cx.lineTo(-r*.28,-r);cx.bezierCurveTo(-r*.95,-r*.75,-r*1.05,r*.45,0,r);cx.fill();cx.globalAlpha*=.5;cx.fillStyle='#fff';cx.beginPath();cx.ellipse(0,r*.35,r*.22,r*.4,0,0,6.3);cx.fill();cx.restore()}
       else{cx.beginPath();cx.arc(p.x,p.y,p.r*(1.6-a),0,6.3);cx.fill()}}
     cx.globalAlpha=1;raf=parts.length?requestAnimationFrame(loop):0}
-  function burst(x,y,o={}){if(reduce)return;ensure();const n=o.n||22,cols=o.cols||['#1E1A17','#D4A54A','#E06A55','#F4EFE3','#D4A54A'];
+  function burst(x,y,o={}){if(reduce)return;ensure();/* 沒指定樣式的慶祝噴發一律是櫻花瓣 */if(o.kind==null&&!o.cols)o=Object.assign({},o,{kind:3,g:.07,life:72,size:Math.max(6,o.size||0),speed:(o.speed||5)*.7,up:o.up??2});const n=o.n||22,cols=o.cols||['#F7C6D0','#F29FB2','#FBE3E8','#E8839B','#FFD9E0'];
     for(let i=0;i<n;i++){const a=o.dir!=null?o.dir+(Math.random()-.5)*(o.spread||1.2):Math.random()*6.283,sp=(o.speed||5)*(.35+Math.random());
       parts.push({x:x+(Math.random()-.5)*(o.w||0),y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(o.up||1.5),g:o.g??.2,r:(o.size||4)*(.5+Math.random()),c:cols[i%cols.length],k:o.kind??(Math.random()<.55?0:1),rot:Math.random()*6,vr:(Math.random()-.5)*.4,t:0,life:(o.life||40)*(.7+Math.random()*.6)})}
     if(!raf)raf=requestAnimationFrame(loop)}
@@ -1375,7 +1375,7 @@ const FX=(()=>{const reduce=matchMedia('(prefers-reduced-motion: reduce)').match
 function showResult(o){setTimeout(()=>o.win===false?SFX.lose():SFX.win(),250);document.getElementById('r-big').textContent=o.big;document.getElementById('r-title').textContent=o.title;document.getElementById('r-sub').textContent=o.sub;
   document.getElementById('r-l1').textContent=o.l1;document.getElementById('r-v1').textContent=o.v1;document.getElementById('r-l2').textContent=o.l2;document.getElementById('r-v2').textContent=o.v2;document.getElementById('r-v3').textContent=o.v3;
   document.getElementById('r-list').innerHTML=o.list||'';const ag=document.getElementById('r-again');ag.onclick=o.again;ag.textContent=o.againLabel||'もう一回（再來）';go('s-result');
-  if(!FX.reduce){const bg=document.getElementById('r-big');bg.animate([{transform:'scale(2.8) rotate(-16deg)',opacity:0},{transform:'scale(.92) rotate(-4deg)',opacity:1,offset:.6},{transform:'scale(1) rotate(-4deg)',opacity:1}],{duration:520,easing:'cubic-bezier(.2,.9,.3,1)',fill:'both'});setTimeout(()=>{SFX.seal();FX.buzz(30);FX.at(bg,{n:26,cols:['#E06A55','#C8402F','#F4EFE3','#D4A54A'],speed:5})},320);
+  if(!FX.reduce){const bg=document.getElementById('r-big');bg.animate([{transform:'scale(2.8) rotate(-16deg)',opacity:0},{transform:'scale(.92) rotate(-4deg)',opacity:1,offset:.6},{transform:'scale(1) rotate(-4deg)',opacity:1}],{duration:520,easing:'cubic-bezier(.2,.9,.3,1)',fill:'both'});setTimeout(()=>{SFX.seal();FX.buzz(30);FX.at(bg,{n:26,speed:5})},320);
     document.querySelectorAll('#s-result .pill').forEach((pl,i)=>pl.animate([{transform:'translateY(14px) scale(.8)',opacity:0},{transform:'translateY(0) scale(1)',opacity:1}],{duration:380,delay:520+i*160,easing:'cubic-bezier(.3,1.5,.5,1)',fill:'both'}));
     ['r-v1','r-v2','r-v3'].forEach((id,i)=>FX.roll(document.getElementById(id),typeof [o.v1,o.v2,o.v3][i]==='number'?[o.v1,o.v2,o.v3][i]:[o.v1,o.v2,o.v3][i],800,600+i*160));
     document.querySelectorAll('#r-list .gcard').forEach((c,i)=>c.animate([{transform:'translateX(-20px)',opacity:0},{transform:'none',opacity:1}],{duration:320,delay:1000+i*70,fill:'both'}))}}
@@ -1672,7 +1672,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.20r';
+const APP_VER='2026.11.20s';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
