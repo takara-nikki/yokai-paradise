@@ -167,6 +167,12 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .fx-stamp{position:fixed;left:50%;top:38%;z-index:61;pointer-events:none;font-family:"Yuji Syuku",serif;font-size:52px;line-height:1.1;color:#E06A55;border:4px double #E06A55;border-radius:12px;padding:6px 18px 2px;background:rgba(22,19,17,.6);text-shadow:0 2px 0 rgba(0,0,0,.45);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .fx-stamp.combo{color:#E7C47A;border:2px solid rgba(212,165,74,.8);outline:1px solid rgba(212,165,74,.35);outline-offset:3px;font-size:46px}
 .fx-stamp.big{font-size:68px}
+.stp{display:inline-block;vertical-align:middle;margin-left:9px;width:30px;height:30px;line-height:27px;text-align:center;font-style:normal;font-family:"Yuji Syuku",serif;font-weight:800;font-size:19px;color:#E5483A;border:2px solid #E5483A;border-radius:6px;background:rgba(229,72,58,.1);box-shadow:inset 0 0 0 1px rgba(229,72,58,.3),0 0 10px rgba(229,72,58,.35);transform:rotate(-8deg);text-shadow:none}
+.stp[hidden]{display:none}.stp.pop{animation:stpPop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes stpPop{0%{transform:rotate(-8deg) scale(3);opacity:0}60%{transform:rotate(-8deg) scale(.9);opacity:1}100%{transform:rotate(-8deg) scale(1)}}
+.stp.big{width:auto;height:auto;padding:4px 8px;line-height:1.1;font-size:22px;margin:0 10px 0 0;border-radius:8px;border-width:3px}
+.allclr{display:flex;align-items:center;margin:14px 0 12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(229,72,58,.5);background:linear-gradient(135deg,rgba(229,72,58,.16),rgba(212,165,74,.1))}
+.allclr[hidden]{display:none}.allclr span{font-weight:700;color:var(--ink);font-size:15px;line-height:1.35}.allclr small{display:block;font-weight:400;font-size:12px;color:var(--dim);margin-top:2px}
 .tgl{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 10px}
 .tgl .lb{background:none;border:0;padding:6px 2px;min-height:40px;font:inherit;font-size:15px;color:var(--dim);transition:color .25s}
 .tgl .lb.on{color:var(--ink);font-weight:700}
@@ -640,11 +646,12 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7"/></svg>今日復活 <b id="st-due">0</b></span>
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>最高連擊 <b id="st-combo">0</b></span>
   </div>
+  <div class="allclr" id="allclr" hidden><i class="stp big">合格</i><span>全部の関門を突破！<small>全部破關，N4 合格の道が開いた</small></span></div>
   <div class="tiles">
-    <button class="tile stage1" onclick="gIntro('startBattle')"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印</h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
-    <button class="tile stage2" onclick="gIntro('startLava')"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉</h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
-    <button class="tile stage3" onclick="{const t=document.getElementById('jd-lvtag');if(t)t.textContent=JD_LV[(META.jdLv||1)-1];go('s-koto')}"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">言</span><span class="no">第三關 · 口說</span><h2>言霊の間</h2><p>影子跟讀，<br>再接受閻魔大王的口語審判。</p></button>
-    <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術</h2><p>動詞分三類練變身，<br>相撲、變身都在這。</p></button>
+    <button class="tile stage1" onclick="gIntro('startBattle')"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印<i class="stp" data-k="seal" hidden></i></h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
+    <button class="tile stage2" onclick="gIntro('startLava')"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉<i class="stp" data-k="lava" hidden></i></h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
+    <button class="tile stage3" onclick="{const t=document.getElementById('jd-lvtag');if(t)t.textContent=JD_LV[(META.jdLv||1)-1];go('s-koto')}"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">言</span><span class="no">第三關 · 口說</span><h2>言霊の間<i class="stp" data-k="koto" hidden></i></h2><p>影子跟讀，<br>再接受閻魔大王的口語審判。</p></button>
+    <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術<i class="stp" data-k="extra" hidden></i></h2><p>動詞分三類練變身，<br>相撲、變身都在這。</p></button>
     <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
   </div>
   <p class="note">手寫判定：筆數要對、濁點要在右上角，字形要像。寫對會停一下再飛出去。</p>
@@ -1067,7 +1074,7 @@ function shJudge(){const w=SH.list[SH.i],acc=Math.min(1,SH.pu),fol=SH.follow.len
   else{SH.failed.push(w);if(!(META.shMiss||[]).includes(w.ex)){META.shMiss=[...(META.shMiss||[]),w.ex].slice(-60);save()}SH.streak=0;SH.hp--;fb.className='feedback no';fb.innerHTML=`影子被甩開了（${score} 點）${SH.heard?`<br><small>聽到：${SH.heard}</small>`:''}`;SFX.back();FX.flash();FX.shake(document.getElementById('s-shadow'),6,220);FX.buzz(70);yk.animate([{translate:'0 0'},{translate:'0 -40px',opacity:0}],{duration:600,fill:'forwards'});document.getElementById('sh-forest').animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'})}
   shHud();{/* 不論踩住或溜走都停住，讀完按繼續 */SH.wait=true;const g=document.getElementById('sh-go');g.disabled=false;g.textContent=SH.hp<=0?'看結果':'繼續';g.classList.add('cont')}}
 function shNext(){SH.i++;if(SH.i>=SH.list.length){shEnd();return}shShow()}
-function shEnd(){cancelAnimationFrame(SH.raf);META.shBest=Math.max(META.shBest||0,SH.maxStreak||0);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);
+function shEnd(){cancelAnimationFrame(SH.raf);META.shBest=Math.max(META.shBest||0,SH.maxStreak||0);const n=SH.list.length,win=SH.ok>=Math.ceil(n*.6);if(win){META.shWin=1;save()}
   showResult({win,big:'影',title:win?'影踏み成功':'影子都溜走了',sub:`${n} 句踩住 ${SH.ok} 句。`,l1:'踩住',v1:SH.ok,l2:'溜走',v2:n-SH.ok,v3:SH.maxStreak||0,
     list:SH.failed.map(w=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${w.ex}"><svg><use href="#i-snd"/></svg></button><span class="k sh-rk" style="font-size:17px">${exRb(w.ex)}</span><span class="m">${w.tr||''}</span></div>`).join(''),
     again:()=>startShadow(),againLabel:'下一組 5 句'})}
@@ -1107,7 +1114,14 @@ function paintMute(){document.querySelectorAll('#muteHome,[data-mute]').forEach(
 
 /* ===== 畫面 ===== */
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.body.dataset.scr=id;setTimeout(()=>coachFor(id),650);['s-home','s-box','s-set'].forEach((k,i)=>{const b=document.getElementById(['tabHome','tabBox','tabSet'][i]);if(b)b.classList.toggle('on',k===id)});window.scrollTo({top:0,behavior:'instant'});if(id==='s-home')refreshHome()}
-function refreshHome(){document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;document.getElementById('st-due').textContent=dueCount();document.getElementById('st-combo').textContent=META.best;
+/* 破關印章：封／鎮／通／勝，四枚集滿＝合格 */
+const CLR_KEYS=['seal','lava','koto','extra'],CLR_TXT={seal:'封',lava:'鎮',koto:'通',extra:'勝'};
+function clrSet(k){META.clr=META.clr||{};if(META.clr[k])return;META.clr[k]=1;META.clrNew=[...(META.clrNew||[]),k];save()}
+function clrCheck(){if(META.shWin&&META.jdLong)clrSet('koto');if(META.kappaWin&&[1,2,3].every(g=>(META.vbDone||{})[g]))clrSet('extra')}
+function clrPaint(){const nw=META.clrNew||[];document.querySelectorAll('.stp[data-k]').forEach(e=>{const k=e.dataset.k,on=!!(META.clr||{})[k];e.hidden=!on;e.textContent=CLR_TXT[k];e.classList.toggle('pop',on&&nw.includes(k))});document.getElementById('allclr').hidden=!CLR_KEYS.every(k=>(META.clr||{})[k])}
+function clrCelebrate(){const n=META.clrNew||[];if(!n.length)return;META.clrNew=[];const all=CLR_KEYS.every(k=>(META.clr||{})[k])&&!META.clrAll;if(all)META.clrAll=1;save();
+  try{FX.stamp(CLR_TXT[n[0]],{cls:'big'})}catch(e){}if(all)setTimeout(()=>{try{FX.stamp('合格',{cls:'big',top:'48%'});FX.confettiPetals&&0}catch(e){}},1800)}
+function refreshHome(){clrCheck();clrPaint();setTimeout(clrCelebrate,600);document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;document.getElementById('st-due').textContent=dueCount();document.getElementById('st-combo').textContent=META.best;
   const g=Object.values(SRS).filter(r=>r.wrong>0).length;document.getElementById('grave-sub').textContent=g?`帳上記著 ${g} 隻，${dueCount()} 隻今天復活。`:'封印失敗的妖怪會記在這裡。'}
 let toastT;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1600)}
 const HEART=on=>`<svg viewBox="0 0 24 24" class="${on?'':'off'}" stroke-width="2"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>`;
@@ -1382,7 +1396,7 @@ function showResult(o){setTimeout(()=>o.win===false?SFX.lose():SFX.win(),250);do
     document.querySelectorAll('#s-result .pill').forEach((pl,i)=>pl.animate([{transform:'translateY(14px) scale(.8)',opacity:0},{transform:'translateY(0) scale(1)',opacity:1}],{duration:380,delay:520+i*160,easing:'cubic-bezier(.3,1.5,.5,1)',fill:'both'}));
     ['r-v1','r-v2','r-v3'].forEach((id,i)=>FX.roll(document.getElementById(id),typeof [o.v1,o.v2,o.v3][i]==='number'?[o.v1,o.v2,o.v3][i]:[o.v1,o.v2,o.v3][i],800,600+i*160));
     document.querySelectorAll('#r-list .gcard').forEach((c,i)=>c.animate([{transform:'translateX(-20px)',opacity:0},{transform:'none',opacity:1}],{duration:320,delay:1000+i*70,fill:'both'}))}}
-function endBattle(){cancelAnimationFrame(battle.raf);if(!battle.trace)pendClear('w');save();const dead=battle.hp<=0;
+function endBattle(){cancelAnimationFrame(battle.raf);if(!battle.trace)pendClear('w');save();const dead=battle.hp<=0;if(!dead&&!battle.fled.length)clrSet('seal');
   showResult({win:!dead,big:dead?'敗':'封',title:dead?'鳥居被攻破了':'お疲れさま（辛苦了）',sub:dead?'妖怪太多，去妖怪帳複習一下再來。':battle.fled.length?'逃走的妖怪明天會復活。':'全部封印，一隻都沒跑掉。',
     l1:'封印',v1:battle.sealed,l2:'逃走',v2:battle.fled.length,v3:battle.best,
     ...(()=>{const left=[...new Set(battle.list)].filter(w=>!battle.okSet.has(w)||battle.failed.has(w));return {again:()=>{pendClear('w');startBattle(left)},againLabel:left.length?`もう一回（錯的 ${left.length} 題）`:'新的 5 個字'}})(),
@@ -1508,7 +1522,7 @@ function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=docume
 function pauseLava(){if(lv.over)return;lv.paused=!lv.paused;document.getElementById('l-pause').textContent=lv.paused?'再開（繼續）':'待って（暫停）';document.getElementById('arena').style.filter=lv.paused?'blur(6px)':'';lavaVol(lv.paused?.05:(vc.on?.1:.22));if(lv.paused){try{vc.rec&&vc.rec.abort()}catch(e){}}else{lv.last=performance.now();if(vc.on)listen()}}
 function leaveLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();document.getElementById('arena').style.filter='';go('s-home')}
 function lavaRoundDone(){if(lv.practice){lv.over=true;cancelAnimationFrame(lv.raf);voiceStop();toast('練習完成，正式開始！');setTimeout(()=>{if(document.getElementById('s-lava').classList.contains('on'))beginLava(shuffle(lv.list),false)},1300);return}endLava()}
-function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');const dead=lv.hp<=0;{const burn=lv.missed.length,acc=lv.total?1-burn/lv.total:1;let k=META.lavaSkill||1;k+=acc>=.95?.08:acc>=.85?.04:acc<.6?-.1:acc<.75?-.05:0;META.lavaSkill=Math.round(Math.max(.75,Math.min(1.8,k))*100)/100}if(!dead)META.lavaWin=(META.lavaWin||0)+1;save();
+function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceStop();pendClear('p');const dead=lv.hp<=0;if(!dead)clrSet('lava');{const burn=lv.missed.length,acc=lv.total?1-burn/lv.total:1;let k=META.lavaSkill||1;k+=acc>=.95?.08:acc>=.85?.04:acc<.6?-.1:acc<.75?-.05:0;META.lavaSkill=Math.round(Math.max(.75,Math.min(1.8,k))*100)/100}if(!dead)META.lavaWin=(META.lavaWin||0)+1;save();
   showResult({win:!dead,big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
@@ -1671,11 +1685,11 @@ function verbPick(btn,ans){if(vb.done)return;vb.done=true;clearInterval(vb.spin)
   else{vb.combo=0;SFX.wrong();FX.flash();if(btn)FX.shake(btn,6);FX.buzz(60);exp.innerHTML=(ans===null?'時間到！':boo)+' '+detail}
   say(M.id==='yuki'?v.d:M.id==='fake'?conj(v.d,v.g,cur.badForm):conj(v.d,v.g,f));
   document.getElementById('v-combo').textContent=`連擊 ${vb.combo}`;document.getElementById('v-score').textContent=`${vb.score} 分`;document.getElementById('v-next').disabled=false}
-function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
+function verbNext(){vb.i++;if(vb.i>=vb.q.length){META.vbDone=META.vbDone||{};META.vbDone[vb.g]=1;save();showResult({big:'化',title:'化け術おしまい',sub:`${vb.score} 分。`,l1:'得分',v1:vb.score,l2:'題數',v2:10,v3:vb.best,again:()=>startVerb(vb.g),againLabel:'再來一輪（同一類）'});return}verbShow()}
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.25v';
+const APP_VER='2026.11.26v';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1984,7 +1998,7 @@ function jdEnd(){ac();const dur=Math.max(1,(performance.now()-jd.t0)/1000);jdSto
   // 標紅沒唸到的字
   let k=0;const miss=[],all=[];const T=document.getElementById('jd-txt');T.innerHTML=jd.p.r.map((x,i)=>{const xs=[...jd.p.s[i]];let ci=-1;const h=jdRuby(x,c=>{ci++;const n=normJa(c);if(!n)return c;const ok=hit[k],o={c,prev:xs[ci-1]||'',si:i,end:ci>=xs.length-4,ok};all.push(o);if(!ok)miss.push(o);k+=n.length;return ok?c:`<em>${c}</em>`});return `<span class="jd-s done" data-i="${i}">${h}</span><span class="jd-tr">${jd.p.tr[i]||''}</span>`}).join('');
   T.querySelectorAll('.jd-s').forEach(e=>e.onclick=()=>say(jd.p.s[+e.dataset.i],.9));
-  const ax=jdAxes(all,{acc,comp,flu,pz});const score=Math.round(100*(ax[0].v*.3+ax[1].v*.1+ax[2].v*.15+ax[3].v*.1+ax[4].v*.1+ax[5].v*.1+ax[6].v*.1+ax[7].v*.05)),ok=score>=70,big=score>=90;
+  const ax=jdAxes(all,{acc,comp,flu,pz});const score=Math.round(100*(ax[0].v*.3+ax[1].v*.1+ax[2].v*.15+ax[3].v*.1+ax[4].v*.1+ax[5].v*.1+ax[6].v*.1+ax[7].v*.05)),ok=score>=70,big=score>=90;if(ok&&jd.p.lv===2){META.jdLong=1;save()}
   META.jdRec=META.jdRec||{};const prev=META.jdRec[jd.p.t],nr=ok&&(!prev||dur<prev.t);if(nr)META.jdRec[jd.p.t]={t:Math.round(dur*10)/10,s:score};
   const R=document.getElementById('jd-res');R.hidden=false;R.innerHTML=`<div class="jd-time"><span>用時 <b>${jdFmt(dur)}</b></span><span>${nr?'<i class="jd-nr">新紀錄</i>':prev?'最佳 '+jdFmt(prev.t):'合格才會留紀錄'}</span></div><div class="jd-score"><b>${score}</b><span>分</span><small class="jd-nat">母語者度</small><div class="jd-stamp ${big?'big':ok?'ok':'ng'}">${big?'大合格':ok?'合格':'再審'}</div></div>`+jdRadar(ax)+
     `<div class="jd-facts">唸對 ${got} / ${N} 字・完整 ${per.filter(([g,t])=>g/t>=.5).length} / ${per.length} 句・每分鐘 ${Math.round(rate)} 字・卡住 ${jd.pause} 次</div>`+jdReplay(per)+jdDiag({miss,per,acc,rate,flu,score,big})+`<p class="jd-tip">紅字是沒聽到的部分，點句子可以聽示範。</p>`;
