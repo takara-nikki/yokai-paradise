@@ -1675,7 +1675,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){showResult({big:'化',title:'�
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.23v';
+const APP_VER='2026.11.24v';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
@@ -1733,21 +1733,22 @@ function smBossIntro(y){SM.lock=true;const ring=document.getElementById('ring'),
   setTimeout(smNext,3000)}
 function smNext(){if(!SM.q.length)SM.q=shuffle(SM.deck.slice());let v=SM.q.shift();if(SM.verb&&v===SM.verb&&SM.q.length){SM.q.push(v);v=SM.q.shift()}
   const f=2;SM.verb=v;SM.f=f;SM.ans=smEnding(v,f);SM.lock=false;
-  document.getElementById('sm-verb').textContent=v.d;document.getElementById('sm-kanji').textContent=`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
+  const lvl=SM.bout,kj=lvl>=1&&v.k!==v.d;SM.kj=kj;/* 越後面越難：第2場題目變漢字，大關連選項也是漢字 */
+  document.getElementById('sm-verb').innerHTML=kj?rb(v.k,v.d):v.d;document.getElementById('sm-kanji').textContent=kj?`（${v.m}）`:`${v.k}（${v.m}）`;document.getElementById('sm-form').textContent=FORMS[f];
   const opts=shuffle([SM.ans,...shuffle(TE_SET[f].filter(x=>x!==SM.ans)).slice(0,2)]);
-  const stem=v.d.slice(0,-1);document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${stem}${o}</button>`).join('');
+  const stem=lvl>=2&&kj?v.k.slice(0,-1):v.d.slice(0,-1);document.getElementById('sm-moves').innerHTML=opts.map(o=>`<button class="move" data-o="${o}">${stem}${o}</button>`).join('');
   document.querySelectorAll('#sm-moves .move').forEach(b=>b.onclick=()=>smPick(b.dataset.o));
   /* 字太長就整排一起縮小，三顆字級一致 */
   {const bs=[...document.querySelectorAll('#sm-moves .move')];bs.forEach(b=>b.style.fontSize='');const need=Math.max(...bs.map(b=>b.scrollWidth/b.clientWidth));if(need>1){const fs=Math.max(13,Math.floor(22/need*0.96));bs.forEach(b=>b.style.fontSize=fs+'px')}}
-  const m=document.getElementById('sm-msg');m.className='sm-msg';m.innerHTML=`${v.d.slice(0,-1)}＿ 要接哪一招？`;
+  const m=document.getElementById('sm-msg');m.className='sm-msg';m.innerHTML=`${kj?v.k.slice(0,-1):v.d.slice(0,-1)}＿ 要接哪一招？`;
   say(v.d);SM.t0=performance.now();cancelAnimationFrame(SM.raf);smTick()}
 function smTick(){const el=(performance.now()-SM.t0)/SM.dur;document.getElementById('smbar').style.transform=`scaleX(${Math.max(0,1-el)})`;if(el>=1){smPick(null);return}SM.raf=requestAnimationFrame(smTick)}
 function smPick(o){if(SM.lock)return;SM.lock=true;cancelAnimationFrame(SM.raf);document.querySelectorAll('#sm-moves .move').forEach(b=>b.disabled=true);
   const v=SM.verb,full=conj(v.d,v.g,SM.f),e=v.d.slice(-1),m=document.getElementById('sm-msg'),ok=o===SM.ans;
   const rule=v.d==="いく"?'行く是例外，要用って':`${e} 結尾 → ${SM.ans}`;
-  if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.splat(document.getElementById('sm-foe-img'),{scale:SM.foe.boss?.6:.75});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
-  else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('s-sumo'),7,220);FX.buzz(80);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
-  {const stem=v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
+  if(ok){SM.pos++;SFX.hit();smCall('のこった！');FX.splat(document.getElementById('sm-foe-img'),{scale:SM.foe.boss?.6:.75});FX.shake(document.getElementById('ring'),4);FX.buzz(18);m.className='sm-msg ok';m.innerHTML=`<b>${SM.kj?v.k.slice(0,-1)+SM.ans:full}</b>　${rule}`;document.getElementById('sm-foe').classList.add('shake')}
+  else{SM.pos--;SM.missNext.push(v.d);SFX.back();FX.flash();FX.shake(document.getElementById('s-sumo'),7,220);FX.buzz(80);smCall(o?'押された！':'遅い！');m.className='sm-msg no';m.innerHTML=`${o?`「${o}」不對，`:''}正確是 <b>${SM.kj?v.k.slice(0,-1)+SM.ans:full}</b>　${rule}`;document.getElementById('sm-me').classList.add('shake')}
+  {const stem=SM.kj?rb(v.k.slice(0,-1),v.d.slice(0,-1)):v.d.slice(0,-1);document.getElementById('sm-verb').innerHTML=`${stem}<span class="sm-x">${e}</span><span class="sm-fix ${ok?'ok':'no'}">${SM.ans}</span>`}
   say(full);smPush(ok);setTimeout(()=>{document.getElementById('sm-foe').classList.remove('shake');document.getElementById('sm-me').classList.remove('shake');
     if(SM.foe.boss&&!SM.rallied&&SM.pos===SM.need-1){smRally();return}
     if(SM.pos>=SM.need){const ring=document.getElementById('ring');if(!FX.reduce)ring.animate([{scale:'1'},{scale:'1.14',offset:.25},{scale:'1.14',offset:.75},{scale:'1'}],{duration:1500,easing:'ease-in-out'});setTimeout(()=>{SFX.boutWin();document.getElementById('sm-foe').classList.add('out');FX.at(document.getElementById('sm-foe'),{n:36,speed:7});FX.shake(ring,9);FX.stamp('押し出し',{cls:'big',top:'32%'})},FX.reduce?0:380);SM.wins++;if(SM.foe&&SM.foe.boss){META.kappaWin=1;save()}setTimeout(smBoutEnd,1900)}
