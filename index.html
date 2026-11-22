@@ -1013,7 +1013,7 @@ function shIntroGo(ask){const close=()=>{document.getElementById('sh-intro').hid
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){done(!!SR);return}
   navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{st.getTracks().forEach(t=>t.stop());vc.denied=false;done(!!SR)}).catch(()=>done(false))}
 function shShow(){const w=SH.list[SH.i];SH.run=false;SH.wait=false;{const g=document.getElementById('sh-go');g.textContent='影踏み';g.classList.remove('cont')}SH.win=false;SH.py=0;SH.pu=0;SH.heard='';SH.follow=[];SH.started=false;cancelAnimationFrame(SH.raf);
-  const y=YOKAI[SH.i%4];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());{const sv=document.getElementById('sh-forest');sv.getAnimations().forEach(a=>a.cancel());sv.style.transition='';sv.style.opacity=1}yk.style.transition='';yk.src=y.img;yk.style.opacity=1;yk.style.scale=y===YOKAI[1]?'-1 1':'';
+  const y=MOBS[SH.i%MOBS.length];const yk=document.getElementById('sh-yk');yk.getAnimations().forEach(a=>a.cancel());{const sv=document.getElementById('sh-forest');sv.getAnimations().forEach(a=>a.cancel());sv.style.transition='';sv.style.opacity=1}yk.style.transition='';yk.src=y.img;yk.style.opacity=1;yk.style.scale=y.flip?'-1 1':'';
   document.getElementById('sh-count').textContent=`${SH.i+1} / ${SH.list.length}`;
   const t=w.ex;const tx=document.getElementById('sh-text');tx.classList.remove('rb');tx.innerHTML=(META.shRuby?exRb(t):t).match(/<ruby>.*?<\/ruby>|./g).map(u=>{const n=u.startsWith('<ruby>')?u.replace(/<rt>.*?<\/rt>/g,'').replace(/<[^>]+>/g,'').length:1;return `<i data-n="${n}">${u}</i>`}).join('');tx.classList.toggle('rbon',!!META.shRuby);shFit(tx);document.getElementById('sh-tr').textContent=w.tr||'';
   document.getElementById('sh-stage').classList.remove('caught');document.getElementById('sh-self').hidden=true;document.getElementById('sh-pct').textContent='';
@@ -1130,11 +1130,19 @@ const hearts=(n,max=5)=>Array.from({length:max},(_,i)=>HEART(i<n)).join('');
 /* ===== 日本妖怪（線條） ===== */
 const YOKAI=[
  {n:'灯籠鬼火',img:'img/mon_vocab.webp',wave:'sawtooth',f:[220,180,260],vib:9,cut:1100,len:.7,taunt:'石燈籠的火都笑到快熄了'},
- {n:'からかさ小僧',img:'img/mon_grammar.webp',wave:'triangle',f:[420,640,380],vib:12,cut:2200,len:.6,taunt:'傘妖笑到傘骨都歪了'},
+ {n:'からかさ小僧',img:'img/mon_grammar.webp',flip:true,wave:'triangle',f:[420,640,380],vib:12,cut:2200,len:.6,taunt:'傘妖笑到傘骨都歪了'},
  {n:'提灯お化け',img:'img/mon_listen.webp',wave:'sine',f:[300,520,240],vib:5,cut:1600,len:.9,taunt:'提燈看了直接熄火'},
  {n:'本の付喪神',img:'img/mon_reading.webp',wave:'square',f:[520,700,600],vib:14,cut:1800,len:.5,taunt:'書妖翻白眼，書頁都捲起來了'},
+ {n:'天狗',img:'img/mon_tengu.webp',wave:'sawtooth',f:[340,260,420],vib:10,cut:1500,len:.6,taunt:'天狗笑到鼻子又長了一截'},
+ {n:'雪女',img:'img/mon_yuki.webp',wave:'sine',f:[660,520,780],vib:7,cut:2600,len:.9,taunt:'雪女冷笑，連空氣都結冰了'},
+ {n:'ろくろ首',img:'img/mon_rokuro.webp',wave:'triangle',f:[480,360,600],vib:11,cut:2000,len:.8,taunt:'ろくろ首笑到脖子打結了'},
+ {n:'一反木綿',img:'img/mon_momen.webp',wave:'sine',f:[400,560,320],vib:8,cut:1800,len:.7,taunt:'一反木綿笑到在空中翻了三圈'},
+ {n:'猫又',img:'img/mon_neko.webp',wave:'square',f:[700,880,640],vib:13,cut:2400,len:.5,taunt:'猫又兩條尾巴都笑到捲起來'},
+ {n:'ぬりかべ',img:'img/mon_nurikabe.webp',wave:'square',f:[150,120,170],vib:5,cut:900,len:1,taunt:'ぬりかべ笑到牆壁都裂開了'},
  {n:'鬼',img:'img/oni.webp',wave:'sawtooth',f:[110,80,95],vib:6,cut:700,len:1.1,boss:true,taunt:'鬼都笑了，你寫的比牠的角還歪'}
 ];
+const MOBS=YOKAI.filter(y=>!y.boss),BOSS=YOKAI.find(y=>y.boss);
+function nextMob(prev){const c=MOBS.filter(y=>y!==prev);return c[Math.floor(Math.random()*c.length)]}
 
 /* ===== 手寫框 ===== */
 const DPR=Math.min(window.devicePixelRatio||1,3);
@@ -1289,7 +1297,7 @@ function newBox(ch){const holder=document.getElementById('boxes');const size=bat
   holder.innerHTML='';const b=makeBox(size,ch,autoCheck,h);holder.appendChild(b);battle.boxSize=size;battle.boxH=h;requestAnimationFrame(()=>requestAnimationFrame(fitBox));b._onStart=()=>clearTimeout(battle.autoT);battle.box=b;return b}
 function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
-  const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?YOKAI[4]:YOKAI[Math.floor(Math.random()*4)];
+  const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?BOSS:nextMob(battle.y);
   const el=document.getElementById('yokai');el.className='yokai hop'+(y.boss?' boss':'');el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
   document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.trace?1:battle.i+1} / ${battle.trace?1:battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
   document.getElementById('p-mean').textContent=w.m;document.getElementById('p-hint').innerHTML='';
@@ -1724,7 +1732,7 @@ function smDust(el,dir,n){const ring=document.getElementById('ring'),r=ring.getB
   d.animate([{transform:'translate(0,0) scale(.6)',opacity:.85},{transform:`translate(${(-dir)*(20+Math.random()*50)}px,${-8-Math.random()*26}px) scale(1.6)`,opacity:0}],{duration:520+Math.random()*300,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>d.remove()}}
 function smCall(t,ms){const el=document.getElementById('sm-call');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms||700)}
 function smBout(){const y=SUMO_FOES[SM.bout];SM.pos=0;SM.foe=y;SM.rallied=false;SM.need=y.boss?6:4;SM.lose=y.boss?-3:-4;SM.dur=y.boss?8000:10000;const foe=document.getElementById('sm-foe');foe.className='fighter foe'+(y.boss?' boss':'');document.getElementById('sm-me').className='fighter me';
-  document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-foe-img').style.scale=y===YOKAI[1]?'-1 1':'';document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
+  document.getElementById('sm-foe-img').src=y.img;document.getElementById('sm-foe-img').style.scale=y.flip?'-1 1':'';document.getElementById('sm-bout').textContent=`第 ${SM.bout+1} 場・${y.n}${y.boss?'（ボス）':''}`;document.getElementById('sm-win').textContent=`勝 ${SM.wins}`;
   requestAnimationFrame(smPlace);if(y.boss&&!FX.reduce){smBossIntro(y);return}cry(y);smCall('はっけよい！',900);setTimeout(smNext,900)}
 /* 河童生命力強：快被推出去時突然反撲兩步（每場一次） */
 function smRally(){SM.rallied=true;const ring=document.getElementById('ring'),foe=document.getElementById('sm-foe');smCall('河童の底力！',1300);
