@@ -1407,7 +1407,7 @@ const lv={queue:[],total:15,blocks:[],hp:3,gems:0,done:0,missed:[],sel:null,raf:
 const GEM_SVG=`<svg viewBox="0 0 24 24"><path d="M6 4h12l4 6-10 11L2 10z" fill="#E8CD76" stroke="#B8862A" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 10h20M9 4l3 6 3-6M12 10v11" stroke="#B8862A" stroke-width="1.2" fill="none"/></svg>`;
 const REPEAT=3;
 function buildQueue(list){let q=[],uid=0;for(let r=0;r<REPEAT;r++){let part=shuffle(list);if(q.length&&part[0]===q[q.length-1].p&&part.length>1)part.push(part.shift());part.forEach(p=>q.push({p,uid:uid++}))}return q}
-function beginLava(list,practice){ac();Object.assign(lv,{list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,ease:1,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
+function beginLava(list,practice){ac();Object.assign(lv,{heardLog:[],list,practice:!!practice,hit:new Map(),queue:buildQueue(list),bag:[],blocks:[],hp:5,gems:0,done:0,missed:[],sel:null,spawnAcc:99,speed:20,ease:1,combo:0,best:0,paused:false,over:false});lv.total=lv.queue.length;
   go('s-lava');const ar=document.getElementById('arena');ar.querySelectorAll('.blk').forEach(b=>b.remove());
   lavaStart();ar.style.flex='';ar.style.height='';requestAnimationFrame(()=>{lv.H=ar.clientHeight;ar.style.flex='0 0 auto';ar.style.height=lv.H+'px';lv.lavaY=lv.H-document.getElementById('lavaEl').offsetHeight+6;lv.base=Math.max(14,lv.lavaY/30)*(META.lavaSkill||1);lv.speed=lv.base*(lv.practice?.85:1);lvHud();lv.last=performance.now();cancelAnimationFrame(lv.raf);lv.raf=requestAnimationFrame(lvLoop)});
   document.getElementById('l-pause').textContent='待って（暫停）';const fb=document.getElementById('l-fb');fb.className='feedback';
@@ -1481,7 +1481,7 @@ function voiceStart(){if(!SR||vc.denied)return false;vc.on=true;vc.want='ja';vc.
 function voiceStop(){vc.on=false;try{vc.rec&&vc.rec.abort()}catch(e){}vc.rec=null;voiceUi()}
 function listen(){if(!vc.on||lv.over||lv.paused||vc.rec)return;let r;try{r=new SR()}catch(e){vc.on=false;voiceUi();return}vc.rec=r;
   vc.cuts={};r.lang='ja-JP';r.interimResults=true;r.continuous=true;r.maxAlternatives=6;
-  r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i],full=res[0].transcript,cut=vc.cuts[i]||0,t=full.slice(cut);if(!t.trim())continue;showHeard(t,res.isFinal);if(tryVoice([t],res.isFinal))vc.cuts[i]=full.length}};
+  r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i],full=res[0].transcript,cut=vc.cuts[i]||0,t=full.slice(cut);if(!t.trim())continue;showHeard(t,res.isFinal);const alts=[t];for(let j=1;j<res.length;j++){const a=(res[j].transcript||'').slice(cut);if(a.trim()&&!alts.includes(a))alts.push(a)}if(tryVoice(alts,res.isFinal))vc.cuts[i]=full.length}};
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){vc.denied=true;vc.on=false;voiceUi();const fb=document.getElementById('l-fb');fb.className='feedback';fb.textContent='麥克風沒開，這次改用點的：先點一塊，再點它的另一半'}};
   r.onend=()=>{if(vc.rec===r)vc.rec=null;if(vc.on&&!lv.over&&!lv.paused)listen()};
   try{r.start()}catch(e){vc.rec=null;setTimeout(listen,400)}voiceUi()}
@@ -1502,7 +1502,7 @@ function variantsOf(p){if(varCache.has(p))return varCache.get(p);const j=normJa(
   for(const v of [...out])if(v.length>=4&&/[をがに]/.test(v.slice(1,-1)))out.push(v.replace(/(.)[をがに](?=.)/,'$1'));
   out=[...new Set(out)];varCache.set(p,out);return out}
 /* 在聽到的文字裡找最像的一段（長度要至少跟整句一樣，唸一半不算） */
-function voiceScore(x,p){let best=0;for(const v of variantsOf(p)){const L=v.length;if(x.length<L)continue;if(x.includes(v))return 1;
+function voiceScore(x,p){let best=0;for(const v of variantsOf(p)){const L=v.length;if(L>=5&&/[るうくぐすつぬぶむ]$/.test(v)&&x.includes(v.slice(0,-1))){best=Math.max(best,.9)}if(x.length<L)continue;if(x.includes(v))return 1;
   if(L<=3)continue;for(let i=0;i+L<=x.length;i++)for(const w of [L,L+1]){if(i+w>x.length)continue;const seg=x.substr(i,w);best=Math.max(best,1-lev(seg,v)/Math.max(w,L))}}return best}
 function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=document.getElementById('l-fb');
   if(vc.want==='ja'){
@@ -1514,7 +1514,7 @@ function tryVoice(alts,final){if(lv.paused||lv.over)return false;const fb=docume
       if(vc.lastP===best.p&&now-vc.lastT<1500)return true;   /* 同一句 1.5 秒內不重複算 */
       vc.lastP=best.p;vc.lastT=now;
       const partner=lv.blocks.find(x=>x.alive&&x.type==='zh'&&x.uid===best.uid);if(!partner)lv.bag=lv.bag.filter(h=>h.uid!==best.uid);vc.pick=null;match(best,partner||null);sayZh(best.p.m);return true}
-    if(final){fb.className='feedback no';fb.textContent=`「${alts[0]}」不在畫面上，再看一次方塊`}return false}
+    if(final){fb.className='feedback no';fb.textContent=`「${alts[0]}」不在畫面上，再看一次方塊`;(lv.heardLog=lv.heardLog||[]).push(alts.slice(0,3).join(' ／ '));if(lv.heardLog.length>12)lv.heardLog.shift()}return false}
   const b=vc.pick;if(!b||!b.alive){setWant('ja');return true}
   let bs=0;for(const a of alts)bs=Math.max(bs,sim(normZh(a),normZh(b.p.m)));
   if(bs>=(final?.5:.66)){const partner=lv.blocks.find(x=>x.alive&&x.type==='zh'&&x.uid===b.uid);if(!partner)lv.bag=lv.bag.filter(h=>h.uid!==b.uid);vc.pick=null;match(b,partner||null);setWant('ja');return true}
@@ -1526,7 +1526,7 @@ function endLava(){lv.over=true;cancelAnimationFrame(lv.raf);lavaStop();voiceSto
   showResult({win:!dead,big:dead?'溶':'宝',title:dead?'全部溶進岩漿了':'お疲れさま（辛苦了）',sub:dead?'溶掉的片語都記進妖怪帳了。':lv.missed.length?'溶掉的片語明天會再掉下來。':'一塊都沒溶，岩漿很失望。',
     l1:'宝物',v1:lv.gems,l2:'溶けた',v2:lv.missed.length,v3:lv.best,
     ...(()=>{const left=lv.list.filter(p=>(lv.hit.get(p)||0)<REPEAT);return {again:()=>{pendClear('p');startLava(left)},againLabel:left.length?`下一組 10 題（含錯的 ${Math.min(left.length,10)} 題）`:'下一組 10 題'}})(),
-    list:lv.missed.map(p=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${p.r}"><svg><use href="#i-snd"/></svg></button><span class="k">${p.j}</span><span class="due now">明天再掉</span><span class="m">${p.r}　${p.m}</span></div>`).join(''),})}
+    list:(lv.heardLog&&lv.heardLog.length?`<div class="gcard rv"><span class="k">系統聽到但對不上</span><span class="m">${lv.heardLog.join('<br>')}</span></div>`:'')+lv.missed.map(p=>`<div class="gcard rv"><button class="say" aria-label="唸出來" data-say="${p.r}"><svg><use href="#i-snd"/></svg></button><span class="k">${p.j}</span><span class="due now">明天再掉</span><span class="m">${p.r}　${p.m}</span></div>`).join(''),})}
 
 /* ===== 妖怪帳 ===== */
 function showGrave(){const T=today();const rows=[...VOCAB.map(w=>({key:wKey(w),k:w.k,m:`${w.j}　${w.m}`})),...PHRASES.map(p=>({key:pKey(p),k:p.j,say:p.r,m:`${p.r}　${p.m}`}))].filter(x=>SRS[x.key]&&SRS[x.key].wrong>0).sort((a,b)=>SRS[a.key].due<SRS[b.key].due?-1:1);
@@ -1689,7 +1689,7 @@ function verbNext(){vb.i++;if(vb.i>=vb.q.length){META.vbDone=META.vbDone||{};MET
 function leaveVerb(){cancelAnimationFrame(vb.raf);clearInterval(vb.spin);cancelAnimationFrame(vb.wraf);go('s-home')}
 
 /* ===== 版本與重新整理（只在自架網站顯示） ===== */
-const APP_VER='2026.11.26v';
+const APP_VER='2026.11.27v';
 function hardReload(){toast('抓最新版中…');setTimeout(()=>{try{location.replace(location.pathname+'?v='+Date.now())}catch(e){location.reload()}},250)}
 if(/github\.io$/.test(location.hostname)){document.getElementById('reloadBtn').hidden=false;document.getElementById('verTag').textContent='　v'+APP_VER}
 /* ===== 河童相撲（て形／た形特訓） ===== */
