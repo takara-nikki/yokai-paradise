@@ -65,6 +65,21 @@ h1 .en i{font-style:normal;font-size:.55em;margin:0 .7em;vertical-align:.25em;co
 .tile.stage2{background:linear-gradient(180deg,#1f1512 40%,#3a1609);border-color:#5a2a14}
 .tile.stage2 .wm{color:var(--lava);opacity:.3}
 .note{color:var(--dim);font-size:14px;margin:18px 4px 0}
+body[data-scr="s-home"] #s-home,body[data-scr="s-box"] #s-box,body[data-scr="s-set"] #s-set{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+.daily{display:block;width:100%;text-align:left;margin:0 0 14px;padding:14px 16px;border-radius:20px;background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line)}
+.daily.done{border-color:color-mix(in srgb,var(--gold) 60%,transparent)}
+.daily .dh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.daily .dh b{font-family:var(--fb);font-size:19px}
+.daily .dh span{font-family:var(--fm);font-size:13px;color:var(--gold)}
+.daily .dr{display:grid;grid-template-columns:5.6em 1fr 3.4em;align-items:center;gap:10px;font-size:14px;color:var(--dim);margin:5px 0}
+.daily .dr em{font-style:normal;font-family:var(--fm);text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.daily .bar{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.daily .bar u{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);transition:width .5s var(--ease)}
+.daily .dr.ok .bar u{background:var(--ok)}
+.daily p{margin:8px 0 0;font-size:14px;color:var(--accent);font-weight:700}
+.daily.done p{color:var(--gold)}
+.tile.hot{order:-1;grid-column:span 2;aspect-ratio:auto;min-height:110px;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.tile.hot .no::after{content:attr(data-n);margin-left:8px;padding:1px 8px;border-radius:99px;background:var(--accent);color:#fff;letter-spacing:0}
 /* HUD */
 .hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--fm);font-size:14px;color:var(--dim);flex:0 0 auto}
 .hp{display:flex;gap:4px}
@@ -643,16 +658,21 @@ body[data-scr="s-home"] .ytabs,body[data-scr="s-box"] .ytabs,body[data-scr="s-se
   <div class="pills">
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9l6-5 6 5v11"/></svg>封印 <b id="st-sealed">0</b></span>
     <span class="pill"><svg viewBox="0 0 24 24"><use href="#i-gem"/></svg>宝物 <b id="st-gems">0</b></span>
-    <span class="pill"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7"/></svg>今日復活 <b id="st-due">0</b></span>
     <span class="pill"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>最高連擊 <b id="st-combo">0</b></span>
   </div>
+  <button class="daily" id="daily" onclick="dailyGo()">
+    <div class="dh"><b>今日の修行</b><span id="dy-stk">連續 0 天</span></div>
+    <div class="dr" id="dy-r1"><span>複習妖怪帳</span><i class="bar"><u id="dy-rb"></u></i><em id="dy-rv">0/0</em></div>
+    <div class="dr" id="dy-r2"><span>答對題數</span><i class="bar"><u id="dy-ob"></u></i><em id="dy-ov">0/30</em></div>
+    <p id="dy-hint"></p>
+  </button>
   <div class="allclr" id="allclr" hidden><i class="stp big">合格</i><span>全部の関門を突破！<small>全部破關，N4 合格の道が開いた</small></span></div>
   <div class="tiles">
     <button class="tile stage1" onclick="gIntro('startBattle')"><img class="scene" src="img/matsuri.webp" alt=""><span class="wm">書</span><span class="no">第一關 · 單字</span><h2>書道封印<i class="stp" data-k="seal" hidden></i></h2><p>聽發音、手寫平假名，<br>寫對就打中妖怪。</p></button>
     <button class="tile stage2" onclick="gIntro('startLava')"><img class="scene" src="img/cave.webp" alt=""><span class="wm">溶</span><span class="no">第二關 · 片語</span><h2>溶岩の試煉<i class="stp" data-k="lava" hidden></i></h2><p>方塊一直往下掉，<br>唸對日文就消掉，掉進岩漿就溶了。</p></button>
     <button class="tile stage3" onclick="{const t=document.getElementById('jd-lvtag');if(t)t.textContent=JD_LV[(META.jdLv||1)-1];go('s-koto')}"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">言</span><span class="no">第三關 · 口說</span><h2>言霊の間<i class="stp" data-k="koto" hidden></i></h2><p>影子跟讀，<br>再接受閻魔大王的口語審判。</p></button>
     <button class="tile" onclick="go('s-vsel')"><img class="scene" src="img/castle.webp" alt=""><span class="wm">化</span><span class="no">番外 · 文法</span><h2>狸の化け術<i class="stp" data-k="extra" hidden></i></h2><p>動詞分三類練變身，<br>相撲、變身都在這。</p></button>
-    <button class="tile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
+    <button class="tile" id="graveTile" onclick="showGrave()"><img class="scene" src="img/bunko.webp" alt=""><span class="wm">帳</span><span class="no">復習</span><h2>妖怪帳</h2><p id="grave-sub">封印失敗的妖怪會記在這裡。</p></button>
   </div>
   <p class="note">手寫判定：筆數要對、濁點要在右上角，字形要像。寫對會停一下再飛出去。</p>
 </section>
@@ -950,7 +970,24 @@ function load(){try{SRS=JSON.parse(localStorage.getItem('fu_srs')||'{}');META=Ob
 function save(){try{achCheck()}catch(e){}try{localStorage.setItem('fu_srs',JSON.stringify(SRS));localStorage.setItem('fu_meta',JSON.stringify(META))}catch(e){}}
 const today=()=>new Date().toLocaleDateString('sv');
 function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('sv')}
-function mark(key,ok){const r=SRS[key]||{lv:0,seen:0,wrong:0};r.seen++;if(ok){r.lv=Math.min(r.lv+1,GAP.length-1);r.due=addDays(GAP[r.lv])}else{r.lv=0;r.wrong++;r.due=addDays(1)}SRS[key]=r;save()}
+/* 今日の修行：先複習到期的妖怪，再答對 DAY_OK 題 */
+const DAY_OK=30,REV_CAP=10;
+function dayGet(){const T=today();let d=META.day;if(!d||d.d!==T){d=META.day={d:T,ok:0,rev:0,need:Math.min(dueCount(),REV_CAP)}}return d}
+function dayDone(d){return d.ok>=DAY_OK&&d.rev>=d.need}
+function stkNow(){const s=META.stk;return s&&(s.last===today()||s.last===addDays(-1))?s.n:0}
+function dayTick(key,ok){const d=dayGet(),r=SRS[key];if(r&&r.wrong>0&&r.due<=d.d)d.rev++;if(ok)d.ok++;
+  if(!d.done&&dayDone(d)){d.done=1;const s=META.stk||{n:0,last:''};s.n=s.last===addDays(-1)?s.n+1:s.last===d.d?s.n:1;s.last=d.d;META.stk=s;META.stkBest=Math.max(META.stkBest||0,s.n);setTimeout(()=>{try{FX.stamp('修',{cls:'big',top:'30%'})}catch(e){}toast(`今日の修行 完成！連續 ${s.n} 天`)},900)}}
+function dueKind(){const T=today(),d=k=>SRS[k]&&SRS[k].wrong>0&&SRS[k].due<=T;if(VOCAB.some(w=>d(wKey(w))))return 'w';if(PHRASES.some(p=>d(pKey(p))))return 'p';if(VERBS.some(v=>d('v:'+v.d)))return 'v';return ''}
+function dailyGo(){const d=dayGet(),k=d.rev<d.need?dueKind():'';
+  if(k==='w'){pendClear('w');gIntro('startBattle')}else if(k==='p'){pendClear('p');gIntro('startLava')}else if(k==='v')go('s-vsel');else gIntro('startBattle')}
+function paintDaily(){const d=dayGet(),due=dueCount(),pct=(a,b)=>b?Math.min(100,a/b*100):100,rDone=d.rev>=d.need,oDone=d.ok>=DAY_OK;
+  document.getElementById('dy-stk').textContent=`連續 ${stkNow()} 天`;
+  document.getElementById('dy-rv').textContent=d.need?`${Math.min(d.rev,d.need)}/${d.need}`:'無';document.getElementById('dy-rb').style.width=pct(d.rev,d.need)+'%';document.getElementById('dy-r1').classList.toggle('ok',rDone);
+  document.getElementById('dy-ov').textContent=`${Math.min(d.ok,DAY_OK)}/${DAY_OK}`;document.getElementById('dy-ob').style.width=pct(d.ok,DAY_OK)+'%';document.getElementById('dy-r2').classList.toggle('ok',oDone);
+  document.getElementById('daily').classList.toggle('done',!!d.done);
+  document.getElementById('dy-hint').textContent=d.done?(due?`修行完成！還有 ${due} 隻在復活，想多練就點這裡 →`:'修行完成，明天見！想多練就點這裡 →'):!rDone?`先複習：還有 ${d.need-d.rev} 隻妖怪今天復活 →`:`再答對 ${DAY_OK-d.ok} 題就完成今天 →`;
+  const t=document.getElementById('graveTile');t.classList.toggle('hot',due>0);t.querySelector('.no').dataset.n=due?`${due} 隻復活中`:''}
+function mark(key,ok){try{dayTick(key,ok)}catch(e){}const r=SRS[key]||{lv:0,seen:0,wrong:0};r.seen++;if(ok){r.lv=Math.min(r.lv+1,GAP.length-1);r.due=addDays(GAP[r.lv])}else{r.lv=0;r.wrong++;r.due=addDays(1)}SRS[key]=r;save()}
 const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
 const k2hR=t=>t.replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));
 function rbx(k,r){if(!r||!/[㐀-鿿々]/.test(k))return k;const segs=k.match(/[㐀-鿿々〆ヶ]+|[^㐀-鿿々〆ヶ]+/g);const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
@@ -1121,7 +1158,7 @@ function clrCheck(){if(META.shWin&&META.jdLong)clrSet('koto');if(META.kappaWin&&
 function clrPaint(){const nw=META.clrNew||[];document.querySelectorAll('.stp[data-k]').forEach(e=>{const k=e.dataset.k,on=!!(META.clr||{})[k];e.hidden=!on;e.textContent=CLR_TXT[k];e.classList.toggle('pop',on&&nw.includes(k))});document.getElementById('allclr').hidden=!CLR_KEYS.every(k=>(META.clr||{})[k])}
 function clrCelebrate(){const n=META.clrNew||[];if(!n.length)return;META.clrNew=[];const all=CLR_KEYS.every(k=>(META.clr||{})[k])&&!META.clrAll;if(all)META.clrAll=1;save();
   try{FX.stamp(CLR_TXT[n[0]],{cls:'big'})}catch(e){}if(all)setTimeout(()=>{try{FX.stamp('合格',{cls:'big',top:'48%'});FX.confettiPetals&&0}catch(e){}},1800)}
-function refreshHome(){clrCheck();clrPaint();setTimeout(clrCelebrate,600);document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;document.getElementById('st-due').textContent=dueCount();document.getElementById('st-combo').textContent=META.best;
+function refreshHome(){clrCheck();clrPaint();setTimeout(clrCelebrate,600);document.getElementById('st-sealed').textContent=META.sealed;document.getElementById('st-gems').textContent=META.gems;try{paintDaily()}catch(e){}document.getElementById('st-combo').textContent=META.best;
   const g=Object.values(SRS).filter(r=>r.wrong>0).length;document.getElementById('grave-sub').textContent=g?`帳上記著 ${g} 隻，${dueCount()} 隻今天復活。`:'封印失敗的妖怪會記在這裡。'}
 let toastT;function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1600)}
 const HEART=on=>`<svg viewBox="0 0 24 24" class="${on?'':'off'}" stroke-width="2"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>`;
