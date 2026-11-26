@@ -88,7 +88,8 @@ body[data-scr="s-home"] #s-home,body[data-scr="s-box"] #s-box,body[data-scr="s-s
 .combo{color:var(--gold);font-weight:700;font-size:16px}
 .hud .ico{width:36px;height:36px;min-height:36px;color:var(--dim)}
 /* 第一關舞台 */
-.stage{position:relative;flex:0 0 auto;height:146px;margin:8px 0 4px;border-bottom:1px solid var(--line);background:url(img/bg_matsuri.webp) right 40%/auto 210% no-repeat;border-radius:12px 12px 0 0}
+.stage{position:relative;flex:0 0 auto;height:146px;margin:8px 0 4px;border-bottom:1px solid var(--line);border-radius:12px 12px 0 0}
+.stage::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:url(img/bg_matsuri.webp) right 40%/auto 210% no-repeat;opacity:.32;filter:saturate(.6) blur(.6px)}
 .stage .yname{text-shadow:0 1px 6px rgba(0,0,0,.7)}
 .stage>*{z-index:1}
 .yokai{position:absolute;bottom:0;left:0;width:112px;height:112px}
@@ -1173,12 +1174,12 @@ const hearts=(n,max=5)=>Array.from({length:max},(_,i)=>HEART(i<n)).join('');
 const YOKAI=[
  {n:'灯籠鬼火',img:'img/mon_vocab.webp',wave:'sawtooth',f:[220,180,260],vib:9,cut:1100,len:.7,taunt:'石燈籠的火都笑到快熄了'},
  {n:'からかさ小僧',img:'img/mon_grammar.webp',flip:true,wave:'triangle',f:[420,640,380],vib:12,cut:2200,len:.6,taunt:'傘妖笑到傘骨都歪了'},
- {n:'提灯お化け',img:'img/mon_listen.webp',wave:'sine',f:[300,520,240],vib:5,cut:1600,len:.9,taunt:'提燈看了直接熄火'},
- {n:'本の付喪神',img:'img/mon_reading.webp',wave:'square',f:[520,700,600],vib:14,cut:1800,len:.5,taunt:'書妖翻白眼，書頁都捲起來了'},
- {n:'天狗',img:'img/mon_tengu.webp',wave:'sawtooth',f:[340,260,420],vib:10,cut:1500,len:.6,taunt:'天狗笑到鼻子又長了一截'},
+ {n:'提灯お化け',img:'img/mon_listen.webp',flip:true,wave:'sine',f:[300,520,240],vib:5,cut:1600,len:.9,taunt:'提燈看了直接熄火'},
+ {n:'本の付喪神',img:'img/mon_reading.webp',flip:true,wave:'square',f:[520,700,600],vib:14,cut:1800,len:.5,taunt:'書妖翻白眼，書頁都捲起來了'},
+ {n:'天狗',img:'img/mon_tengu.webp',flip:true,wave:'sawtooth',f:[340,260,420],vib:10,cut:1500,len:.6,taunt:'天狗笑到鼻子又長了一截'},
  {n:'雪女',img:'img/mon_yuki.webp',wave:'sine',f:[660,520,780],vib:7,cut:2600,len:.9,taunt:'雪女冷笑，連空氣都結冰了'},
- {n:'ろくろ首',img:'img/mon_rokuro.webp',wave:'triangle',f:[480,360,600],vib:11,cut:2000,len:.8,taunt:'ろくろ首笑到脖子打結了'},
- {n:'一反木綿',img:'img/mon_momen.webp',wave:'sine',f:[400,560,320],vib:8,cut:1800,len:.7,taunt:'一反木綿笑到在空中翻了三圈'},
+ {n:'ろくろ首',img:'img/mon_rokuro.webp',flip:true,wave:'triangle',f:[480,360,600],vib:11,cut:2000,len:.8,taunt:'ろくろ首笑到脖子打結了'},
+ {n:'一反木綿',img:'img/mon_momen.webp',flip:true,wave:'sine',f:[400,560,320],vib:8,cut:1800,len:.7,taunt:'一反木綿笑到在空中翻了三圈'},
  {n:'猫又',img:'img/mon_neko.webp',wave:'square',f:[700,880,640],vib:13,cut:2400,len:.5,taunt:'猫又兩條尾巴都笑到捲起來'},
  {n:'ぬりかべ',img:'img/mon_nurikabe.webp',wave:'square',f:[150,120,170],vib:5,cut:900,len:1,taunt:'ぬりかべ笑到牆壁都裂開了'},
  {n:'鬼',img:'img/oni.webp',wave:'sawtooth',f:[110,80,95],vib:6,cut:700,len:1.1,boss:true,taunt:'鬼都笑了，你寫的比牠的角還歪'}
@@ -1340,7 +1341,7 @@ function newBox(ch){const holder=document.getElementById('boxes');const size=bat
 function nextYokai(){
   const w=battle.word=battle.list[battle.i];battle.ci=0;battle.charTries=0;battle.locked=false;battle.shooting=false;
   const last=battle.i===battle.list.length-1&&!battle.trace;const y=battle.y=last?BOSS:nextMob(battle.y);
-  const el=document.getElementById('yokai');el.className='yokai hop'+(y.boss?' boss':'');el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}" alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
+  const el=document.getElementById('yokai');el.className='yokai hop'+(y.boss?' boss':'');el.innerHTML=`<span class="yname">${y.n}${y.boss?'（ボス）':''}</span><img class="fig" src="${y.img}"${y.flip?' style="scale:-1 1"':''} alt="${y.n}" draggable="false">`;el.style.transform='translateX(0)';
   document.getElementById('hp').innerHTML=hearts(battle.hp);document.getElementById('b-count').textContent=`${battle.trace?'描字':'封印'} ${battle.trace?1:battle.i+1} / ${battle.trace?1:battle.list.length}`;document.getElementById('b-combo').textContent=`連擊 ${battle.combo}`;
   document.getElementById('p-mean').textContent=w.m;document.getElementById('p-hint').innerHTML='';
   const fb=document.getElementById('fb');fb.className='feedback';fb.textContent=battle.trace?`描字練習：照著淡淡的字描，描錯不扣命`:`${y.n}が来た！聽發音，寫 ${w.k.length} 個平假名`;
